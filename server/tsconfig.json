@@ -1,0 +1,34 @@
+{
+  "compilerOptions": {
+    "types": [
+      "node"
+      // ... your other types
+    ],
+    "paths": {
+      "@shared/*": ["../shared/*"]
+    },
+    "target": "ES2021",
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "noEmit": true,
+    "allowJs": true,
+    "resolveJsonModule": true,
+    "allowSyntheticDefaultImports": true,
+    "isolatedModules": false,
+    "lib": ["dom", "ES2017", "ES2021"],
+    "removeComments": true,
+    "sourceMap": true,
+    "forceConsistentCasingInFileNames": true,
+    "strictNullChecks": true,
+    "noImplicitAny": false,
+    "jsx": "react",
+    "jsxFactory": "h",
+    "jsxFragmentFactory": "Fragment",
+    "esModuleInterop": true,
+    "pretty": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true
+  },
+  "references": [],
+  "include": ["src/**/*", "test/**/*", "../shared/**/*", "scripts/**/*"]
+}

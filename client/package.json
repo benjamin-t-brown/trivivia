@@ -1,0 +1,37 @@
+{
+  "name": "trivivia-client",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/index.html",
+  "scripts": {
+    "test": "vitest --coverage",
+    "start": "vite serve src --config ./vite.config.ts",
+    "start:dev": "yarn start",
+    "build": "vite build src --config ./vite.config.ts",
+    "clean": "rm -rf dist/release/*.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@testing-library/dom": "^9.0.1",
+    "@testing-library/react": "^14.0.0",
+    "@types/styled-components": "^5.1.26",
+    "@typescript-eslint/eslint-plugin": "^5.31.0",
+    "@typescript-eslint/parser": "^5.31.0",
+    "@vitejs/plugin-react": "^3.1.0",
+    "@vitest/ui": "^0.29.7",
+    "express": "^4.18.2",
+    "happy-dom": "^8.9.0",
+    "html-minifier": "^4.0.0",
+    "prettier": "^2.8.6",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-router-dom": "^6.9.0",
+    "shared": "1.0.0",
+    "styled-components": "^5.3.9",
+    "terser": "^5.16.6",
+    "vitest-fetch-mock": "^0.2.2"
+  },
+  "dependencies": {}
+}
+

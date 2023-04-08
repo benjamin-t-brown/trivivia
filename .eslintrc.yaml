@@ -1,0 +1,63 @@
+parser: '@typescript-eslint/parser'
+
+extends:
+  - 'plugin:prettier/recommended'
+  - 'eslint:recommended'
+  - 'plugin:@typescript-eslint/eslint-recommended'
+  - 'plugin:@typescript-eslint/recommended'
+  - 'plugin:react/recommended'
+
+plugins:
+  - 'babel'
+  - 'prettier'
+  - '@typescript-eslint'
+
+env:
+  browser: true
+  node: true
+  es6: true
+
+ignorePatterns:
+  - main.js
+  - sequelize-typescript-migration/**/*.js
+
+rules:
+  prettier/prettier:
+    - 2
+    - bracketSpacing: true
+      singleQuote: true
+      tabWidth: 2
+      trailingComma: 'es5'
+  no-lone-blocks: 0
+  no-throw-literal: 0
+  no-console: 0
+  no-case-declarations: 0
+  no-fallthrough: 0
+  indent: 0
+  func-style: 0
+  react/jsx-index-props: 0
+  react/self-closing-comp: 0
+  react/jsx-indent-props: 0
+  react/jsx-no-bind: 0
+  react/display-name: 0
+  react/jsx-boolean-value: 0
+  brace-style: 0
+  comma-dangle: 0
+  no-sparse-arrays: 0
+  arrow-body-style: 0
+  no-unused-vars: 0
+  no-else-return: 0
+  radix: 0
+  object-shorthand: 0
+  no-lonely-if: 0
+  prefer-arrow-callback: 0
+  prefer-template: 0
+  no-undef: 0
+  camelcase: 0
+  '@typescript-eslint/no-unused-vars': 1
+  '@typescript-eslint/no-empty-function': 0
+  '@typescript-eslint/no-explicit-any': 0
+  '@typescript-eslint/no-var-requires': 0
+  '@typescript-eslint/explicit-module-boundary-types': 0
+  '@typescript-eslint/ban-types': 0
+  '@typescript-eslint/no-this-alias': 0
