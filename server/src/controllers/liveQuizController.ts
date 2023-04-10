@@ -8,6 +8,7 @@ import {
 import { LiveQuizService } from '../services/LiveQuizService';
 import { AnswerState } from 'shared';
 import { validateAnswersSubmitted, validateString } from '../validators';
+import logger from '../logger';
 
 export const initLiveQuizControllers = (router: Router) => {
   const liveQuizService = new LiveQuizService();
@@ -55,10 +56,15 @@ export const initLiveQuizControllers = (router: Router) => {
       );
 
       if (!liveQuiz) {
+        logger.error(
+          'No live quiz found with id=' + params.liveQuizUserFriendlyId
+        );
         return undefined;
       }
 
       const state = await liveQuizService.getPublicLiveQuizStateMeta(liveQuiz);
+
+      console.log('state', state);
 
       return state;
     }

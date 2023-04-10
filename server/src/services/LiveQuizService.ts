@@ -450,9 +450,9 @@ export class LiveQuizService {
     );
     const roundTemplateId =
       quizTemplate.roundOrder[liveQuiz.currentRoundNumber - 1];
-    if (!roundTemplateId || !quizTemplate.rounds) {
-      return undefined;
-    }
+    // if (!roundTemplateId || !quizTemplate.rounds) {
+    //   return undefined;
+    // }
 
     const teams = (liveQuiz.liveQuizTeams ?? []).map(t => t.getResponseJson());
     const teamsScores = teams.map(t => {
@@ -488,18 +488,31 @@ export class LiveQuizService {
     );
     const roundTemplateId =
       quizTemplate.roundOrder[liveQuiz.currentRoundNumber - 1];
-    if (!roundTemplateId || !quizTemplate.rounds) {
-      return undefined;
-    }
+    // if (!roundTemplateId || !quizTemplate.rounds) {
+    //   return undefined;
+    // }
 
-    const roundTemplate = quizTemplate.rounds.find(
+    const roundTemplate = quizTemplate.rounds?.find(
       t => t.id === roundTemplateId
     );
     if (!roundTemplate) {
-      logger.error(
-        `Error in getCurrentRoundAndQuestions for liveQuiz id=${liveQuiz.id}, roundTemplate id=${roundTemplateId} not found in json for quiz.`
-      );
-      return undefined;
+      const quizState: any = liveQuiz.getLiveResponseJson();
+      delete quizState.liveQuizTeams;
+
+      const teams = (liveQuiz.liveQuizTeams ?? []).map(t => {
+        const ret = t.getResponseJson();
+        if (ret.id !== liveQuizTeamId) {
+          ret.id = ret.id.slice(0, 8);
+        }
+        return ret;
+      });
+
+      return {
+        quiz: quizState,
+        teamId: liveQuizTeamId,
+        teams,
+        teamsScores: [],
+      };
     }
 
     const liveQuizRoundAnswers = (
