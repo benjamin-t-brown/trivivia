@@ -7,6 +7,7 @@
     "test": "vitest --coverage",
     "start": "ts-node-dev --project ./tsconfig.json src/server.ts",
     "start:dev": "yarn start",
+    "start:prod": "ts-node --project ./tsconfig.json src/server.ts",
     "create-initial-migration": "ts-node --project ./tsconfig.json scripts/createMigration.ts",
     "migrate": "sequelize db:migrate",
     "postinstall": "cp -n database.example.json database.json && yarn migrate"
