@@ -272,11 +272,18 @@ const ListRoundTemplates = () => {
                       >
                         {i + 1}.
                       </span>
-                      <span>{t.title}</span>
+                      <span
+                        style={{
+                          textAlign: 'left',
+                        }}
+                      >
+                        {t.title}
+                      </span>
                     </div>
                     <div
                       style={{
                         width: '22px',
+                        flexShrink: 0,
                       }}
                       onClick={handleEditRoundTemplateClick(t.id)}
                     >

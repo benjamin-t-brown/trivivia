@@ -109,12 +109,12 @@ const ListQuizTemplates = () => {
                   >
                     <span
                       style={{
-                        width: 'calc(100% - 132px - 100px - 16px)',
+                        width: 'calc(100% - 132px)',
                       }}
                     >
                       {t.name}
                     </span>
-                    <span
+                    {/* <span
                       style={{
                         color: getColors().TEXT_DESCRIPTION,
                         width: '100px',
@@ -122,13 +122,13 @@ const ListQuizTemplates = () => {
                       }}
                     >
                       {t.numRounds} Rounds
-                    </span>
+                    </span> */}
                     <span
                       style={{
                         color: quizTemplateIsReady(t)
                           ? getColors().SUCCESS_TEXT
                           : getColors().ERROR_TEXT,
-                        width: '132px',
+                        width: '112px',
                       }}
                     >
                       {quizTemplateIsReady(t) ? 'Ready' : 'Not Ready'}

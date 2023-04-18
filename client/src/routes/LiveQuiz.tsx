@@ -933,7 +933,8 @@ const LiveQuiz = (props: { error?: boolean }) => {
                 }}
               >
                 Connected to quiz:
-              </span>{' '}
+              </span>
+              <br />
               {liveQuizResponse.data.quiz.name}
             </p>
             {isWaitingForQuizToStart(liveQuizResponse.data.quiz) ? (
