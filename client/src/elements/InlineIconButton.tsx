@@ -8,7 +8,7 @@ const Root = styled.span(() => {
     height: '22px',
     display: 'inline-block',
     borderRadius: '24px',
-    marginRight: '24px',
+    marginRight: '16px',
     verticalAlign: 'bottom',
     background: getColors().SECONDARY,
     cursor: 'pointer',

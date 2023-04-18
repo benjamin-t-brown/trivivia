@@ -1,11 +1,13 @@
 import { Response, Router } from 'express';
 import logger from './logger';
 import { ApiRequest } from './types';
+import { IoSession } from './middlewares/ioSessionMemory';
 
 export interface RouteContext {
   userId: string;
   session: any;
   liveTeamId?: string;
+  ioSessions: IoSession[];
 }
 
 export class InvalidInputError extends Error {
@@ -35,10 +37,16 @@ export function registerRoute<T, R>(
         userId: req.userId ?? '',
         session: req.session,
         liveTeamId: req.liveTeamId,
+        ioSessions: req.ioSessions,
       });
       if (result) {
         const json = JSON.stringify(result);
-        logger.debug('response=' + req.requestId, method, route, json);
+        logger.debug(
+          'response=' + req.requestId,
+          method,
+          route,
+          json.slice(0, 50) + '...'
+        );
         res.status(200).send(json);
       } else {
         logger.error(

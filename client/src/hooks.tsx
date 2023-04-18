@@ -5,8 +5,13 @@ import {
   useLoaderData,
   useRouteError,
   useNavigate,
+  useParams,
+  useFetcher,
+  FetcherWithComponents,
 } from 'react-router-dom';
 import { FormError } from 'components/FormErrorText';
+import { getLiveQuizTeamId } from 'utils';
+import { updateCacheLiveQuiz } from 'cache';
 
 export const useReRender = () => {
   const [, updateState] = useState();
@@ -196,6 +201,7 @@ const getClientYFromClickBasedEvent = (ev: MouseEvent | TouchEvent) => {
 
 export const useDnDListHandlers = (args: {
   itemHeight: number;
+  clickOffset: number;
   arr: string[];
   setArr: (arr: string[]) => void;
 }) => {
@@ -207,12 +213,10 @@ export const useDnDListHandlers = (args: {
   const [wasEdited, setWasEdited] = React.useState(false);
 
   const handleDragStart = (id: string) => (ev: MouseEvent | TouchEvent) => {
-    ev.stopPropagation();
-
     const elem = document.getElementById(id);
     if (elem) {
       const clientY = getClientYFromClickBasedEvent(ev);
-      elem.style.transform = `translateY(${-50}px)`;
+      elem.style.transform = `translateY(${-args.clickOffset}px)`;
 
       setDragState({
         id,
@@ -220,33 +224,42 @@ export const useDnDListHandlers = (args: {
         clientY,
         elem,
       });
+
+      const root = document.getElementById('content-root');
+      if (root) {
+        root.style.overflow = 'hidden';
+      }
     }
   };
 
   React.useEffect(() => {
     const handleDragMove = (ev: MouseEvent | TouchEvent) => {
       if (dragState.dragging && dragState.elem) {
-        ev.stopPropagation();
         const newClientY = getClientYFromClickBasedEvent(ev);
         dragState.elem.style.transform = `translateY(${
-          newClientY - dragState.clientY - 50
+          newClientY - dragState.clientY - args.clickOffset
         }px)`;
       }
     };
 
     const handleDragEnd = (ev: MouseEvent | TouchEvent) => {
       if (dragState.dragging && dragState.elem) {
-        ev.stopPropagation();
-        ev.preventDefault();
+        const root = document.getElementById('content-root');
+        if (root) {
+          root.style.overflow = 'auto';
+        }
 
         let offset = Math.floor(
           (parseInt(dragState.elem.style.transform.slice(11)) +
-            args.itemHeight) /
+            args.itemHeight -
+            (args.clickOffset > 0 ? 0 : 50)) /
             args.itemHeight
         );
         if (offset < 0) {
           offset++;
         }
+
+        console.log('drag offset', offset);
 
         const reorder = (arr: string[], ind: number, offset: number) => {
           arr = [...arr];
@@ -277,15 +290,26 @@ export const useDnDListHandlers = (args: {
           offset
         );
         args.setArr(newArr);
+
+        console.log('old arr new arr', args.arr, newArr);
+
         setWasEdited(true);
 
         dragState.elem.style.transform = 'unset';
         setDragState({
           id: '',
-          dragging: false,
+          dragging: true,
           clientY: 0,
           elem: undefined,
         });
+        setTimeout(() => {
+          setDragState({
+            id: '',
+            dragging: false,
+            clientY: 0,
+            elem: undefined,
+          });
+        }, 100);
       }
     };
 
@@ -299,7 +323,7 @@ export const useDnDListHandlers = (args: {
       window.removeEventListener('mouseup', handleDragEnd);
       window.removeEventListener('touchend', handleDragEnd);
     };
-  }, [dragState]);
+  });
 
   return {
     dragWasEdited: wasEdited,
@@ -308,5 +332,73 @@ export const useDnDListHandlers = (args: {
     resetDragState: () => {
       setWasEdited(false);
     },
+  };
+};
+
+let socket;
+export const useSocketIoRefreshState = (
+  fetcher: FetcherWithComponents<any>
+) => {
+  const [connected, setConnected] = React.useState(false);
+  const [joined, setJoined] = React.useState(false);
+  const params = useParams();
+  const sendJoinRequest = (args: { teamId: string; gameId: string }) => {
+    console.log('emit join request', args);
+    socket.emit('join', JSON.stringify(args));
+  };
+
+  React.useEffect(() => {
+    if (!socket) {
+      const io = (window as any).io;
+      socket = io();
+      socket.on('hello', () => {
+        console.log('server says hello');
+        setConnected(true);
+        setJoined(false);
+      });
+      socket.on('disconnect', () => {
+        socket = undefined;
+        setJoined(false);
+        setConnected(false);
+      });
+      socket.on('state', () => {
+        console.log('received refresh request from server');
+        updateCacheLiveQuiz(params.userFriendlyQuizId ?? '');
+        fetcher.load(`/live/${params.userFriendlyQuizId}`);
+      });
+      socket.on('joined', () => {
+        console.log('joined');
+        setJoined(true);
+      });
+      socket.on('error', () => {
+        setConnected(false);
+        setJoined(false);
+      });
+      socket.on('connect_error', () => {
+        setConnected(false);
+        setJoined(false);
+      });
+    }
+  }, []);
+
+  React.useEffect(() => {
+    if (socket && connected && !joined) {
+      const teamId = getLiveQuizTeamId();
+      const gameId = params.userFriendlyQuizId;
+
+      console.log('check for join', teamId, gameId);
+
+      if (teamId && gameId) {
+        sendJoinRequest({
+          teamId,
+          gameId,
+        });
+      }
+    }
+  }, [connected, joined, params]);
+
+  return {
+    connected,
+    joined,
   };
 };

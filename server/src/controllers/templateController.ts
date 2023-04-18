@@ -54,18 +54,22 @@ export const initTemplateControllers = (router: Router) => {
     router,
     '/api/template/quiz',
     async function createQuizTemplate(_, body: QuizTemplateRequest, context) {
-      const { name, numRounds } = body;
+      const { name, numRounds, notes } = body;
       if (!validateString(name)) {
         throw new InvalidInputError('Not a valid name.');
       }
       if (!validateInt(numRounds, 1, 100)) {
         throw new InvalidInputError('Not a number of rounds.');
       }
+      if (notes && !validateString(notes, 0, 1000)) {
+        throw new InvalidInputError('Not valid notes.');
+      }
 
       const quizTemplate = await templateService.createQuizTemplate(
         {
           name,
           numRounds,
+          notes,
         },
         context
       );
@@ -90,18 +94,22 @@ export const initTemplateControllers = (router: Router) => {
     router,
     '/api/template/quiz/:id',
     async function updateQuizTemplate(params, body: QuizTemplateRequest) {
-      const { name, numRounds } = body;
+      const { name, numRounds, notes } = body;
       if (!validateString(name)) {
         throw new InvalidInputError('Not a valid name.');
       }
       if (!validateInt(numRounds, 1, 100)) {
         throw new InvalidInputError('Not a number of rounds.');
       }
+      if (notes && !validateString(notes, 0, 1000)) {
+        throw new InvalidInputError('Not valid notes.');
+      }
 
       const quizTemplate = await templateService.updateQuizTemplate({
         id: params.id,
         name,
         numRounds,
+        notes,
       });
       if (!quizTemplate) {
         return;
@@ -152,21 +160,25 @@ export const initTemplateControllers = (router: Router) => {
     router,
     '/api/template/round',
     async function createRoundTemplate(_, body: RoundTemplateRequest) {
-      const { title, description, quizTemplateId } = body;
+      const { title, description, quizTemplateId, notes } = body;
       if (!validateString(quizTemplateId)) {
         throw new InvalidInputError('Not a valid quizTemplateId.');
       }
       if (!validateString(title)) {
         throw new InvalidInputError('Not a valid title.');
       }
-      if (!validateString(description ?? '')) {
+      if (!validateString(description ?? '', 0, 1000)) {
         throw new InvalidInputError('Not a valid description.');
+      }
+      if (notes && !validateString(notes, 0, 1000)) {
+        throw new InvalidInputError('Not valid notes.');
       }
 
       const roundTemplate = await templateService.createRoundTemplate({
         quizTemplateId,
         title,
         description,
+        notes,
       });
       if (!roundTemplate) {
         return;
@@ -189,25 +201,30 @@ export const initTemplateControllers = (router: Router) => {
   registerPut(
     router,
     '/api/template/round/:id',
-    async function createQuizTemplate(
+    async function updateRoundTemplate(
       params,
       body: {
         title: string;
         description: string;
+        notes?: string;
       }
     ) {
-      const { title, description } = body;
+      const { title, description, notes } = body;
       if (!validateString(title)) {
         throw new InvalidInputError('Not a valid title.');
       }
-      if (!validateString(description)) {
+      if (description && !validateString(description, 0, 1000)) {
         throw new InvalidInputError('Not a valid description.');
+      }
+      if (notes && !validateString(notes, 0, 1000)) {
+        throw new InvalidInputError('Not valid notes.');
       }
 
       const roundTemplate = await templateService.updateRoundTemplate({
         roundTemplateId: params.id,
         title,
         description,
+        notes,
       });
       if (!roundTemplate) {
         return;
@@ -258,7 +275,14 @@ export const initTemplateControllers = (router: Router) => {
     router,
     '/api/template/question',
     async function createQuestionTemplate(_, body: QuestionTemplateRequest) {
-      const { roundTemplateId, text, answers, answerType, orderMatters } = body;
+      const {
+        roundTemplateId,
+        text,
+        answers,
+        answerType,
+        orderMatters,
+        notes,
+      } = body;
       if (!validateString(roundTemplateId)) {
         throw new InvalidInputError('Not valid roundTemplateId.');
       }
@@ -269,7 +293,10 @@ export const initTemplateControllers = (router: Router) => {
         throw new InvalidInputError('Not valid answers.');
       }
       if (!validateAnswerType(answerType)) {
-        throw new InvalidInputError('Not valid answers.');
+        throw new InvalidInputError('Not valid answerType.');
+      }
+      if (notes && !validateString(notes, 0, 1000)) {
+        throw new InvalidInputError('Not valid notes.');
       }
 
       const questionTemplate = await templateService.createQuestionTemplate({
@@ -278,6 +305,7 @@ export const initTemplateControllers = (router: Router) => {
         answers,
         answerType,
         orderMatters,
+        notes,
       });
       if (!questionTemplate) {
         return;
@@ -305,7 +333,7 @@ export const initTemplateControllers = (router: Router) => {
       params,
       body: QuestionTemplateRequest
     ) {
-      const { text, answers, answerType, orderMatters } = body;
+      const { text, answers, answerType, orderMatters, notes } = body;
       if (!validateString(text, 0, 500)) {
         throw new InvalidInputError('Not valid text.');
       }
@@ -315,6 +343,9 @@ export const initTemplateControllers = (router: Router) => {
       if (!validateAnswerType(answerType)) {
         throw new InvalidInputError('Not valid answers.');
       }
+      if (notes && !validateString(notes, 0, 1000)) {
+        throw new InvalidInputError('Not valid notes.');
+      }
 
       const questionTemplate = await templateService.updateQuestionTemplate({
         questionTemplateId: params.questionId,
@@ -322,6 +353,7 @@ export const initTemplateControllers = (router: Router) => {
         answers,
         answerType,
         orderMatters,
+        notes,
       });
       if (!questionTemplate) {
         return;

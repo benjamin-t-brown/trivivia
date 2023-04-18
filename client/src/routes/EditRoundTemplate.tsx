@@ -42,6 +42,7 @@ interface EditRoundValues {
   isNew: boolean;
   title: string;
   description: string;
+  notes: string;
 }
 const action = createAction(async (values: EditRoundValues, params) => {
   if (!values.title) {
@@ -183,6 +184,7 @@ const EditRoundTemplate = (props: EditRoundProps) => {
     isNew: Boolean(props.isNew),
     title: roundTemplateResponse?.data.title ?? '',
     description: roundTemplateResponse?.data?.description ?? '',
+    notes: roundTemplateResponse?.data?.notes ?? '',
   };
   const formIsPristine = useFormPristine('edit-round-form', initialValues);
   const confirmDialog = useConfirmNav(!formIsPristine);
@@ -246,6 +248,24 @@ const EditRoundTemplate = (props: EditRoundProps) => {
               defaultValue={
                 props.isNew ? '' : roundTemplateResponse?.data.description
               }
+            />
+            <InputLabel
+              htmlFor="notes"
+              style={{
+                marginTop: '32px',
+              }}
+            >
+              Notes
+            </InputLabel>
+            <TextArea
+              fullWidth={true}
+              placeholder="Notes"
+              aria-label="Notes"
+              name="notes"
+              maxLength={512}
+              onChange={() => {
+                render();
+              }}
             />
             <FormErrorText />
             <div style={{ height: '16px' }}></div>

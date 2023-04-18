@@ -122,7 +122,7 @@ export class TemplateService {
   }
 
   async createQuizTemplate(
-    params: { name: string; numRounds: number },
+    params: { name: string; numRounds: number; notes?: string },
     context: RouteContext
   ) {
     const quizTemplate = new QuizTemplate({
@@ -131,6 +131,7 @@ export class TemplateService {
       numRounds: params.numRounds,
       name: params.name,
       roundOrder: '[]',
+      notes: params.notes ?? '',
     });
     return quizTemplate.save();
   }
@@ -139,6 +140,7 @@ export class TemplateService {
     id: string;
     name: string;
     numRounds: number;
+    notes?: string;
   }) {
     const quizTemplate = await this.findQuizById(params.id);
 
@@ -148,6 +150,7 @@ export class TemplateService {
 
     quizTemplate.name = params.name;
     quizTemplate.numRounds = params.numRounds;
+    quizTemplate.notes = params.notes ?? '';
     return quizTemplate.save();
   }
 
@@ -195,6 +198,7 @@ export class TemplateService {
     quizTemplateId: string;
     title: string;
     description?: string;
+    notes?: string;
   }) {
     console.log('create round', params);
 
@@ -213,6 +217,7 @@ export class TemplateService {
       title: params.title,
       description: params.description ?? '',
       questionOrder: '[]',
+      notes: params.notes ?? '',
     });
     await roundTemplate.save();
 
@@ -228,6 +233,7 @@ export class TemplateService {
     roundTemplateId: string;
     title: string;
     description?: string;
+    notes?: string;
   }) {
     const roundTemplate = await this.findRoundById(params.roundTemplateId);
     if (!roundTemplate) {
@@ -236,6 +242,7 @@ export class TemplateService {
 
     roundTemplate.title = params.title;
     roundTemplate.description = params.description ?? roundTemplate.description;
+    roundTemplate.notes = params.notes ?? roundTemplate.notes;
 
     return roundTemplate.save();
   }
@@ -297,6 +304,7 @@ export class TemplateService {
     answers: string;
     answerType: AnswerBoxType;
     orderMatters?: boolean;
+    notes?: string;
   }) {
     const roundTemplate = await this.findRoundById(params.roundTemplateId);
     if (!roundTemplate) {
@@ -327,6 +335,7 @@ export class TemplateService {
     answers: string;
     answerType?: AnswerBoxType;
     orderMatters?: boolean;
+    notes?: string;
   }) {
     const questionTemplate = await this.findQuestionById(
       params.questionTemplateId
@@ -341,6 +350,7 @@ export class TemplateService {
       params.answerType ?? questionTemplate.answerType;
     questionTemplate.orderMatters =
       params.orderMatters ?? questionTemplate.orderMatters;
+    questionTemplate.notes = params.notes ?? questionTemplate.notes;
 
     return questionTemplate.save();
   }

@@ -51,7 +51,7 @@ interface JoinQuizValues {
 const action = createAction(async (values: JoinQuizValues, params) => {
   console.log('EDIT QUIZ VALUES', values);
 
-  if (values.code && !params.userFriendlyQuizId) {
+  if (values.code) {
     setLiveQuizTeamId('');
     return redirect(`/join/${values.code}`);
   }

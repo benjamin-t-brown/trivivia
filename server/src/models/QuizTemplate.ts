@@ -49,6 +49,9 @@ export class QuizTemplate extends Model {
   @Column(DataType.TEXT)
   name: string;
 
+  @Column(DataType.TEXT)
+  notes: string;
+
   @CreatedAt
   creationDate: Date;
 

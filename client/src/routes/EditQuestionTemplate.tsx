@@ -54,6 +54,7 @@ interface EditQuestionValues {
   answerType: AnswerBoxType;
   orderMatters: boolean;
   imageLink?: string;
+  notes: string;
 }
 const action = createAction(async (values: EditQuestionValues, params) => {
   if (!values.text || !values.answers || !values.answerType) {
@@ -241,6 +242,7 @@ const EditQuestionTemplate = (props: EditQuestionProps) => {
       questionTemplateResponse?.data?.answerType ?? AnswerBoxType.INPUT1,
     orderMatters: questionTemplateResponse?.data?.orderMatters ?? false,
     imageLink: questionTemplateResponse?.data?.imageLink ?? '',
+    notes: questionTemplateResponse?.data?.notes ?? '',
   };
   const formIsPristine = useFormPristine('edit-question-form', initialValues);
   const confirmDialog = useConfirmNav(!formIsPristine);
@@ -309,6 +311,24 @@ const EditQuestionTemplate = (props: EditQuestionProps) => {
               }}
               formId="edit-question-form"
               isNew={props.isNew}
+            />
+            <InputLabel
+              htmlFor="notes"
+              style={{
+                marginTop: '32px',
+              }}
+            >
+              Notes
+            </InputLabel>
+            <TextArea
+              fullWidth={true}
+              placeholder="Notes"
+              aria-label="Notes"
+              name="notes"
+              maxLength={512}
+              onChange={() => {
+                render();
+              }}
             />
             <FormErrorText />
             <div style={{ height: '16px' }}></div>

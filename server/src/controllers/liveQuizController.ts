@@ -64,8 +64,6 @@ export const initLiveQuizControllers = (router: Router) => {
 
       const state = await liveQuizService.getPublicLiveQuizStateMeta(liveQuiz);
 
-      console.log('state', state);
-
       return state;
     }
   );
@@ -137,22 +135,44 @@ export const initLiveQuizControllers = (router: Router) => {
       params: {
         liveQuizUserFriendlyId: string;
       },
-      body: { submittedAnswers: Record<string, AnswerState> },
+      body: {
+        submittedAnswers: Record<string, AnswerState>;
+        didJoker: boolean;
+      },
       context
     ) {
       const { liveTeamId } = context;
       if (!liveTeamId) {
         return undefined;
       }
-      const { submittedAnswers } = body;
+
+      const liveQuiz = await liveQuizService.findLiveQuizByUserFriendlyId(
+        params.liveQuizUserFriendlyId
+      );
+
+      if (!liveQuiz) {
+        logger.error(
+          'No live quiz found with id=' + params.liveQuizUserFriendlyId
+        );
+        return undefined;
+      }
+
+      const { submittedAnswers, didJoker } = body;
       if (!validateAnswersSubmitted(submittedAnswers)) {
         throw new InvalidInputError('Not a valid answers submission.');
       }
 
-      return await liveQuizService.submitAnswersForTeam(
-        liveTeamId,
-        submittedAnswers
+      await liveQuizService.submitAnswersForTeamInCurrentRound(liveTeamId, {
+        submittedAnswers,
+        didJoker,
+      });
+
+      const state = await liveQuizService.getPublicLiveQuizState(
+        liveQuiz,
+        liveTeamId
       );
+
+      return state;
     }
   );
 };

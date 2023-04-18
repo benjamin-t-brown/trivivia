@@ -5,11 +5,14 @@ import { LiveQuizRoundAnswers } from '../models/LiveQuizRoundAnswers';
 import { LiveQuizTeam } from '../models/LiveQuizTeam';
 import {
   AnswerState,
+  AnswerStateGraded,
   LiveQuizPublicQuestionResponse,
   LiveQuizPublicStateResponse,
   LiveQuizState,
+  LiveQuizTeamResponse,
   LiveRoundState,
   QuizTemplateResponse,
+  getNumAnswers,
 } from 'shared';
 import logger from '../logger';
 import { TemplateService } from './TemplateService';
@@ -17,6 +20,8 @@ import { InvalidInputError } from '../routing';
 import { Op } from 'sequelize';
 import { QuizTemplate } from '../models/QuizTemplate';
 import { customAlphabet } from 'nanoid';
+import { GradeInputState } from '@shared/requests';
+import { Model } from 'sequelize-typescript';
 
 export class LiveQuizService {
   nanoid = customAlphabet('1234567890abcdefghijklmnopqrstuvwxyz', 6);
@@ -91,7 +96,7 @@ export class LiveQuizService {
 
   async findLiveQuizTeamById(liveQuizTeamId: string) {
     return LiveQuizTeam.findByPk(liveQuizTeamId, {
-      include: [LiveQuiz],
+      include: [LiveQuiz, LiveQuizRoundAnswers],
     });
   }
 
@@ -154,6 +159,8 @@ export class LiveQuizService {
       roundState: LiveRoundState.NOT_STARTED,
       currentRoundNumber: 0,
       currentQuestionNumber: 0,
+      currentRoundAnswerNumber: 0,
+      currentRoundScoresNumber: 0,
     });
 
     await liveQuiz.save();
@@ -240,6 +247,8 @@ export class LiveQuizService {
     liveQuiz.roundState = LiveRoundState.NOT_STARTED;
     liveQuiz.currentRoundNumber = 0;
     liveQuiz.currentQuestionNumber = 0;
+    liveQuiz.currentRoundAnswerNumber = 0;
+    liveQuiz.currentRoundScoresNumber = 0;
     liveQuiz.userFriendlyId = this.nanoid();
 
     await liveQuiz.save();
@@ -290,9 +299,7 @@ export class LiveQuizService {
       return undefined;
     }
 
-    liveQuiz.roundState = LiveRoundState.STARTED_NOT_ACCEPTING_ANSWERS;
     liveQuiz.currentRoundNumber = roundIndex;
-    liveQuiz.currentQuestionNumber = 0;
 
     return await liveQuiz.save();
   }
@@ -307,6 +314,20 @@ export class LiveQuizService {
     }
 
     liveQuiz.currentQuestionNumber = questionIndex;
+
+    return await liveQuiz.save();
+  }
+
+  async setCurrentRoundAnswerForLiveQuiz(
+    liveQuizId: string,
+    roundAnswerIndex: number
+  ) {
+    const liveQuiz = await this.assertQuiz(liveQuizId);
+    if (!liveQuiz) {
+      return undefined;
+    }
+
+    liveQuiz.currentRoundAnswerNumber = roundAnswerIndex;
 
     return await liveQuiz.save();
   }
@@ -353,9 +374,11 @@ export class LiveQuizService {
 
     const liveQuizTeam = new LiveQuizTeam({
       id: randomUUID(),
+      publicId: randomUUID(),
       liveQuizId: liveQuiz.id,
       teamName: args.teamName,
       numberOfPlayers: args.numberOfPlayers,
+      currentScore: 0,
     });
 
     const modelsToSave: LiveQuizRoundAnswers[] = [];
@@ -445,15 +468,6 @@ export class LiveQuizService {
   async getPublicLiveQuizStateMeta(
     liveQuiz: LiveQuiz
   ): Promise<LiveQuizPublicStateResponse | undefined> {
-    const quizTemplate: QuizTemplateResponse = JSON.parse(
-      liveQuiz.quizTemplateJson
-    );
-    const roundTemplateId =
-      quizTemplate.roundOrder[liveQuiz.currentRoundNumber - 1];
-    // if (!roundTemplateId || !quizTemplate.rounds) {
-    //   return undefined;
-    // }
-
     const teams = (liveQuiz.liveQuizTeams ?? []).map(t => t.getResponseJson());
     const teamsScores = teams.map(t => {
       return {
@@ -470,6 +484,8 @@ export class LiveQuizService {
       teamId: undefined,
       teams,
       teamsScores,
+      hasUsedJoker: false,
+      isComplete: false,
       round: undefined,
     };
   }
@@ -486,11 +502,16 @@ export class LiveQuizService {
     const quizTemplate: QuizTemplateResponse = JSON.parse(
       liveQuiz.quizTemplateJson
     );
-    const roundTemplateId =
-      quizTemplate.roundOrder[liveQuiz.currentRoundNumber - 1];
-    // if (!roundTemplateId || !quizTemplate.rounds) {
-    //   return undefined;
-    // }
+
+    const isRoundInAnswerShowState =
+      liveQuiz.quizState === LiveQuizState.SHOWING_ANSWERS_ANSWERS_VISIBLE ||
+      liveQuiz.quizState === LiveQuizState.SHOWING_ANSWERS_ANSWERS_HIDDEN;
+
+    const currentRoundNumber = isRoundInAnswerShowState
+      ? liveQuiz.currentRoundAnswerNumber
+      : liveQuiz.currentRoundNumber;
+
+    const roundTemplateId = quizTemplate.roundOrder[currentRoundNumber - 1];
 
     const roundTemplate = quizTemplate.rounds?.find(
       t => t.id === roundTemplateId
@@ -512,26 +533,28 @@ export class LiveQuizService {
         teamId: liveQuizTeamId,
         teams,
         teamsScores: [],
+        hasUsedJoker: false,
+        isComplete: false,
       };
     }
 
-    const liveQuizRoundAnswers = (
-      await this.findAllLiveQuizRoundAnswersForTeam(liveQuizTeamId)
-    )
-      ?.find(a => {
-        return a.roundId === roundTemplate.id;
-      })
-      ?.getResponseJson();
+    const liveQuizRoundAnswers =
+      // adding a comment here because vscode syntax highlighting is not working correctly
+      (await this.findAllLiveQuizRoundAnswersForTeam(liveQuizTeamId))
+        ?.find(a => {
+          return a.roundId === roundTemplate.id;
+        })
+        ?.getResponseJson();
 
     const includeAnswers =
       args?.forceIncludeAnswers ??
-      liveQuiz?.roundState === LiveRoundState.SHOWING_ANSWERS;
+      liveQuiz?.quizState === LiveQuizState.SHOWING_ANSWERS_ANSWERS_VISIBLE;
 
     const questions: LiveQuizPublicQuestionResponse[] = [];
     for (
       let i = 0;
       i <
-      (args?.forceIncludeAllQuestions
+      (args?.forceIncludeAllQuestions || isRoundInAnswerShowState
         ? roundTemplate.questionOrder.length
         : Math.min(
             roundTemplate.questionOrder.length,
@@ -571,25 +594,39 @@ export class LiveQuizService {
     const teams = (liveQuiz.liveQuizTeams ?? []).map(t => {
       const ret = t.getResponseJson();
       if (ret.id !== liveQuizTeamId) {
-        ret.id = ret.id.slice(0, 8);
+        ret.id = ret.publicId;
       }
       return ret;
     });
     const teamsScores = teams.map(t => {
       return {
-        teamId: t.id.slice(0, 8),
-        score: 0,
+        teamId: t.id === liveQuizTeamId ? t.id : t.publicId,
+        teamPublicId: t.publicId,
+        score: t.currentScore,
       };
     });
 
     const quizState: any = liveQuiz.getLiveResponseJson();
     delete quizState.liveQuizTeams;
 
+    const liveQuizTeam = await this.findLiveQuizTeamById(liveQuizTeamId);
+    if (!liveQuizTeam) {
+      logger.error(
+        `Could not get public state for team ${liveQuizTeamId}, no team found with teamId=${liveQuizTeamId}.`
+      );
+      throw new Error('Failed to get public state for team.');
+    }
+
     return {
       quiz: quizState,
       teamId: liveQuizTeamId,
       teams,
       teamsScores,
+      hasUsedJoker: Boolean(
+        liveQuizTeam.liveQuizRoundAnswers?.find(a => a.didJoker === true)
+      ),
+      isComplete:
+        liveQuiz.currentRoundAnswerNumber >= quizTemplate.roundOrder.length,
       round: {
         id: roundTemplate.id,
         title: roundTemplate.title,
@@ -601,14 +638,18 @@ export class LiveQuizService {
         answersGraded: includeAnswers
           ? liveQuizRoundAnswers?.answersGraded
           : undefined,
+        didJoker: Boolean(liveQuizRoundAnswers?.didJoker),
         questions,
       },
     };
   }
 
-  async submitAnswersForTeam(
+  async submitAnswersForTeamInCurrentRound(
     liveQuizTeamId: string,
-    answersSubmitted: Record<string, AnswerState>
+    args: {
+      submittedAnswers: Record<string, AnswerState>;
+      didJoker: boolean;
+    }
   ) {
     const liveQuizTeam = await this.findLiveQuizTeamById(liveQuizTeamId);
     if (!liveQuizTeam) {
@@ -631,26 +672,19 @@ export class LiveQuizService {
       );
     }
 
-    const currentRoundIndex = liveQuiz.currentRoundNumber;
+    const currentRoundNumber = liveQuiz.currentRoundNumber;
     const quizTemplate: QuizTemplateResponse = JSON.parse(
       liveQuiz.quizTemplateJson
     );
     const roundTemplate = quizTemplate.rounds?.find(
-      t => t.id === quizTemplate.roundOrder[currentRoundIndex - 1]
+      t => t.id === quizTemplate.roundOrder[currentRoundNumber - 1]
     );
 
     if (!roundTemplate) {
       throw new InvalidInputError(
-        `Round not found: ${quizTemplate.roundOrder[currentRoundIndex - 1]}`
+        `Round not found: ${quizTemplate.roundOrder[currentRoundNumber - 1]}`
       );
     }
-
-    console.log(
-      'CHECK ROUNDS',
-      currentRoundIndex,
-      roundTemplate,
-      quizTemplate.roundOrder[currentRoundIndex - 1]
-    );
 
     const liveQuizRoundAnswers =
       await this.findLiveQuizRoundAnswerByTeamIdAndRoundId(
@@ -665,9 +699,176 @@ export class LiveQuizService {
       return undefined;
     }
 
-    liveQuizRoundAnswers.answers = JSON.stringify(answersSubmitted);
-    liveQuizRoundAnswers.save();
+    liveQuizRoundAnswers.answers = JSON.stringify(args.submittedAnswers);
+
+    const hasAlreadyUsedJoker = Boolean(
+      liveQuizTeam.liveQuizRoundAnswers?.find(a => a.didJoker === true)
+    );
+
+    if (args.didJoker) {
+      if (hasAlreadyUsedJoker) {
+        logger.error(
+          `Team id=${liveQuizTeam.id} has already used joker, ignoring this instance.`
+        );
+      } else {
+        liveQuizRoundAnswers.didJoker = true;
+      }
+    } else {
+      const isThisTheFinalRound =
+        currentRoundNumber >= quizTemplate.roundOrder.length;
+
+      if (isThisTheFinalRound && !hasAlreadyUsedJoker) {
+        liveQuizRoundAnswers.didJoker = true;
+      } else {
+        liveQuizRoundAnswers.didJoker = false;
+      }
+    }
+
+    await liveQuizRoundAnswers.save();
 
     return liveQuizRoundAnswers.getResponseJson();
+  }
+
+  async submitGrades(liveQuizId: string, gradeState: GradeInputState) {
+    const liveQuiz = await this.findLiveQuizById(liveQuizId);
+    if (!liveQuiz) {
+      logger.error(
+        `Could not submit grades for quiz ${liveQuizId}, no quiz found.`
+      );
+      return undefined;
+    }
+
+    const modelsToSave: Model[] = [];
+
+    for (const teamId in gradeState) {
+      for (const roundId in gradeState[teamId]) {
+        const liveQuizRoundAnswers =
+          await this.findLiveQuizRoundAnswerByTeamIdAndRoundId(teamId, roundId);
+
+        if (!liveQuizRoundAnswers) {
+          logger.error(
+            `Could not submit grades for team ${teamId}, no round answers found for roundId=${roundId}.`
+          );
+          throw new Error('Failed to submit grades.');
+        }
+
+        const roundGradeState = gradeState?.[teamId]?.[roundId];
+        if (!roundGradeState) {
+          logger.error(
+            `Could not submit grades for team ${teamId}, no answer state found for roundId=${roundId}.`
+          );
+          throw new Error('Failed to submit grades.');
+        }
+
+        liveQuizRoundAnswers.answersGraded = JSON.stringify(roundGradeState);
+        modelsToSave.push(liveQuizRoundAnswers);
+      }
+    }
+
+    await Promise.all(modelsToSave.map(m => m.save()));
+
+    return gradeState;
+  }
+
+  async updateAllScores(liveQuizId: string, upToRoundNum: number) {
+    const liveQuiz = await this.findLiveQuizById(liveQuizId);
+    if (!liveQuiz) {
+      logger.error(
+        `Could not updateAllScores for quiz ${liveQuizId}, no quiz found.`
+      );
+      return undefined;
+    }
+
+    const ret: LiveQuizTeamResponse[] = [];
+    for (const liveQuizTeam of liveQuiz.liveQuizTeams ?? []) {
+      const team = await this.updateScoreForTeam(
+        liveQuiz,
+        liveQuizTeam.id,
+        upToRoundNum
+      );
+      ret.push(team.getResponseJson());
+    }
+
+    return ret;
+  }
+
+  async updateScoreForTeam(
+    liveQuiz: LiveQuiz,
+    liveQuizTeamId: string,
+    upToRoundNum: number
+  ) {
+    const quizTemplate: QuizTemplateResponse = JSON.parse(
+      liveQuiz.quizTemplateJson
+    );
+
+    let score = 0;
+    for (let i = 1; i <= upToRoundNum; i++) {
+      const roundTemplate = quizTemplate.rounds?.find(
+        t => t.id === quizTemplate.roundOrder[i - 1]
+      );
+      let scoreThisRound = 0;
+      if (roundTemplate) {
+        logger.info(
+          `Checking round ${roundTemplate.id} for team ${liveQuizTeamId}`
+        );
+        const liveQuizRoundAnswers =
+          await this.findLiveQuizRoundAnswerByTeamIdAndRoundId(
+            liveQuizTeamId,
+            roundTemplate.id
+          );
+
+        if (!liveQuizRoundAnswers) {
+          logger.error(
+            `Could not get score for team ${liveQuizTeamId}, no round answers found for roundId=${roundTemplate.id}.`
+          );
+          throw new Error('Failed to update score.');
+        }
+
+        const gradeState: Record<string, AnswerStateGraded> = JSON.parse(
+          liveQuizRoundAnswers.answersGraded ?? '{}'
+        );
+
+        for (let j = 0; j < roundTemplate.questionOrder.length; j++) {
+          const questionTemplate = roundTemplate.questions?.find(
+            q => q.id === roundTemplate.questionOrder[j]
+          );
+
+          if (!questionTemplate) {
+            logger.error(
+              `Could not get score for team ${liveQuizTeamId}, no question template found questionId=${roundTemplate.questionOrder[j]}.`
+            );
+            throw new Error('Failed to update score.');
+          }
+
+          const numAnswers = getNumAnswers(questionTemplate?.answerType);
+
+          for (let k = 1; k <= numAnswers; k++) {
+            if (gradeState[j + 1]['answer' + k] === 'true') {
+              scoreThisRound++;
+            }
+          }
+        }
+
+        if (liveQuizRoundAnswers.didJoker) {
+          scoreThisRound *= 2;
+        }
+      }
+
+      score += scoreThisRound;
+    }
+
+    const liveQuizTeam = await this.findLiveQuizTeamById(liveQuizTeamId);
+    if (!liveQuizTeam) {
+      logger.error(
+        `Could not get score for team ${liveQuizTeamId}, no team found with teamId=${liveQuizTeamId}.`
+      );
+      throw new Error('Failed to update score.');
+    }
+
+    logger.info(`Update score for team: ${liveQuizTeam.teamName} to ${score}`);
+    liveQuizTeam.currentScore = score;
+    await liveQuizTeam.save();
+
+    return liveQuizTeam;
   }
 }

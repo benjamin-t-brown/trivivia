@@ -9,7 +9,7 @@
     "start:dev": "yarn start",
     "create-initial-migration": "ts-node --project ./tsconfig.json scripts/createMigration.ts",
     "migrate": "sequelize db:migrate",
-    "postinstall": "yarn migrate"
+    "postinstall": "cp -n database.example.json database.json && yarn migrate"
   },
   "author": "",
   "license": "ISC",
@@ -20,19 +20,20 @@
     "@types/node": "^18.15.5",
     "express": "^4.18.2",
     "sequelize-cli": "^6.6.0",
-    "sequelize-typescript-migration": "^0.0.1-beta.3",
     "shared": "1.0.0",
     "ts-node-dev": "^2.0.0"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "cookie-session": "^2.0.0",
+    "cors": "^2.8.5",
     "email-validator": "^2.0.4",
     "jsonwebtoken": "^9.0.0",
     "nanoid": "^3.3.6",
     "reflect-metadata": "^0.1.13",
     "sequelize": "^6.29.3",
     "sequelize-typescript": "^2.1.5",
+    "socket.io": "^4.6.1",
     "sqlite3": "^5.1.6",
     "ts-node": "^10.9.1"
   }

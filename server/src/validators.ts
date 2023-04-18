@@ -12,7 +12,7 @@ export const validateString = (
   maxLen?: number
 ) => {
   str = str?.trim();
-  return str?.length < (maxLen ?? 255) && str?.length > (minLen ?? -1);
+  return str?.length <= (maxLen ?? 255) && str?.length >= (minLen ?? 0);
 };
 
 export const validateInt = (n: number | string, min?: number, max?: number) => {

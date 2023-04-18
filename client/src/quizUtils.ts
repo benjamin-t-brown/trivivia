@@ -74,8 +74,10 @@ export const isShowingRoundQuestions = (
 export const isShowingRoundAnswers = (
   quiz?: LiveQuizResponse | LiveQuizPublicResponse
 ) => {
-  quiz?.quizState === LiveQuizState.STARTED_IN_ROUND &&
-    quiz?.roundState === LiveRoundState.COMPLETED;
+  return (
+    quiz?.quizState === LiveQuizState.SHOWING_ANSWERS_ANSWERS_HIDDEN ||
+    quiz?.quizState === LiveQuizState.SHOWING_ANSWERS_ANSWERS_VISIBLE
+  );
 };
 
 export const isRoundLocked = (
@@ -96,6 +98,15 @@ export const isInRoundAndRoundIsCompleted = (
   return (
     quiz?.quizState === LiveQuizState.STARTED_IN_ROUND &&
     quiz?.roundState === LiveRoundState.COMPLETED
+  );
+};
+
+export const isQuizCompleted = (liveQuiz?: LiveQuizResponse) => {
+  return (
+    (isWaitingForRoundToStart(liveQuiz) ||
+      isRoundInProgressButNotVisible(liveQuiz)) &&
+    (liveQuiz?.currentRoundNumber ?? 0) >=
+      (liveQuiz?.quizTemplateJson?.rounds?.length ?? 0)
   );
 };
 

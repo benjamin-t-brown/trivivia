@@ -1,3 +1,4 @@
+import React from 'react';
 import {
   AnswerState,
   LiveQuizResponse,
@@ -19,6 +20,10 @@ export const quizStateToLabel = (quizState: string) => {
       return 'Waiting';
     case LiveQuizState.STARTED_IN_ROUND:
       return 'In Round';
+    case LiveQuizState.SHOWING_ANSWERS_ANSWERS_HIDDEN:
+      return 'Answers Hidden';
+    case LiveQuizState.SHOWING_ANSWERS_ANSWERS_VISIBLE:
+      return 'Answers Visible';
     case LiveQuizState.HALTED:
       return 'Halted';
   }
@@ -36,8 +41,6 @@ export const roundStateToLabel = (roundState: string) => {
       return 'Not Accepting Answers';
     case LiveRoundState.COMPLETED:
       return 'Locked';
-    case LiveRoundState.SHOWING_ANSWERS:
-      return 'Showing Answers';
     case LiveRoundState.HALTED:
       return 'Halted';
   }
@@ -108,6 +111,8 @@ export const getLiveQuizAnswersLs = (
   }
 };
 
+export const ANSWER_DELIMITER = ' | ';
+
 export const getRoundAnswersArrays = (
   roundTemplate: RoundTemplateResponse,
   team: LiveQuizTeamResponse
@@ -136,13 +141,57 @@ export const getRoundAnswersArrays = (
     for (let k = 0; k < numAnswers; k++) {
       const key = 'answer' + (k + 1);
       const answers = questionTemplate.answers[key];
-      const teamAnswers = submittedAnswers[j]?.[key];
+      const teamAnswers = submittedAnswers[j + 1]?.[key];
       qArr.push(answers);
       qTeamArr.push(teamAnswers);
     }
-    answersArr.push(qArr.join(' | '));
-    teamAnswersArr.push(qTeamArr.join(' | '));
+    answersArr.push(qArr.join(ANSWER_DELIMITER));
+    teamAnswersArr.push(qTeamArr.join(ANSWER_DELIMITER));
     orderMattersArr.push(questionTemplate.orderMatters);
   }
   return { answersArr, teamAnswersArr, orderMattersArr };
+};
+
+export const getQuestionAnswerString = (
+  questionTemplate: QuestionTemplateResponse
+) => {
+  const numAnswers = getNumAnswers(questionTemplate.answerType);
+
+  const qArr: string[] = [];
+  for (let k = 0; k < numAnswers; k++) {
+    const key = 'answer' + (k + 1);
+    const answers = questionTemplate.answers[key];
+    qArr.push(answers);
+  }
+
+  return qArr.join(ANSWER_DELIMITER);
+};
+
+export const isUrl = (str: string) => {
+  return Boolean(
+    str.match(/([\w+]+:\/\/)?([\w\d-]+\.)*[\w-]+[.:]\w+([/?=&#.]?[\w-]+)*\/?/)
+  );
+};
+
+export const formatTextWithUrls = (text?: string) => {
+  if (!text) {
+    return '';
+  }
+
+  return text
+    .replace(/\n/g, '\n<br>\n')
+    .split(/[\s]/)
+    .map((word, i) => {
+      if (isUrl(word)) {
+        return (
+          <a key={i} href={word}>
+            {word}{' '}
+          </a>
+        );
+      } else if (word === '<br>') {
+        return <br key={i} />;
+      } else {
+        return <span key={i}>{word} </span>;
+      }
+    });
 };

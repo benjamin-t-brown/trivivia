@@ -11,7 +11,6 @@ import {
 } from 'sequelize-typescript';
 import { LiveQuiz } from './LiveQuiz';
 import { LiveQuizRoundAnswers } from './LiveQuizRoundAnswers';
-import { LiveQuizTeamSession } from './LiveQuizTeamSession';
 import { LiveQuizTeamResponse } from '@shared/responses';
 
 @Table({
@@ -20,6 +19,9 @@ import { LiveQuizTeamResponse } from '@shared/responses';
 export class LiveQuizTeam extends Model {
   @Column({ type: DataType.UUIDV4, primaryKey: true })
   id: string;
+
+  @Column({ type: DataType.UUIDV4 })
+  publicId: string;
 
   @BelongsTo(() => LiveQuiz, {
     foreignKey: 'liveQuizId',
@@ -38,6 +40,9 @@ export class LiveQuizTeam extends Model {
 
   @Column(DataType.INTEGER)
   numberOfPlayers: number;
+
+  @Column(DataType.INTEGER)
+  currentScore: number;
 
   @CreatedAt
   creationDate: Date;

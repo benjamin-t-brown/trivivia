@@ -14,11 +14,13 @@ import {
   throwValidationError,
   useFormResetValues,
   useTypedLoaderData,
+  useSocketIoRefreshState,
 } from 'hooks';
 import NavButton from 'components/NavButton';
 import {
   AccountResponse,
   AnswerState,
+  AnswerStateGraded,
   getNumAnswers,
   getNumRadioBoxes,
   LiveQuizPublicQuestionResponse,
@@ -52,6 +54,7 @@ import {
   isRoundCompletedAndVisible,
   isRoundInProgressAndVisible,
   isRoundLocked,
+  isShowingRoundAnswers,
   isWaitingForQuizToStart,
   isWaitingForRoundToComplete,
   isWaitingForRoundToStart,
@@ -67,12 +70,14 @@ const InnerRoot = styled.div<Object>(() => {
 
 interface SubmitAnswersValues {
   submittedAnswers: string;
+  didJoker: string;
 }
 const action = createAction(async (values: SubmitAnswersValues, params) => {
   const submittedAnswers = JSON.parse(values.submittedAnswers);
   for (const i in submittedAnswers) {
     const answers = submittedAnswers[i];
     for (const j in answers) {
+      answers[j] = answers[j].trim();
       const answer = answers[j];
       if (answer.length > 255) {
         throwValidationError(
@@ -88,6 +93,7 @@ const action = createAction(async (values: SubmitAnswersValues, params) => {
     '/api/live/' + params.userFriendlyQuizId + '/submit',
     {
       submittedAnswers: JSON.parse(values.submittedAnswers),
+      didJoker: values.didJoker === 'true',
     },
     {
       headers: {
@@ -110,8 +116,6 @@ interface UpdateQuizValues {
 }
 const updateNameAction = createAction(
   async (values: UpdateQuizValues, params) => {
-    console.log('UPDATE QUIZ VALUES', values);
-
     if (!values.teamName) {
       throwValidationError('Please fill out the form.', values);
     } else if (values.teamName.length < 3) {
@@ -261,13 +265,13 @@ const SubmittedAnswersRound = (props: {
   quizState: LiveQuizPublicStateResponse;
 }) => {
   const aggAnswers: Record<string, string> = {};
-  for (let questionI = 0; questionI < 16; questionI++) {
+  for (let questionI = 1; questionI <= 16; questionI++) {
     const answers = props.submittedAnswersRound[questionI];
     if (!answers) {
       continue;
     }
     aggAnswers[questionI] = '';
-    for (let answerI = 0; answerI < 16; answerI++) {
+    for (let answerI = 1; answerI <= 16; answerI++) {
       const answerText = answers['answer' + answerI];
       if (answerText) {
         aggAnswers[questionI] +=
@@ -300,7 +304,7 @@ const SubmittedAnswersRound = (props: {
                 width: '75%',
               }}
             >
-              {Number(i) + 1}. {aggAnswers[i]}
+              {Number(i)}. {aggAnswers[i]}
             </div>
           );
         })}
@@ -308,29 +312,87 @@ const SubmittedAnswersRound = (props: {
   );
 };
 
+const CorrectAnswers = (props: { correctAnswers: string[] }) => {
+  if (props.correctAnswers.length === 1) {
+    return (
+      <div>
+        <span
+          style={{
+            color: getColors().TEXT_DESCRIPTION,
+            margin: '9px 0',
+          }}
+        >
+          {' '}
+          Correct Answer:{' '}
+        </span>
+        <span
+          style={{
+            color: getColors().PRIMARY_TEXT,
+          }}
+        >{`${props.correctAnswers[0]}`}</span>
+      </div>
+    );
+  } else {
+    return (
+      <div>
+        <div
+          style={{
+            background: getColors().BACKGROUND2,
+            padding: '8px 16px 16px 10px',
+            border: '1px solid ' + getColors().TEXT_DESCRIPTION,
+          }}
+        >
+          <div
+            style={{
+              color: getColors().TEXT_DESCRIPTION,
+              margin: '9px 0',
+            }}
+          >
+            {' '}
+            Correct Answers:{' '}
+          </div>
+          {props.correctAnswers.map((answer, i) => {
+            return (
+              <div
+                key={i}
+                style={{
+                  marginLeft: '16px',
+                  color: getColors().PRIMARY_TEXT,
+                }}
+              >
+                {answer}
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    );
+  }
+};
+
 const QuestionAnswer = (props: {
   question: LiveQuizPublicQuestionResponse;
-  i: number;
+  questionNumber: number;
   disabled?: boolean;
   dispatch: React.Dispatch<any>;
   answersSaved: AnswerState;
   answersQuestion: AnswerState;
+  answersGraded?: AnswerStateGraded;
 }) => {
   const handleAnswerChange: (
-    i: number
-  ) => React.ChangeEventHandler<HTMLInputElement> = i => ev => {
+    answerNumber: number
+  ) => React.ChangeEventHandler<HTMLInputElement> = answerNumber => ev => {
     props.dispatch({
-      questionNumber: props.i,
+      questionNumber: props.questionNumber,
       type: 'answer',
-      i,
+      i: answerNumber,
       value: ev.target.value,
     });
   };
 
   const handleRadioChange: React.ChangeEventHandler<HTMLInputElement> = ev => {
-    console.log('SET VALUE', ev.target.value);
     props.dispatch({
-      questionNumber: props.i,
+      questionNumber: props.questionNumber,
       type: 'answer',
       i: 1,
       value: ev.target.value,
@@ -341,45 +403,141 @@ const QuestionAnswer = (props: {
   const numRadioBoxes = getNumRadioBoxes(props.question.answerType);
 
   const answerBoxes: ReactNode[] = [];
+
   for (let i = 0; i < numAnswers; i++) {
+    const answerKey = 'answer' + (i + 1);
+
+    const style: Record<string, string> = {
+      width: '75%',
+    };
+
+    let icon;
+    if (props.answersGraded) {
+      const isCorrectAnswer = props.answersGraded[answerKey] === 'true';
+
+      icon = (
+        <img
+          style={{
+            width: '22px',
+            marginRight: '16px',
+            background: isCorrectAnswer
+              ? getColors().SUCCESS_BACKGROUND
+              : getColors().ERROR_BACKGROUND,
+          }}
+          alt="Answer"
+          src={isCorrectAnswer ? '/res/check-mark.svg' : '/res/cancel.svg'}
+        />
+      );
+      style.border = isCorrectAnswer
+        ? '1px solid ' + getColors().SUCCESS_TEXT
+        : '1px solid ' + getColors().ERROR_TEXT;
+    }
+
     answerBoxes.push(
-      <div key={i}>
-        {/* <InputLabel>Answer {i + 1}</InputLabel> */}
+      <div
+        key={i}
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+        }}
+      >
+        {icon}
         <Input
           disabled={props.disabled}
           aria-label="Answer"
           type="text"
-          value={props.answersSaved['answer' + (i + 1)] ?? ''}
+          value={props.answersSaved[answerKey] ?? ''}
           onChange={handleAnswerChange(i + 1)}
           maxLength={255}
-          style={{
-            width: '75%',
-          }}
+          style={style}
         />
       </div>
     );
   }
 
+  if (answerBoxes.length && props.answersGraded) {
+    answerBoxes.push(
+      <CorrectAnswers
+        key="answer"
+        correctAnswers={Object.values(props.question.answers ?? {})}
+      />
+    );
+  }
+
   const radioBoxes: ReactNode[] = [];
+  const radioName = 'radio' + props.questionNumber;
+  const radioAnswerKey = 'answer1';
   for (let i = 0; i < numRadioBoxes; i++) {
     const value = props.answersQuestion['radio' + (i + 1)] ?? '';
+    const id = props.questionNumber + '-' + i + '-' + value;
+
+    const style: Record<string, string> = {
+      width: '75%',
+    };
+    const checked = props.answersSaved?.[radioAnswerKey] === value;
+
+    let icon;
+    if (props.answersGraded) {
+      const isCorrectAnswer = props.answersGraded[radioAnswerKey] === 'true';
+      if (props.answersGraded[radioAnswerKey] === 'true' && checked) {
+        style.border = '1px solid ' + getColors().SUCCESS_TEXT;
+        icon = (
+          <img
+            style={{
+              width: '22px',
+              marginRight: '16px',
+              background: isCorrectAnswer
+                ? getColors().SUCCESS_BACKGROUND
+                : getColors().ERROR_BACKGROUND,
+            }}
+            alt="Answer"
+            src={isCorrectAnswer ? '/res/check-mark.svg' : '/res/cancel.svg'}
+          />
+        );
+      }
+      if (props.answersGraded[radioAnswerKey] === 'false' && checked) {
+        style.border = '1px solid ' + getColors().ERROR_TEXT;
+        icon = (
+          <img
+            style={{
+              width: '22px',
+              marginRight: '16px',
+              background: isCorrectAnswer
+                ? getColors().SUCCESS_BACKGROUND
+                : getColors().ERROR_BACKGROUND,
+            }}
+            alt="Answer"
+            src={isCorrectAnswer ? '/res/check-mark.svg' : '/res/cancel.svg'}
+          />
+        );
+      }
+    }
+
     radioBoxes.push(
       <div
         key={i}
         style={{
           display: 'flex',
+          margin: '9px 0px',
+          padding: '8px',
+          ...style,
         }}
       >
+        {icon}
         <Input
-          // disabled={props.disabled}
           type="radio"
-          checked={props.answersSaved?.['answer1'] === value}
-          id={value}
+          checked={checked}
+          id={id}
           value={value}
+          name={radioName}
           onChange={props.disabled ? () => void 0 : handleRadioChange}
+          style={{
+            transform: 'scale(1.5)',
+            pointerEvents: props.disabled ? 'none' : 'auto',
+          }}
         />
         <label
-          htmlFor={value}
+          htmlFor={id}
           style={{
             marginLeft: '16px',
           }}
@@ -387,6 +545,15 @@ const QuestionAnswer = (props: {
           {value}
         </label>
       </div>
+    );
+  }
+
+  if (radioBoxes.length && props.question.answers?.[radioAnswerKey]) {
+    radioBoxes.push(
+      <CorrectAnswers
+        key="answer"
+        correctAnswers={[props.question.answers?.[radioAnswerKey]]}
+      />
     );
   }
 
@@ -405,7 +572,7 @@ const QuestionAnswer = (props: {
           marginBottom: '8px',
         }}
       >
-        {props.i + 1}. {props.question.text}
+        {props.questionNumber}. {props.question.text}
       </div>
       <div
         style={{
@@ -425,12 +592,17 @@ const QuizInRound = (props: { quizState: LiveQuizPublicStateResponse }) => {
   const fetcher = useFetcher();
   const params = useParams();
   const [submitted, setSubmitted] = React.useState(false);
+  const [usedJoker, setUsedJoker] = React.useState(
+    props.quizState.round?.didJoker ?? false
+  );
 
-  const initialState =
-    getLiveQuizAnswersLs(props.quizState.quiz.currentRoundNumber) ??
-    props.quizState?.round?.answersSubmitted;
+  let initialState = getLiveQuizAnswersLs(
+    props.quizState.quiz.currentRoundNumber
+  );
 
-  console.log('INITIAL STATE?', initialState);
+  if (!initialState || isShowingRoundAnswers(props.quizState.quiz)) {
+    initialState = props.quizState?.round?.answersSubmitted;
+  }
 
   const [state, dispatch]: [Record<string, AnswerState>, any] =
     React.useReducer<any>(
@@ -458,12 +630,17 @@ const QuizInRound = (props: { quizState: LiveQuizPublicStateResponse }) => {
       initialState
     ) as any;
 
+  const handleJokerChange = (ev: React.ChangeEvent<HTMLInputElement>) => {
+    setUsedJoker(Boolean(ev.target.checked));
+  };
+
   const handleSubmitClick = (ev: React.MouseEvent) => {
     ev.preventDefault();
     setSubmitted(true);
 
     const formData = new FormData();
     formData.set('submittedAnswers', JSON.stringify(state));
+    formData.set('didJoker', String(usedJoker));
     fetcher.submit(formData, {
       method: 'post',
       action: `/live/${params.userFriendlyQuizId}`,
@@ -481,6 +658,8 @@ const QuizInRound = (props: { quizState: LiveQuizPublicStateResponse }) => {
   const isRoundAcceptingSubmissions =
     currentRound.questionNumber >= currentRound.totalNumberOfQuestions &&
     !isRoundLocked(props.quizState.quiz);
+  const hasJokerPreviouslyBeenUsed =
+    props.quizState.hasUsedJoker && !props.quizState.round?.didJoker;
 
   return (
     <fetcher.Form>
@@ -512,66 +691,132 @@ const QuizInRound = (props: { quizState: LiveQuizPublicStateResponse }) => {
         return (
           <QuestionAnswer
             key={i}
-            i={i}
+            questionNumber={i + 1}
             question={q}
             dispatch={dispatch}
-            answersSaved={state[i] ?? {}}
+            answersSaved={state[i + 1] ?? {}}
             answersQuestion={q.answers ?? {}}
+            answersGraded={currentRound.answersGraded?.[i + 1]}
             disabled={isRoundLocked(props.quizState.quiz)}
           />
         );
       })}
-      {isLoading ? (
-        <div>Loading...</div>
+      {isShowingRoundAnswers(props.quizState.quiz) ? (
+        <></>
       ) : (
         <>
-          <Button
-            flex
-            center
-            color="primary"
-            style={{
-              marginTop: '16px',
-              width: '100%',
-            }}
-            disabled={!isRoundAcceptingSubmissions}
-            type="submit"
-            onClick={handleSubmitClick}
-          >
-            {isRoundAcceptingSubmissions ? (
-              <>
-                {hasSubmitted ? (
-                  <IconLeft src="/res/check-mark.svg" />
+          {isLoading ? (
+            <div>Loading...</div>
+          ) : (
+            <>
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  minHeight: '42px',
+                  marginTop: '16px',
+                }}
+              >
+                <Input
+                  aria-label="Answer"
+                  type="checkbox"
+                  id="use-joker"
+                  checked={usedJoker}
+                  disabled={hasJokerPreviouslyBeenUsed}
+                  onChange={
+                    isRoundLocked(props.quizState.quiz) ||
+                    hasJokerPreviouslyBeenUsed
+                      ? () => void 0
+                      : handleJokerChange
+                  }
+                  style={{
+                    transform: 'scale(2)',
+                    transformOrigin: 'left',
+                    marginRight: '16px',
+                    pointerEvents:
+                      isRoundLocked(props.quizState.quiz) ||
+                      hasJokerPreviouslyBeenUsed
+                        ? 'none'
+                        : 'auto',
+                  }}
+                />
+                <label
+                  htmlFor="use-joker"
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                  }}
+                >
+                  <img
+                    style={{
+                      width: '42px',
+                    }}
+                    alt="Joker"
+                    src="/res/card-joker.svg"
+                  />
+                  Use Joker?
+                </label>
+              </div>
+              {hasJokerPreviouslyBeenUsed ? (
+                <div
+                  style={{
+                    color: getColors().TEXT_DESCRIPTION,
+                    fontSize: '14px',
+                  }}
+                >
+                  {' '}
+                  Your joker has already been used{' '}
+                </div>
+              ) : null}
+              <Button
+                flex
+                center
+                color="primary"
+                style={{
+                  marginTop: '16px',
+                  width: '100%',
+                }}
+                disabled={!isRoundAcceptingSubmissions}
+                type="submit"
+                onClick={handleSubmitClick}
+              >
+                {isRoundAcceptingSubmissions ? (
+                  <>
+                    {hasSubmitted ? (
+                      <IconLeft src="/res/check-mark.svg" />
+                    ) : (
+                      <IconLeft src="/res/edit.svg" />
+                    )}
+                    <span>{isPristine ? 'Submit' : 'Submit (changed)'}</span>
+                  </>
                 ) : (
-                  <IconLeft src="/res/edit.svg" />
+                  <>
+                    <IconLeft src="/res/padlock.svg" />
+                    {isRoundLocked(props.quizState.quiz) ? (
+                      <span>Submit (Round locked)</span>
+                    ) : (
+                      <span>Submit (Wait to submit)</span>
+                    )}
+                  </>
                 )}
-                <span>{isPristine ? 'Submit' : 'Submit (changed)'}</span>
-              </>
-            ) : (
-              <>
-                <IconLeft src="/res/padlock.svg" />
-                {isRoundLocked(props.quizState.quiz) ? (
-                  <span>Submit (Round locked)</span>
-                ) : (
-                  <span>Submit (Wait to submit)</span>
-                )}
-              </>
-            )}
-          </Button>
-          {hasSubmitted ? (
-            <div
-              style={{
-                textAlign: 'center',
-              }}
-            >
-              Submitted!
-            </div>
-          ) : null}
-          <SubmittedAnswersRound
-            submittedAnswersRound={
-              props.quizState.round?.answersSubmitted || {}
-            }
-            quizState={props.quizState}
-          />
+              </Button>
+              {hasSubmitted ? (
+                <div
+                  style={{
+                    textAlign: 'center',
+                  }}
+                >
+                  Submitted!
+                </div>
+              ) : null}
+              <SubmittedAnswersRound
+                submittedAnswersRound={
+                  props.quizState.round?.answersSubmitted || {}
+                }
+                quizState={props.quizState}
+              />
+            </>
+          )}
         </>
       )}
     </fetcher.Form>
@@ -591,24 +836,37 @@ const QuizTeamsList = (props: { quizState: LiveQuizPublicStateResponse }) => {
           borderRadius: '4px',
         }}
       >
-        {props.quizState.teams.map((team, i) => {
-          return (
-            <div
-              key={team.id}
-              style={{
-                color:
-                  currentTeamId === team.id
-                    ? getColors().SUCCESS_TEXT
-                    : getColors().TEXT_DEFAULT,
-                borderBottom: '1px solid ' + getColors().TEXT_DESCRIPTION,
-                borderRadius: '4px',
-                padding: '4px',
-              }}
-            >
-              {i + 1}. {team.teamName}
-            </div>
-          );
-        })}
+        {props.quizState.teams
+          .sort((a, b) => (a.currentScore > b.currentScore ? -1 : 1))
+          .map((team, i) => {
+            return (
+              <div
+                key={team.id}
+                style={{
+                  color:
+                    currentTeamId === team.id
+                      ? getColors().SUCCESS_TEXT
+                      : getColors().TEXT_DEFAULT,
+                  borderBottom: '1px solid ' + getColors().TEXT_DESCRIPTION,
+                  borderRadius: '4px',
+                  padding: '4px',
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                }}
+              >
+                <span>
+                  {i + 1}. {team.teamName}
+                </span>
+                <div
+                  style={{
+                    width: '150px',
+                  }}
+                >
+                  Score: {team.currentScore}
+                </div>
+              </div>
+            );
+          })}
         {props.quizState.teams.length === 0 ? (
           <div style={{ color: getColors().TEXT_DESCRIPTION }}>
             No teams yet!
@@ -622,8 +880,9 @@ const QuizTeamsList = (props: { quizState: LiveQuizPublicStateResponse }) => {
 const LiveQuiz = (props: { error?: boolean }) => {
   const params = useParams();
   const formId = 'live-quiz-form';
+  const fetcher = useFetcher();
 
-  const liveQuizResponse = useTypedLoaderData<
+  let liveQuizResponse = useTypedLoaderData<
     FetchResponse<LiveQuizPublicStateResponse>
   >({
     isError: props.error,
@@ -631,11 +890,17 @@ const LiveQuiz = (props: { error?: boolean }) => {
   });
 
   useFormResetValues(formId);
-  console.log('render live quiz', liveQuizResponse);
+  const { joined } = useSocketIoRefreshState(fetcher);
+
+  if (fetcher.data) {
+    liveQuizResponse = fetcher.data;
+  }
 
   if (!liveQuizResponse?.data) {
     return <div>The page will redirect soon...</div>;
   }
+
+  console.log('render live quiz', liveQuizResponse, 'joined?', joined);
 
   return (
     <>
@@ -695,18 +960,30 @@ const LiveQuiz = (props: { error?: boolean }) => {
             {isWaitingForRoundToStart(liveQuizResponse.data.quiz) ||
             isWaitingForRoundToComplete(liveQuizResponse.data.quiz) ? (
               <>
-                <p
-                  style={{
-                    textAlign: 'center',
-                    color: getColors().TEXT_DESCRIPTION,
-                  }}
-                >
-                  Get ready! The next round is about to start...
-                </p>
+                {liveQuizResponse.data.isComplete ? (
+                  <p
+                    style={{
+                      textAlign: 'center',
+                      color: getColors().TEXT_DESCRIPTION,
+                    }}
+                  >
+                    Thank you for playing!
+                  </p>
+                ) : (
+                  <p
+                    style={{
+                      textAlign: 'center',
+                      color: getColors().TEXT_DESCRIPTION,
+                    }}
+                  >
+                    Please wait for the next round to start...
+                  </p>
+                )}
               </>
             ) : null}
             {isRoundInProgressAndVisible(liveQuizResponse.data.quiz) ||
-            isRoundCompletedAndVisible(liveQuizResponse.data.quiz) ? (
+            isRoundCompletedAndVisible(liveQuizResponse.data.quiz) ||
+            isShowingRoundAnswers(liveQuizResponse.data.quiz) ? (
               <QuizInRound quizState={liveQuizResponse.data} />
             ) : null}
             <FormErrorText />

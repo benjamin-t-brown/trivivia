@@ -41,6 +41,9 @@ export class RoundTemplate extends Model {
   @Column(DataType.TEXT)
   questionOrder: string;
 
+  @Column(DataType.TEXT)
+  notes: string;
+
   @CreatedAt
   creationDate: Date;
 

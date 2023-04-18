@@ -63,6 +63,12 @@ export class LiveQuiz extends Model {
   @Column(DataType.INTEGER)
   currentQuestionNumber: number;
 
+  @Column(DataType.INTEGER)
+  currentRoundAnswerNumber: number;
+
+  @Column(DataType.INTEGER)
+  currentRoundScoresNumber: number;
+
   @Column(DataType.DATE)
   startedAt: Date;
 

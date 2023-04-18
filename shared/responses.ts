@@ -21,6 +21,7 @@ export interface QuizTemplateResponse extends CreateUpdateDelete {
   name: string;
   rounds?: RoundTemplateResponse[];
   numRounds: number;
+  notes?: string;
 }
 
 export interface RoundTemplateResponse extends CreateUpdateDelete {
@@ -31,6 +32,7 @@ export interface RoundTemplateResponse extends CreateUpdateDelete {
   description: string;
   questionOrder: string[];
   questions?: QuestionTemplateResponse[];
+  notes?: string;
 }
 
 export enum AnswerBoxType {
@@ -57,6 +59,7 @@ export interface QuestionTemplateResponse extends CreateUpdateDelete {
   imageLink?: string;
   orderMatters: boolean;
   isBonus: boolean;
+  notes?: string;
 }
 
 export type AnswerState = {
@@ -86,7 +89,7 @@ export type AnswerState = {
   radio8?: string;
 };
 
-export type AnswerStateGraded = Record<keyof AnswerState, boolean>;
+export type AnswerStateGraded = Record<keyof AnswerState, 'true' | 'false'>;
 
 export const stringToAnswerState = (s?: string): AnswerState => {
   try {
@@ -147,6 +150,8 @@ export enum LiveQuizState {
   STARTED_WAITING = 'started_waiting',
   STARTED_IN_ROUND = 'started_in_round',
   COMPLETED = 'completed',
+  SHOWING_ANSWERS_ANSWERS_HIDDEN = 'showing_answers_hidden',
+  SHOWING_ANSWERS_ANSWERS_VISIBLE = 'showing_answers_visible',
   HALTED = 'halted',
 }
 
@@ -155,7 +160,6 @@ export enum LiveRoundState {
   STARTED_ACCEPTING_ANSWERS = 'started_accepting_answers',
   STARTED_NOT_ACCEPTING_ANSWERS = 'started_not_accepting_answers',
   COMPLETED = 'completed',
-  SHOWING_ANSWERS = 'showing_answers',
   HALTED = 'halted',
 }
 
@@ -170,17 +174,19 @@ export interface LiveQuizResponse extends CreateUpdateDelete {
   roundState: LiveRoundState;
   currentRoundNumber: number;
   currentQuestionNumber: number;
+  currentRoundAnswerNumber: number;
   startedAt: string;
   completedAt: string;
 }
 
 export interface LiveQuizTeamResponse extends CreateUpdateDelete {
   id: string;
+  publicId: string;
   liveQuiz: LiveQuizResponse;
-  // teamSessions: LiveQuizTeamSession[];
   liveQuizRoundAnswers: LiveQuizRoundAnswersResponse[];
   teamName: string;
   numberOfPlayers: number;
+  currentScore: number;
 }
 
 export interface LiveQuizRoundAnswersResponse extends CreateUpdateDelete {
@@ -201,6 +207,7 @@ export interface LiveQuizPublicResponse extends CreateUpdateDelete {
   roundState: LiveRoundState;
   currentRoundNumber: number;
   currentQuestionNumber: number;
+  currentRoundAnswerNumber: number;
   startedAt: string;
   completedAt: string;
 }
@@ -220,12 +227,15 @@ export interface LiveQuizPublicStateResponse {
     teamId: string;
     score: number;
   }[];
+  hasUsedJoker: boolean;
+  isComplete: boolean;
   round?: {
     id: string;
     roundNumber: number;
     questionNumber: number;
     totalNumberOfQuestions: number;
     title: string;
+    didJoker: boolean;
     description: string;
     answersSubmitted?: Record<string, AnswerState>;
     answersGraded?: Record<string, AnswerStateGraded>;

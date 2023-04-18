@@ -34,6 +34,7 @@ const MobileLayout = (
 
   return (
     <Root
+      id="content-root"
       style={{
         top: props.topBar ? '64px' : '0px',
       }}

@@ -34,6 +34,7 @@ import { EditLiveQuizRoute, DeleteLiveQuizRoute } from 'routes/EditLiveQuiz';
 import {
   LiveQuizAdminRoute,
   LiveQuizAdminDeleteTeamRoute,
+  LiveQuizAdminUpdateScoresRoute,
 } from 'routes/LiveQuizAdmin';
 import { JoinQuizRoute, JoinRoute } from 'routes/Join';
 import { LiveQuizRoute, LiveQuizUpdateRoute } from 'routes/LiveQuiz';
@@ -69,6 +70,7 @@ export const init = () => {
         LiveQuizAdminRoute,
         DeleteLiveQuizRoute,
         LiveQuizAdminDeleteTeamRoute,
+        LiveQuizAdminUpdateScoresRoute,
         LiveQuizAdminGradingRoute,
         JoinRoute,
         JoinQuizRoute,

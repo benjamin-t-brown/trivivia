@@ -123,12 +123,18 @@ const ListRoundTemplates = () => {
     loaderResponse?.data?.quizTemplate?.roundOrder ?? []
   );
 
-  const { dragWasEdited, dragState, handleDragStart, resetDragState } =
-    useDnDListHandlers({
-      itemHeight: ITEM_HEIGHT,
-      arr: orderedRoundTemplates,
-      setArr: setOrderedRoundTemplates,
-    });
+  const drag = useDnDListHandlers({
+    itemHeight: ITEM_HEIGHT,
+    arr: orderedRoundTemplates,
+    setArr: setOrderedRoundTemplates,
+    clickOffset: 0,
+  });
+  const { dragWasEdited, dragState, handleDragStart, resetDragState } = {
+    dragWasEdited: drag.dragWasEdited,
+    dragState: drag.dragState,
+    handleDragStart: drag.handleDragStart,
+    resetDragState: drag.resetDragState,
+  };
 
   const confirmDialog = useConfirmNav(dragWasEdited);
 
@@ -165,15 +171,24 @@ const ListRoundTemplates = () => {
       <MobileLayout topBar>
         <InnerRoot>
           <p
-            style={{
-              width: '80%',
-            }}
+            style={
+              {
+                // width: '80%',
+              }
+            }
           >
             <InlineIconButton
               imgSrc="/res/edit.svg"
               onClick={handleEditQuizTemplateClick}
             ></InlineIconButton>
-            Now editing quiz: {loaderResponse?.data.quizTemplate.name}
+            <span
+              style={{
+                color: getColors().TEXT_DESCRIPTION,
+              }}
+            >
+              Now editing quiz:
+            </span>{' '}
+            {loaderResponse?.data.quizTemplate.name}
           </p>
 
           <Button
@@ -201,7 +216,8 @@ const ListRoundTemplates = () => {
               return null;
             }
 
-            const isDraggingThis = dragState.dragging && t.id === dragState.id;
+            // const isDraggingThis = dragState.dragging && t.id === dragState.id;
+            const isDraggingThis = false;
 
             return (
               <div key={t.id}>
@@ -223,7 +239,11 @@ const ListRoundTemplates = () => {
                     maxWidth: '800px',
                     position: isDraggingThis ? 'absolute' : 'unset',
                   }}
-                  onClick={handleRoundTemplateClick(t.id)}
+                  onClick={
+                    dragState.dragging
+                      ? () => void 0
+                      : handleRoundTemplateClick(t.id)
+                  }
                 >
                   <div
                     style={{
@@ -231,13 +251,28 @@ const ListRoundTemplates = () => {
                       justifyContent: 'space-between',
                     }}
                   >
-                    <div>
+                    <div
+                      style={{
+                        display: 'flex',
+                      }}
+                    >
                       <InlineIconButton
                         imgSrc="/res/drag-handle.svg"
-                        onMouseDown={handleDragStart(t.id)}
-                        onTouchStart={handleDragStart(t.id)}
+                        onMouseDown={ev => handleDragStart(t.id)(ev)}
+                        onTouchStart={ev => handleDragStart(t.id)(ev)}
+                        onClick={ev => {
+                          ev.stopPropagation();
+                          ev.preventDefault();
+                        }}
                       ></InlineIconButton>
-                      {i + 1}. {t.title}
+                      <span
+                        style={{
+                          marginRight: '16px',
+                        }}
+                      >
+                        {i + 1}.
+                      </span>
+                      <span>{t.title}</span>
                     </div>
                     <div
                       style={{

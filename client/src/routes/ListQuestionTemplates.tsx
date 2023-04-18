@@ -38,7 +38,17 @@ const InnerRoot = styled.div<Object>(() => {
   };
 });
 
-const ITEM_HEIGHT = 52;
+const InnerButton = styled.div<{ isDragging: boolean }>(props => {
+  return {
+    textAlign: 'left',
+    display: 'flex',
+    alignItems: 'center',
+    whiteSpace: props.isDragging ? 'pre' : 'unset',
+    overflow: props.isDragging ? 'hidden' : 'unset',
+  };
+});
+
+const ITEM_HEIGHT = 42;
 
 interface ReorderRoundsValues {
   questionOrder: string;
@@ -131,6 +141,7 @@ const ListQuestionTemplates = () => {
       itemHeight: ITEM_HEIGHT,
       arr: orderedQuestionTemplates,
       setArr: setOrderedQuestionTemplates,
+      clickOffset: 50,
     });
 
   const confirmDialog = useConfirmNav(dragWasEdited);
@@ -170,8 +181,6 @@ const ListQuestionTemplates = () => {
         '/edit'
     );
   };
-
-  console.log('question templates', loaderResponse?.data);
 
   return (
     <>
@@ -240,29 +249,47 @@ const ListQuestionTemplates = () => {
                     maxWidth: '800px',
                     position: isDraggingThis ? 'absolute' : 'unset',
                   }}
-                  onClick={handleQuestionTemplateClick(t.id)}
+                  onClick={
+                    dragState.dragging
+                      ? () => void 0
+                      : handleQuestionTemplateClick(t.id)
+                  }
                 >
                   <div
                     style={{
                       display: 'flex',
                       justifyContent: 'space-between',
+                      width: '100%',
                     }}
                   >
-                    <div
-                      style={{
-                        textAlign: 'left',
-                      }}
-                    >
+                    <InnerButton isDragging={true}>
                       <InlineIconButton
                         imgSrc="/res/drag-handle.svg"
-                        onMouseDown={handleDragStart(t.id)}
-                        onTouchStart={handleDragStart(t.id)}
+                        onMouseDown={ev => handleDragStart(t.id)(ev)}
+                        onTouchStart={ev => handleDragStart(t.id)(ev)}
                         onClick={ev => {
                           ev.stopPropagation();
+                          ev.preventDefault();
                         }}
                       ></InlineIconButton>
-                      {i + 1}. {t.text}
-                    </div>
+                      <span
+                        style={{
+                          marginRight: '16px',
+                        }}
+                      >
+                        {i + 1}.
+                      </span>
+                      <div
+                        style={{
+                          width: 'calc(100% - 100px)',
+                          overflow: 'hidden',
+                          whiteSpace: 'pre',
+                          textOverflow: 'ellipsis',
+                        }}
+                      >
+                        {t.text}
+                      </div>
+                    </InnerButton>
                   </div>
                 </Button>
               </div>

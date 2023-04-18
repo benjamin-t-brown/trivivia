@@ -45,6 +45,9 @@ export class QuestionTemplate extends Model {
   @Column(DataType.BOOLEAN)
   isBonus: boolean;
 
+  @Column(DataType.TEXT)
+  notes: string;
+
   @CreatedAt
   creationDate: Date;
 

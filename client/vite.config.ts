@@ -48,6 +48,12 @@ export default defineConfig((...args) => {
       proxy: {
         '^/api/.*': 'http://localhost:3006/',
         '^/res/.*': 'http://localhost:3006/',
+        '^/socket.io/.*': 'http://localhost:3006/',
+        '/ws': {
+          target: 'ws://localhost:3006',
+          changeOrigin: true,
+          ws: true,
+        },
       },
     },
   };

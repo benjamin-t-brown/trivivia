@@ -11,7 +11,7 @@ class Db {
       host: '0.0.0.0',
       dialect: 'sqlite',
       storage: 'database.sqlite',
-      logging: true,
+      logging: false,
     });
     sequelize.addModels([path.resolve(__dirname, 'models')]);
     this.sequelize = sequelize;

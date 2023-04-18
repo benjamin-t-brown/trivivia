@@ -96,18 +96,39 @@ const ListQuizTemplates = () => {
                   style={{
                     display: 'flex',
                     justifyContent: 'space-between',
+                    alignItems: 'center',
                   }}
                 >
-                  <div>
-                    {t.name} -{' '}
-                    <span style={{ color: getColors().TEXT_DESCRIPTION }}>
-                      {t.numRounds} Rounds -{' '}
+                  <div
+                    style={{
+                      width: 'calc(100% - 22px)',
+                      display: 'flex',
+                      textAlign: 'left',
+                      alignItems: 'center',
+                    }}
+                  >
+                    <span
+                      style={{
+                        width: 'calc(100% - 132px - 100px - 16px)',
+                      }}
+                    >
+                      {t.name}
+                    </span>
+                    <span
+                      style={{
+                        color: getColors().TEXT_DESCRIPTION,
+                        width: '100px',
+                        marginLeft: '16px',
+                      }}
+                    >
+                      {t.numRounds} Rounds
                     </span>
                     <span
                       style={{
                         color: quizTemplateIsReady(t)
                           ? getColors().SUCCESS_TEXT
                           : getColors().ERROR_TEXT,
+                        width: '132px',
                       }}
                     >
                       {quizTemplateIsReady(t) ? 'Ready' : 'Not Ready'}

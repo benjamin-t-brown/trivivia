@@ -28,6 +28,7 @@ import { QuizTemplateResponse } from 'shared/responses';
 import TextCenter from 'elements/TextCenter';
 import InputLabel from 'elements/InputLabel';
 import FormErrorText from 'components/FormErrorText';
+import TextArea from 'elements/TextArea';
 
 const InnerRoot = styled.div<Object>(() => {
   return {
@@ -41,10 +42,9 @@ interface EditQuizValues {
   isNew: boolean;
   name: string;
   numRounds: number | string;
+  notes: string;
 }
 const action = createAction(async (values: EditQuizValues, params) => {
-  console.log('EDIT QUIZ VALUES', values);
-
   if (!values.name) {
     throwValidationError('Please fill out the form.', values);
   }
@@ -177,6 +177,7 @@ const EditQuizTemplate = (props: EditQuizProps) => {
     isNew: Boolean(props.isNew),
     name: quizTemplateResponse?.data.name ?? '',
     numRounds: quizTemplateResponse?.data?.numRounds ?? 7,
+    notes: quizTemplateResponse?.data?.notes ?? '',
   };
   const formIsPristine = useFormPristine('edit-quiz-form', initialValues);
   const confirmDialog = useConfirmNav(!formIsPristine);
@@ -232,6 +233,24 @@ const EditQuizTemplate = (props: EditQuizProps) => {
               }}
               style={{
                 width: '60px',
+              }}
+            />
+            <InputLabel
+              htmlFor="notes"
+              style={{
+                marginTop: '32px',
+              }}
+            >
+              Notes
+            </InputLabel>
+            <TextArea
+              fullWidth={true}
+              placeholder="Notes"
+              aria-label="Notes"
+              name="notes"
+              maxLength={512}
+              onChange={() => {
+                render();
               }}
             />
             <FormErrorText />
