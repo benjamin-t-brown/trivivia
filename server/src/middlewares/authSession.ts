@@ -11,6 +11,10 @@ const nonProtectedRoutes = [
   '/res/(.*)',
   '/api/live/(.*)',
   '/$',
+  '/join',
+  '/live',
+  '/login',
+  '/signup',
 ];
 
 export const authSession = (
@@ -39,7 +43,8 @@ export const authSession = (
   } else if (req.path === '/api/account/logout') {
     // do nothing
   } else if (!token) {
-    return res.status(403).send({
+    res.redirect('/');
+    res.status(403).send({
       message: 'No token provided!',
     });
   }
