@@ -47,6 +47,9 @@ export const init = () => {
       errorElement: <ErrorPage />,
       children: [
         RootRoute,
+        // {
+        //   path: '/index.html',
+        // },
         LandingRoute,
         LoginRoute,
         SignupRoute,

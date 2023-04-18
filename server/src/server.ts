@@ -53,6 +53,17 @@ const main = async () => {
     })
   );
   app.use('/res', express.static(path.resolve(__dirname, '../../res')));
+  app.use('/index.html', (req, res) => {
+    res.sendFile(path.resolve(__dirname, '../../client/dist/index.html'));
+  });
+  app.use('/release/:fileName', (req, res) => {
+    res.sendFile(
+      path.resolve(
+        __dirname,
+        '../../client/dist/release/' + req.params.fileName
+      )
+    );
+  });
   app.use(ioSession);
   app.use(authSession);
 
@@ -61,6 +72,10 @@ const main = async () => {
   initTemplateControllers(router);
   initLiveQuizAdminControllers(router);
   initLiveQuizControllers(router);
+
+  router.use('/', (req, res) => {
+    res.sendFile(path.resolve(__dirname, '../../client/dist/index.html'));
+  });
 
   setupIo(io);
 
