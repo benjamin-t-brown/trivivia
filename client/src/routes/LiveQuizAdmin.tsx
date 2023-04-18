@@ -343,6 +343,7 @@ const AdminQuestionList = (props: {
                       <div
                         style={{
                           color: getColors().SUCCESS_TEXT,
+                          marginBottom: '8px',
                         }}
                       >
                         <Button
@@ -358,7 +359,7 @@ const AdminQuestionList = (props: {
                         >
                           Hide Question
                         </Button>
-                        Question is Visible!
+                        <div>Question is Visible!</div>
                       </div>
                     ) : null}
                     {i > liveQuiz.currentQuestionNumber ? (
