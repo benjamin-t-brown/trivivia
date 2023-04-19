@@ -89,7 +89,11 @@ export type AnswerState = {
   radio8?: string;
 };
 
-export type AnswerStateGraded = Record<keyof AnswerState, 'true' | 'false'>;
+export type AnswerStateGraded = Record<
+  Partial<keyof AnswerState>,
+  'true' | 'false'
+>;
+export type AnswerStateStats = Record<number, number>;
 
 export const stringToAnswerState = (s?: string): AnswerState => {
   try {
@@ -163,6 +167,9 @@ export enum LiveRoundState {
   HALTED = 'halted',
 }
 
+// roundId -> questionId -> answerState
+export type QuizStats = Record<string, Record<string, AnswerStateStats>>;
+
 export interface LiveQuizResponse extends CreateUpdateDelete {
   id: string;
   userFriendlyId: string;
@@ -175,6 +182,7 @@ export interface LiveQuizResponse extends CreateUpdateDelete {
   currentRoundNumber: number;
   currentQuestionNumber: number;
   currentRoundAnswerNumber: number;
+  stats: QuizStats;
   startedAt: string;
   completedAt: string;
 }
@@ -240,5 +248,6 @@ export interface LiveQuizPublicStateResponse {
     answersSubmitted?: Record<string, AnswerState>;
     answersGraded?: Record<string, AnswerStateGraded>;
     questions: LiveQuizPublicQuestionResponse[];
+    stats?: Record<string, AnswerStateStats>;
   };
 }

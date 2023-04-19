@@ -191,13 +191,29 @@ const JoinQuiz = (props: { error?: boolean }) => {
         <InnerRoot>
           {liveQuizResponse?.data ? (
             <>
-              <p
+              <h1
                 style={{
                   textAlign: 'center',
                 }}
               >
-                Welcome to the quiz: {liveQuizResponse.data.quiz.name}
-              </p>
+                <span
+                  style={{
+                    color: getColors().TEXT_DESCRIPTION,
+                  }}
+                >
+                  Welcome!
+                </span>
+                <br />
+                <br />
+                <span
+                  style={{
+                    fontSize: '20px',
+                    color: getColors().PRIMARY_TEXT,
+                  }}
+                >
+                  {liveQuizResponse.data.quiz.name}
+                </span>
+              </h1>
               <p
                 style={{
                   textAlign: 'center',
@@ -298,7 +314,7 @@ const JoinQuiz = (props: { error?: boolean }) => {
                   <div
                     style={{
                       width: '50%',
-                      minWidth: '164px',
+                      minWidth: '205px',
                     }}
                   >
                     <InputLabel htmlFor="code">Quiz Code</InputLabel>
@@ -308,6 +324,10 @@ const JoinQuiz = (props: { error?: boolean }) => {
                       aria-label="Quiz Code"
                       type="text"
                       name="code"
+                      style={{
+                        padding: '24px',
+                        fontSize: '2rem',
+                      }}
                     />
                   </div>
                 </div>
@@ -321,7 +341,7 @@ const JoinQuiz = (props: { error?: boolean }) => {
                   }}
                   type="submit"
                 >
-                  <IconLeft src="/res/check-mark.svg" />
+                  <IconLeft src="/res/magnifying-glass.svg" />
                   Find Quiz
                 </Button>
                 <div

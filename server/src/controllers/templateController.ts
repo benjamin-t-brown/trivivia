@@ -333,7 +333,7 @@ export const initTemplateControllers = (router: Router) => {
       params,
       body: QuestionTemplateRequest
     ) {
-      const { text, answers, answerType, orderMatters, notes } = body;
+      const { text, answers, answerType, orderMatters, isBonus, notes } = body;
       if (!validateString(text, 0, 500)) {
         throw new InvalidInputError('Not valid text.');
       }
@@ -353,6 +353,7 @@ export const initTemplateControllers = (router: Router) => {
         answers,
         answerType,
         orderMatters,
+        isBonus,
         notes,
       });
       if (!questionTemplate) {

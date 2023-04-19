@@ -170,11 +170,26 @@ const EditAnswers = (props: EditAnswersProps) => {
           name="orderMatters"
           id="orderMatters"
           defaultChecked={props.questionTemplate?.orderMatters}
+          style={{
+            transform: 'scale(1.5)',
+          }}
         ></input>
         <label htmlFor="orderMatters">
           {' '}
           The order of these answers matters.{' '}
         </label>
+        <br />
+        <br />
+        <input
+          type="checkbox"
+          name="isBonus"
+          id="isBonus"
+          defaultChecked={props.questionTemplate?.isBonus}
+          style={{
+            transform: 'scale(1.5)',
+          }}
+        ></input>
+        <label htmlFor="isBonus"> This is a bonus question.</label>
       </div>
       {/* <div
         style={{

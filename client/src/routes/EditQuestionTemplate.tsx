@@ -53,6 +53,7 @@ interface EditQuestionValues {
   answers: string;
   answerType: AnswerBoxType;
   orderMatters: boolean;
+  isBonus: boolean;
   imageLink?: string;
   notes: string;
 }
@@ -66,6 +67,7 @@ const action = createAction(async (values: EditQuestionValues, params) => {
   const valuesCopy = { ...values };
 
   values.orderMatters = Boolean(values.orderMatters);
+  values.isBonus = Boolean(values.isBonus);
 
   const answerState = stringToAnswerState(values.answers);
   const numAnswers = getNumAnswers(values.answerType);
@@ -241,6 +243,7 @@ const EditQuestionTemplate = (props: EditQuestionProps) => {
     answerType:
       questionTemplateResponse?.data?.answerType ?? AnswerBoxType.INPUT1,
     orderMatters: questionTemplateResponse?.data?.orderMatters ?? false,
+    isBonus: questionTemplateResponse?.data?.isBonus ?? false,
     imageLink: questionTemplateResponse?.data?.imageLink ?? '',
     notes: questionTemplateResponse?.data?.notes ?? '',
   };

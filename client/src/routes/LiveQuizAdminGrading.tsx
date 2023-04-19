@@ -132,15 +132,6 @@ const RoundAnswer = (props: {
   const gradeState =
     props.state[props.team.id][props.roundId][props.questionNumber] ?? {};
 
-  console.log(
-    'stuff',
-    individualAnswersSubmitted,
-    individualAnswersCorrect,
-    gradeState
-  );
-
-  // console.log('GRADE STATE', gradeState);
-
   const handleAnswerGradeChange: (
     i: number,
     isCorrect: boolean
@@ -224,6 +215,10 @@ const RoundAnswer = (props: {
                 padding: '4px',
                 border: '1px solid ' + getColors().BACKGROUND2,
                 minWidth: '142px',
+                background:
+                  gradeState[gradeKey] === undefined
+                    ? getColors().BACKGROUND
+                    : getColors().BACKGROUND2,
               }}
             >
               {submittedAnswer ? (
@@ -231,7 +226,7 @@ const RoundAnswer = (props: {
                   {submittedAnswer}
                 </span>
               ) : (
-                <span style={{ color: getColors().TEXT_DESCRIPTION }}>
+                <span style={{ color: getColors().WARNING_TEXT }}>
                   {'(blank)'}
                 </span>
               )}
@@ -371,13 +366,11 @@ const areAllAnswersGradedForTeamRound = (args: {
     const splitAnswers = args.answersArr[i].split(ANSWER_DELIMITER);
 
     if (!questionGradeState) {
-      console.log('no question grade state found', i);
       return false;
     }
 
     for (let j = 0; j < splitAnswers.length; j++) {
       if (questionGradeState['answer' + (j + 1)] === undefined) {
-        console.log('answer not defined', 'answer' + (j + 1));
         return false;
       }
     }

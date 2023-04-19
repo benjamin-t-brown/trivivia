@@ -69,6 +69,9 @@ export class LiveQuiz extends Model {
   @Column(DataType.INTEGER)
   currentRoundScoresNumber: number;
 
+  @Column(DataType.TEXT)
+  stats: string;
+
   @Column(DataType.DATE)
   startedAt: Date;
 
@@ -93,6 +96,9 @@ export class LiveQuiz extends Model {
     if (this.liveQuizTeams) {
       ret.liveQuizTeams = this.liveQuizTeams.map(t => t.getResponseJson());
     }
+    if (this.stats) {
+      ret.stats = JSON.parse(this.stats);
+    }
     return ret as LiveQuizResponse;
   }
 
@@ -100,6 +106,7 @@ export class LiveQuiz extends Model {
     const ret = this.toJSON();
     delete ret.quizTemplate;
     delete ret.quizTemplateJson;
+    delete ret.stats;
     ret.liveQuizTeams = this.liveQuizTeams.map(t => t.getResponseJson());
     return ret as LiveQuizResponse;
   }

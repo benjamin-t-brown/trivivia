@@ -86,9 +86,6 @@ const Round = styled.div<{ isActive: boolean }>(props => {
       '1px solid ' +
       (props.isActive ? getColors().PRIMARY_TEXT : getColors().BACKGROUND2),
     margin: '4px 0px',
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
   };
 });
 
@@ -418,7 +415,11 @@ const AdminRoundList = (props: {
             <div>
               {i + 1}. {r.title}
             </div>
-            <div>
+            <div
+              style={{
+                marginTop: '8px',
+              }}
+            >
               <Button
                 color="primary"
                 onClick={handleRoundAnswersShowClick(r)}
@@ -539,7 +540,6 @@ const AdminQuizTeamsList = (props: { liveQuiz: LiveQuizResponse }) => {
   return (
     <div>
       <SectionTitle>Teams</SectionTitle>
-      {/* <fetcher.Form> */}
       <div
         style={{
           background: getColors().BACKGROUND2,
@@ -582,7 +582,11 @@ const AdminQuizTeamsList = (props: { liveQuiz: LiveQuizResponse }) => {
                   >
                     X
                   </span>{' '}
-                  <span>
+                  <span
+                    style={{
+                      marginRight: '8px',
+                    }}
+                  >
                     {i + 1}. {team.teamName}
                   </span>
                   {isShowingRoundQuestions(props.liveQuiz) ? (
@@ -599,7 +603,8 @@ const AdminQuizTeamsList = (props: { liveQuiz: LiveQuizResponse }) => {
                 </div>
                 <div
                   style={{
-                    width: '150px',
+                    width: '95px',
+                    flexShrink: '0',
                   }}
                 >
                   Score: {team.currentScore}
@@ -611,7 +616,6 @@ const AdminQuizTeamsList = (props: { liveQuiz: LiveQuizResponse }) => {
           <div style={{ color: getColors().ERROR_TEXT }}>No teams yet!</div>
         ) : null}
       </div>
-      {/* </fetcher.Form> */}
       {confirmDialog}
     </div>
   );
@@ -814,6 +818,25 @@ const LiveQuizAdmin = (props: EditLiveQuizProps) => {
                 >
                   ({liveQuiz.userFriendlyId})
                 </span>
+              </span>
+              <br />
+              Link:{' '}
+              <span
+                style={{
+                  color: getColors().TEXT_DEFAULT,
+                  userSelect: 'text',
+                  cursor: 'pointer',
+                }}
+              >
+                <a
+                  href={`${window?.location?.origin ?? ''}/live/${
+                    liveQuiz.userFriendlyId
+                  }`}
+                >
+                  {`${window?.location?.origin ?? ''}/live/${
+                    liveQuiz.userFriendlyId
+                  }`}
+                </a>
               </span>
               <br />
               Quiz Template:{' '}

@@ -11,6 +11,7 @@ const colorsDark = {
   SUCCESS_TEXT: '#5eed8a',
   SUCCESS_BACKGROUND: '#005f1b',
   PRIMARY_TEXT: '#8cdaff',
+  WARNING_TEXT: '#dd9251',
   // BLACK: '#111',
   // WHITE: '#F8F8F8',
   // LIGHTGREY: '#BCB7C5',

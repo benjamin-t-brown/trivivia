@@ -93,10 +93,17 @@ const ListLiveQuizzes = () => {
                   style={{
                     display: 'flex',
                     justifyContent: 'space-between',
+                    alignItems: 'center',
                   }}
                 >
-                  <div>
-                    {t.name} -{' '}
+                  <div
+                    style={{
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'flex-start',
+                    }}
+                  >
+                    <div>{t.name}</div>
                     <span style={{ color: getColors().TEXT_DESCRIPTION }}>
                       Current Round: {t.currentRoundNumber} /{' '}
                       {t.quizTemplateJson.numRounds}

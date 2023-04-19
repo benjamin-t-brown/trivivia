@@ -12,7 +12,7 @@ const nonProtectedRoutes = [
   '/api/live/(.*)',
   '/$',
   '/join',
-  '/live',
+  '^/live/',
   '/login',
   '/signup',
 ];
@@ -48,8 +48,10 @@ export const authSession = (
       message: 'No token provided!',
     });
   }
+  console.log('decode');
   jwt.verify(token, env.cookieSecret, (err, decoded) => {
     if (err) {
+      console.log('not verified');
       return res.status(401).send({
         message: 'Unauthorized!',
       });

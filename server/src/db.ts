@@ -16,9 +16,7 @@ class Db {
     sequelize.addModels([path.resolve(__dirname, 'models')]);
     this.sequelize = sequelize;
   }
-  async init() {
-    // await this.sequelize.sync({ alter: true, force: true });
-  }
+  async init() {}
 }
 
 let db: Db | null = null;

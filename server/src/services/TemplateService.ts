@@ -304,6 +304,7 @@ export class TemplateService {
     answers: string;
     answerType: AnswerBoxType;
     orderMatters?: boolean;
+    isBonus?: boolean;
     notes?: string;
   }) {
     const roundTemplate = await this.findRoundById(params.roundTemplateId);
@@ -318,6 +319,7 @@ export class TemplateService {
       answers: params.answers,
       answerType: params.answerType,
       orderMatters: params.orderMatters ?? false,
+      isBonus: params.isBonus ?? false,
     });
     await questionTemplate.save();
 
@@ -335,6 +337,7 @@ export class TemplateService {
     answers: string;
     answerType?: AnswerBoxType;
     orderMatters?: boolean;
+    isBonus?: boolean;
     notes?: string;
   }) {
     const questionTemplate = await this.findQuestionById(
@@ -351,6 +354,7 @@ export class TemplateService {
     questionTemplate.orderMatters =
       params.orderMatters ?? questionTemplate.orderMatters;
     questionTemplate.notes = params.notes ?? questionTemplate.notes;
+    questionTemplate.isBonus = params.isBonus ?? questionTemplate.isBonus;
 
     return questionTemplate.save();
   }

@@ -19,6 +19,7 @@ export interface QuestionTemplateRequest {
   answers: string;
   answerType: AnswerBoxType;
   orderMatters: boolean;
+  isBonus: boolean;
   notes?: string;
 }
 

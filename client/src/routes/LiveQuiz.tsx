@@ -21,6 +21,7 @@ import {
   AccountResponse,
   AnswerState,
   AnswerStateGraded,
+  AnswerStateStats,
   getNumAnswers,
   getNumRadioBoxes,
   LiveQuizPublicQuestionResponse,
@@ -312,8 +313,18 @@ const SubmittedAnswersRound = (props: {
   );
 };
 
-const CorrectAnswers = (props: { correctAnswers: string[] }) => {
+const CorrectAnswers = (props: {
+  correctAnswers: string[];
+  numTeams: number;
+  answersStats?: AnswerStateStats;
+}) => {
   if (props.correctAnswers.length === 1) {
+    // the percentage of teams who got 1 answer correct (since there's only one input, then this is
+    // all the data)
+    const pct = Math.round(
+      (100 * (props.answersStats?.[1] ?? 0)) / props.numTeams
+    );
+
     return (
       <div>
         <span
@@ -323,16 +334,75 @@ const CorrectAnswers = (props: { correctAnswers: string[] }) => {
           }}
         >
           {' '}
-          Correct Answer:{' '}
+          Answer:{' '}
         </span>
         <span
           style={{
             color: getColors().PRIMARY_TEXT,
           }}
         >{`${props.correctAnswers[0]}`}</span>
+        <span
+          style={{
+            color: getColors().TEXT_DEFAULT,
+          }}
+        >
+          {' '}
+          ({pct}%)
+        </span>
       </div>
     );
   } else {
+    const answersStats = props.answersStats ?? {};
+    const pctResult: number[] = [];
+    const pieFills: {
+      min: number;
+      max: number;
+      pct: number;
+      numCorrect: number;
+    }[] = [];
+
+    const colors = [
+      'red',
+      'orange',
+      'yellow',
+      'green',
+      'blue',
+      'indigo',
+      'violet',
+    ];
+    let background = `conic-gradient(`;
+
+    let ctr = 0;
+    for (let i = 0; i <= props.correctAnswers.length; i++) {
+      const numCorrect = i;
+      const pct = (100 * (answersStats[numCorrect] ?? 0)) / props.numTeams;
+      pctResult.push(pct);
+      if (pct) {
+        background += `${colors[ctr]} ${pctResult
+          .slice(0, -1)
+          .reduce((prev, curr) => prev + curr, 0)}% ${pctResult.reduce(
+          (prev, curr) => prev + curr,
+          0
+        )}%, `;
+
+        const min = Math.round(
+          pctResult.slice(0, -1).reduce((prev, curr) => prev + curr, 0)
+        );
+        const max = Math.round(
+          pctResult.reduce((prev, curr) => prev + curr, 0)
+        );
+
+        pieFills.push({
+          min,
+          max,
+          pct,
+          numCorrect,
+        });
+      }
+      ctr++;
+    }
+    background = background.slice(0, -2) + ')';
+
     return (
       <div>
         <div
@@ -351,6 +421,7 @@ const CorrectAnswers = (props: { correctAnswers: string[] }) => {
             {' '}
             Correct Answers:{' '}
           </div>
+
           {props.correctAnswers.map((answer, i) => {
             return (
               <div
@@ -360,10 +431,64 @@ const CorrectAnswers = (props: { correctAnswers: string[] }) => {
                   color: getColors().PRIMARY_TEXT,
                 }}
               >
-                {answer}
+                - {answer}
               </div>
             );
           })}
+          <div
+            style={{
+              position: 'relative',
+              display: 'flex',
+              justifyContent: 'center',
+              margin: '42px',
+            }}
+          >
+            <div style={{ position: 'relative' }}>
+              <div
+                style={{
+                  position: 'absolute',
+                  width: '100%',
+                  transform: 'translate(-0px, 39px)',
+                }}
+              >
+                {pieFills
+                  .filter(obj => Boolean(obj.pct))
+                  .map((obj, i) => {
+                    const r = 85;
+                    const pie2 = 2 * Math.PI;
+                    const piePct = (obj.min + (obj.max - obj.min) / 2) / 100;
+                    const translate = `translate(${
+                      Math.sin(pie2 * piePct) * r
+                    }px, ${-Math.cos(pie2 * piePct) * r}px)`;
+
+                    return (
+                      <div
+                        key={i}
+                        style={{
+                          color: colors[i],
+                          position: 'absolute',
+                          transform: translate,
+                          width: '100px',
+                          background: 'rgba(0, 0, 0, 0.5)',
+                          textAlign: 'center',
+                          fontSize: '12px',
+                        }}
+                      >
+                        {obj.numCorrect} correct: {Math.round(obj.pct)}%
+                      </div>
+                    );
+                  })}
+              </div>
+              <div
+                style={{
+                  background,
+                  borderRadius: '50px',
+                  width: '100px',
+                  height: '100px',
+                }}
+              ></div>
+            </div>
+          </div>
         </div>
       </div>
     );
@@ -378,6 +503,8 @@ const QuestionAnswer = (props: {
   answersSaved: AnswerState;
   answersQuestion: AnswerState;
   answersGraded?: AnswerStateGraded;
+  answersStats?: AnswerStateStats;
+  numTeams: number;
 }) => {
   const handleAnswerChange: (
     answerNumber: number
@@ -459,7 +586,13 @@ const QuestionAnswer = (props: {
     answerBoxes.push(
       <CorrectAnswers
         key="answer"
-        correctAnswers={Object.values(props.question.answers ?? {})}
+        correctAnswers={
+          Object.keys(props.question.answers ?? {})
+            .sort()
+            .map(i => props.question?.answers?.[i]) ?? []
+        }
+        answersStats={props.answersStats}
+        numTeams={props.numTeams}
       />
     );
   }
@@ -553,6 +686,8 @@ const QuestionAnswer = (props: {
       <CorrectAnswers
         key="answer"
         correctAnswers={[props.question.answers?.[radioAnswerKey]]}
+        answersStats={props.answersStats}
+        numTeams={props.numTeams}
       />
     );
   }
@@ -697,7 +832,9 @@ const QuizInRound = (props: { quizState: LiveQuizPublicStateResponse }) => {
             answersSaved={state[i + 1] ?? {}}
             answersQuestion={q.answers ?? {}}
             answersGraded={currentRound.answersGraded?.[i + 1]}
+            answersStats={currentRound.stats?.[i + 1]}
             disabled={isRoundLocked(props.quizState.quiz)}
+            numTeams={props.quizState.teams.length}
           />
         );
       })}
@@ -854,12 +991,17 @@ const QuizTeamsList = (props: { quizState: LiveQuizPublicStateResponse }) => {
                   justifyContent: 'space-between',
                 }}
               >
-                <span>
+                <span
+                  style={{
+                    marginRight: '8px',
+                  }}
+                >
                   {i + 1}. {team.teamName}
                 </span>
                 <div
                   style={{
-                    width: '150px',
+                    width: '95px',
+                    flexShrink: '0',
                   }}
                 >
                   Score: {team.currentScore}

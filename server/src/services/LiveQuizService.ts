@@ -6,11 +6,13 @@ import { LiveQuizTeam } from '../models/LiveQuizTeam';
 import {
   AnswerState,
   AnswerStateGraded,
+  AnswerStateStats,
   LiveQuizPublicQuestionResponse,
   LiveQuizPublicStateResponse,
   LiveQuizState,
   LiveQuizTeamResponse,
   LiveRoundState,
+  QuizStats,
   QuizTemplateResponse,
   getNumAnswers,
 } from 'shared';
@@ -617,6 +619,8 @@ export class LiveQuizService {
       throw new Error('Failed to get public state for team.');
     }
 
+    const stats = JSON.parse(liveQuiz.stats || '{}');
+
     return {
       quiz: quizState,
       teamId: liveQuizTeamId,
@@ -640,6 +644,7 @@ export class LiveQuizService {
           : undefined,
         didJoker: Boolean(liveQuizRoundAnswers?.didJoker),
         questions,
+        stats: isRoundInAnswerShowState ? stats?.[roundTemplate.id] : undefined,
       },
     };
   }
@@ -740,8 +745,13 @@ export class LiveQuizService {
 
     const modelsToSave: Model[] = [];
 
+    const stats: QuizStats = {};
+
     for (const teamId in gradeState) {
       for (const roundId in gradeState[teamId]) {
+        if (!stats[roundId]) {
+          stats[roundId] = {};
+        }
         const liveQuizRoundAnswers =
           await this.findLiveQuizRoundAnswerByTeamIdAndRoundId(teamId, roundId);
 
@@ -759,13 +769,39 @@ export class LiveQuizService {
           );
           throw new Error('Failed to submit grades.');
         }
-
         liveQuizRoundAnswers.answersGraded = JSON.stringify(roundGradeState);
         modelsToSave.push(liveQuizRoundAnswers);
+
+        for (const questionNumber in roundGradeState) {
+          if (!stats[roundId][questionNumber]) {
+            stats[roundId][questionNumber] = {} as AnswerStateStats;
+          }
+
+          const questionGradeState = roundGradeState[questionNumber];
+
+          console.log('check question grade state', questionGradeState);
+
+          let numberOfCorrectAnswers = 0;
+          for (const answerKey in questionGradeState) {
+            if (questionGradeState[answerKey] === 'true') {
+              numberOfCorrectAnswers++;
+            }
+          }
+          if (
+            stats[roundId][questionNumber][numberOfCorrectAnswers] === undefined
+          ) {
+            stats[roundId][questionNumber][numberOfCorrectAnswers] = 1;
+          } else {
+            stats[roundId][questionNumber][numberOfCorrectAnswers]++;
+          }
+        }
       }
     }
 
     await Promise.all(modelsToSave.map(m => m.save()));
+
+    liveQuiz.stats = JSON.stringify(stats);
+    await liveQuiz.save();
 
     return gradeState;
   }
@@ -840,10 +876,14 @@ export class LiveQuizService {
             throw new Error('Failed to update score.');
           }
 
+          if (questionTemplate.isBonus) {
+            continue;
+          }
+
           const numAnswers = getNumAnswers(questionTemplate?.answerType);
 
           for (let k = 1; k <= numAnswers; k++) {
-            if (gradeState[j + 1]['answer' + k] === 'true') {
+            if (gradeState?.[j + 1]?.['answer' + k] === 'true') {
               scoreThisRound++;
             }
           }
