@@ -260,7 +260,7 @@ const AdminQuestionList = (props: {
         }}
       >
         {props.showAnswers ? (
-          <>{"You may read out and show this round's answers from here."}</>
+          <>{"You can read out and show this round's answers from here."}</>
         ) : (
           <>
             Players are able to see what is in the highlighted box below: <br />
@@ -476,17 +476,30 @@ const AdminRoundSubmissionControlsButtons = (props: {
         disabled={lockRoundDisabled}
         style={{
           width: '100%',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
         }}
       >
         {isRoundLocked(liveQuiz) ? (
           <>
-            <IconLeft src={'/res/unlocking.svg'} />
+            <IconLeft
+              src={'/res/unlocking.svg'}
+              style={{
+                marginLeft: '0px',
+              }}
+            />
             Unlock Round
           </>
         ) : (
           <>
             {' '}
-            <IconLeft src={'/res/padlock.svg'} />
+            <IconLeft
+              src={'/res/padlock.svg'}
+              style={{
+                marginLeft: '0px',
+              }}
+            />
             Lock Round {lockRoundDisabled ? '(Show all questions to lock)' : ''}
           </>
         )}
@@ -915,34 +928,44 @@ const LiveQuizAdmin = (props: EditLiveQuizProps) => {
               </Button>
             ) : null}
             {isRoundInProgressButNotVisible(liveQuiz) ? (
-              <Button
-                color="secondary"
-                style={{
-                  width: '100%',
-                }}
-                onClick={handleResumeRoundClick}
-              >
-                Resume Showing Round
-              </Button>
+              <>
+                <Button
+                  color="secondary"
+                  style={{
+                    width: '100%',
+                  }}
+                  onClick={handleResumeRoundClick}
+                >
+                  Resume Showing Round
+                </Button>
+                <ContentSpacer />
+                <Button color="primary" onClick={handleGradeClick}>
+                  Grade Answers
+                </Button>
+              </>
             ) : null}
             {(isWaitingForRoundToStart(liveQuiz) ||
               isRoundInProgressButNotVisible(liveQuiz)) &&
             !isQuizCompleted(liveQuiz) ? (
-              <Button
-                disabled={
-                  !isRoundCompleted(liveQuiz) && liveQuiz.currentRoundNumber > 0
-                }
-                color="primary"
-                style={{
-                  width: '100%',
-                }}
-                onClick={handleStartRoundClick}
-              >
-                Begin Next Round{' '}
-                {!isRoundCompleted(liveQuiz) && liveQuiz.currentRoundNumber > 0
-                  ? '(Ensure current round is locked.)'
-                  : ''}
-              </Button>
+              <>
+                <Button
+                  disabled={
+                    !isRoundCompleted(liveQuiz) &&
+                    liveQuiz.currentRoundNumber > 0
+                  }
+                  color="primary"
+                  style={{
+                    width: '100%',
+                  }}
+                  onClick={handleStartRoundClick}
+                >
+                  Begin Next Round{' '}
+                  {!isRoundCompleted(liveQuiz) &&
+                  liveQuiz.currentRoundNumber > 0
+                    ? '(Ensure current round is locked.)'
+                    : ''}
+                </Button>
+              </>
             ) : null}
             {isRoundInProgressAndVisible(liveQuiz) ||
             isRoundCompletedAndVisible(liveQuiz) ? (
@@ -967,15 +990,17 @@ const LiveQuizAdmin = (props: EditLiveQuizProps) => {
                   Stop Showing Round
                 </Button>
                 <ContentSpacer />
+                <AdminRoundSubmissionControlsButtons
+                  liveQuiz={liveQuiz}
+                  updateAction={updateAction}
+                />
+                <Button color="primary" onClick={handleGradeClick}>
+                  Grade Answers
+                </Button>
                 <AdminQuestionList
                   liveQuiz={liveQuiz}
                   updateAction={updateAction}
                   showAnswers={false}
-                />
-                <ContentSpacer />
-                <AdminRoundSubmissionControlsButtons
-                  liveQuiz={liveQuiz}
-                  updateAction={updateAction}
                 />
               </>
             ) : null}
@@ -986,10 +1011,6 @@ const LiveQuizAdmin = (props: EditLiveQuizProps) => {
                   liveQuiz={liveQuiz}
                   updateAction={updateAction}
                 />
-                <ContentSpacer />
-                <Button color="primary" onClick={handleGradeClick}>
-                  Grade Answers
-                </Button>
               </>
             ) : null}
             {isShowingRoundAnswers(liveQuiz) ? (

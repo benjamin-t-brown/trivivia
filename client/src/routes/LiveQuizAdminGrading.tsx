@@ -14,18 +14,14 @@ import { getColors } from 'style';
 import { throwValidationError, useTypedLoaderData } from 'hooks';
 import DefaultTopBar from 'components/DefaultTopBar';
 import { updateCacheLiveQuizAdmin } from 'cache';
-import {
-  LiveQuizResponse,
-  LiveQuizState,
-  LiveQuizTeamResponse,
-  LiveRoundState,
-} from 'shared/responses';
+import { LiveQuizResponse, LiveQuizTeamResponse } from 'shared/responses';
 import FormErrorText from 'components/FormErrorText';
 import SectionTitle from 'elements/SectionTitle';
 import { ANSWER_DELIMITER, getRoundAnswersArrays } from 'utils';
 import Input from 'elements/Input';
 import { AnswerStateGraded } from 'shared/responses';
 import { GradeInputState } from 'shared/requests';
+import Accordion, { AccordionItem } from 'elements/Accordion';
 
 const InnerRoot = styled.div<Object>(() => {
   return {
@@ -508,7 +504,7 @@ const LiveQuizAdminGrading = (props: EditLiveQuizProps) => {
       continue;
     }
 
-    const subElems: any[] = [];
+    const subElems: AccordionItem[] = [];
 
     liveQuiz.liveQuizTeams.forEach(team => {
       const { answersArr, teamAnswersArr, orderMattersArr } =
@@ -521,41 +517,74 @@ const LiveQuizAdminGrading = (props: EditLiveQuizProps) => {
         answersArr,
       });
 
-      subElems.push(
-        <TeamRound key={`round${roundId}-${team.id}`} isGraded={isGraded}>
+      subElems.push({
+        header: (
           <div
             style={{
-              borderBottom: '1px solid ' + getColors().TEXT_DESCRIPTION,
+              display: 'flex',
+              alignItems: 'center',
             }}
           >
-            Team:{' '}
-            <span
+            {isGraded ? (
+              <img
+                alt="Graded"
+                src="/res/check-mark.svg"
+                style={{
+                  marginRight: '16px',
+                  background: getColors().SUCCESS_BACKGROUND,
+                  width: '22px',
+                }}
+              />
+            ) : (
+              <img
+                alt="Not Graded"
+                src="/res/cancel.svg"
+                style={{
+                  marginRight: '16px',
+                  background: getColors().ERROR_BACKGROUND,
+                  width: '22px',
+                }}
+              />
+            )}
+            <span>{team.teamName}</span>
+          </div>
+        ),
+        item: (
+          <TeamRound key={`round${roundId}-${team.id}`} isGraded={isGraded}>
+            <div
               style={{
-                color: getColors().PRIMARY_TEXT,
+                borderBottom: '1px solid ' + getColors().TEXT_DESCRIPTION,
               }}
             >
-              {team.teamName}
-            </span>
-          </div>
-          {answersArr.map((correctAnswers, j) => {
-            const submittedAnswers = teamAnswersArr[j];
-            return (
-              <div key={team.id + '-' + j}>
-                <RoundAnswer
-                  questionNumber={j + 1}
-                  correctAnswers={correctAnswers}
-                  teamAnswers={submittedAnswers}
-                  orderMatters={orderMattersArr[j]}
-                  setGradeForAnswer={setGradeForAnswer}
-                  team={team}
-                  roundId={roundId}
-                  state={state}
-                />
-              </div>
-            );
-          })}
-        </TeamRound>
-      );
+              Team:{' '}
+              <span
+                style={{
+                  color: getColors().PRIMARY_TEXT,
+                }}
+              >
+                {team.teamName}
+              </span>
+            </div>
+            {answersArr.map((correctAnswers, j) => {
+              const submittedAnswers = teamAnswersArr[j];
+              return (
+                <div key={team.id + '-' + j}>
+                  <RoundAnswer
+                    questionNumber={j + 1}
+                    correctAnswers={correctAnswers}
+                    teamAnswers={submittedAnswers}
+                    orderMatters={orderMattersArr[j]}
+                    setGradeForAnswer={setGradeForAnswer}
+                    team={team}
+                    roundId={roundId}
+                    state={state}
+                  />
+                </div>
+              );
+            })}
+          </TeamRound>
+        ),
+      });
     });
 
     elems.push(
@@ -563,7 +592,7 @@ const LiveQuizAdminGrading = (props: EditLiveQuizProps) => {
         <SectionTitle>
           Round {i + 1}: {roundTemplate.title}
         </SectionTitle>
-        {subElems}
+        <Accordion items={subElems} />
       </div>
     );
   }
@@ -600,18 +629,6 @@ const LiveQuizAdminGrading = (props: EditLiveQuizProps) => {
               {validationError}
             </div>
             {elems}
-            {/* <Button
-              color="primary"
-              style={{
-                width: '100%',
-              }}
-              onClick={handleSubmitGradeClick}
-            >
-              Submit Grades
-            </Button>
-            <div style={{ color: getColors().ERROR_TEXT }}>
-              {validationError}
-            </div> */}
           </InnerRoot>
         </fetcher.Form>
       </MobileLayout>
