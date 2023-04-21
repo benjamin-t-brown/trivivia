@@ -148,6 +148,9 @@ const RoundAnswer = (props: {
         margin: '4px 0px',
         // display: 'flex',
         // justifyContent: 'flex-start',
+        borderTop: '1px solid ' + getColors().TEXT_DESCRIPTION,
+        borderBottom: '1px solid ' + getColors().TEXT_DESCRIPTION,
+        paddingBottom: '4px',
       }}
     >
       <div
@@ -176,7 +179,6 @@ const RoundAnswer = (props: {
       </div>
       <div
         style={{
-          background: getColors().BACKGROUND,
           display: 'flex',
           flexWrap: 'wrap',
         }}
@@ -209,12 +211,13 @@ const RoundAnswer = (props: {
               key={i}
               style={{
                 padding: '4px',
-                border: '1px solid ' + getColors().BACKGROUND2,
+                border:
+                  '1px solid ' +
+                  (gradeState[gradeKey] === undefined
+                    ? getColors().BACKGROUND2
+                    : getColors().PRIMARY),
                 minWidth: '142px',
-                background:
-                  gradeState[gradeKey] === undefined
-                    ? getColors().BACKGROUND
-                    : getColors().BACKGROUND2,
+                background: getColors().BACKGROUND,
               }}
             >
               {submittedAnswer ? (

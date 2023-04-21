@@ -841,15 +841,7 @@ const LiveQuizAdmin = (props: EditLiveQuizProps) => {
                   cursor: 'pointer',
                 }}
               >
-                <a
-                  href={`${window?.location?.origin ?? ''}/live/${
-                    liveQuiz.userFriendlyId
-                  }`}
-                >
-                  {`${window?.location?.origin ?? ''}/live/${
-                    liveQuiz.userFriendlyId
-                  }`}
-                </a>
+                <Link to={'/qr/' + liveQuiz.userFriendlyId}>QR Code</Link>
               </span>
               <br />
               Quiz Template:{' '}

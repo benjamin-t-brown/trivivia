@@ -1,14 +1,7 @@
 import { createAction, fetchAsync, FetchResponse } from 'actions';
 import MobileLayout from 'elements/MobileLayout';
 import React, { ReactNode } from 'react';
-import {
-  Form,
-  json,
-  Link,
-  redirect,
-  useFetcher,
-  useParams,
-} from 'react-router-dom';
+import { json, redirect, useFetcher, useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import {
   throwValidationError,
@@ -16,28 +9,20 @@ import {
   useTypedLoaderData,
   useSocketIoRefreshState,
 } from 'hooks';
-import NavButton from 'components/NavButton';
 import {
-  AccountResponse,
   AnswerState,
   AnswerStateGraded,
   AnswerStateStats,
   getNumAnswers,
   getNumRadioBoxes,
   LiveQuizPublicQuestionResponse,
-  LiveQuizPublicResponse,
   LiveQuizPublicStateResponse,
-  LiveQuizResponse,
   LiveQuizTeamResponse,
-  QuestionTemplateResponse,
 } from 'shared/responses';
 import TopBar from 'elements/TopBar';
 import CardTitleZone from 'elements/CardTitleZone';
-import BackButton from 'components/BackButton';
 import CardTitle from 'elements/CardTitle';
 import Button from 'elements/Button';
-import { LiveQuizStartRoute } from './LiveQuizStart';
-import { ListQuizTemplatesRoute } from './ListQuizTemplates';
 import IconLeft from 'elements/IconLeft';
 import FormErrorText from 'components/FormErrorText';
 import InputLabel from 'elements/InputLabel';
@@ -359,6 +344,7 @@ const CorrectAnswers = (props: {
       max: number;
       pct: number;
       numCorrect: number;
+      color: string;
     }[] = [];
 
     const colors = [
@@ -397,6 +383,7 @@ const CorrectAnswers = (props: {
           max,
           pct,
           numCorrect,
+          color: colors[ctr],
         });
       }
       ctr++;
@@ -465,7 +452,7 @@ const CorrectAnswers = (props: {
                       <div
                         key={i}
                         style={{
-                          color: colors[i],
+                          color: obj.color,
                           position: 'absolute',
                           transform: translate,
                           width: '100px',
@@ -709,6 +696,15 @@ const QuestionAnswer = (props: {
       >
         {props.questionNumber}. {props.question.text}
       </div>
+      {props.question.imageLink ? (
+        <img
+          style={{
+            width: '100%',
+          }}
+          src={props.question.imageLink}
+          alt="Question"
+        />
+      ) : null}
       <div
         style={{
           marginLeft: '16px',

@@ -282,6 +282,8 @@ export const initTemplateControllers = (router: Router) => {
         answerType,
         orderMatters,
         notes,
+        isBonus,
+        imageLink,
       } = body;
       if (!validateString(roundTemplateId)) {
         throw new InvalidInputError('Not valid roundTemplateId.');
@@ -298,6 +300,9 @@ export const initTemplateControllers = (router: Router) => {
       if (notes && !validateString(notes, 0, 1000)) {
         throw new InvalidInputError('Not valid notes.');
       }
+      if (imageLink && !validateString(imageLink, 0, 1000)) {
+        throw new InvalidInputError('Not valid imageLink.');
+      }
 
       const questionTemplate = await templateService.createQuestionTemplate({
         roundTemplateId,
@@ -306,6 +311,8 @@ export const initTemplateControllers = (router: Router) => {
         answerType,
         orderMatters,
         notes,
+        isBonus,
+        imageLink,
       });
       if (!questionTemplate) {
         return;
@@ -333,7 +340,15 @@ export const initTemplateControllers = (router: Router) => {
       params,
       body: QuestionTemplateRequest
     ) {
-      const { text, answers, answerType, orderMatters, isBonus, notes } = body;
+      const {
+        text,
+        answers,
+        answerType,
+        orderMatters,
+        imageLink,
+        isBonus,
+        notes,
+      } = body;
       if (!validateString(text, 0, 500)) {
         throw new InvalidInputError('Not valid text.');
       }
@@ -346,12 +361,16 @@ export const initTemplateControllers = (router: Router) => {
       if (notes && !validateString(notes, 0, 1000)) {
         throw new InvalidInputError('Not valid notes.');
       }
+      if (imageLink && !validateString(imageLink, 0, 1000)) {
+        throw new InvalidInputError('Not valid imageLink.');
+      }
 
       const questionTemplate = await templateService.updateQuestionTemplate({
         questionTemplateId: params.questionId,
         text,
         answers,
         answerType,
+        imageLink,
         orderMatters,
         isBonus,
         notes,

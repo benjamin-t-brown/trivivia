@@ -58,7 +58,11 @@ interface EditQuestionValues {
   notes: string;
 }
 const action = createAction(async (values: EditQuestionValues, params) => {
-  if (!values.text || !values.answers || !values.answerType) {
+  if (
+    !(values.text || values.imageLink) ||
+    !values.answers ||
+    !values.answerType
+  ) {
     throw {
       message: 'Please fill out the form.',
       values,

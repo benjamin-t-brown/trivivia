@@ -306,6 +306,7 @@ export class TemplateService {
     orderMatters?: boolean;
     isBonus?: boolean;
     notes?: string;
+    imageLink?: string;
   }) {
     const roundTemplate = await this.findRoundById(params.roundTemplateId);
     if (!roundTemplate) {
@@ -319,7 +320,9 @@ export class TemplateService {
       answers: params.answers,
       answerType: params.answerType,
       orderMatters: params.orderMatters ?? false,
+      notes: params.notes ?? '',
       isBonus: params.isBonus ?? false,
+      imageLink: params.imageLink ?? '',
     });
     await questionTemplate.save();
 
@@ -339,6 +342,7 @@ export class TemplateService {
     orderMatters?: boolean;
     isBonus?: boolean;
     notes?: string;
+    imageLink?: string;
   }) {
     const questionTemplate = await this.findQuestionById(
       params.questionTemplateId
@@ -355,6 +359,7 @@ export class TemplateService {
       params.orderMatters ?? questionTemplate.orderMatters;
     questionTemplate.notes = params.notes ?? questionTemplate.notes;
     questionTemplate.isBonus = params.isBonus ?? questionTemplate.isBonus;
+    questionTemplate.imageLink = params.imageLink ?? questionTemplate.imageLink;
 
     return questionTemplate.save();
   }

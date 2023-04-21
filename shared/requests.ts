@@ -20,6 +20,7 @@ export interface QuestionTemplateRequest {
   answerType: AnswerBoxType;
   orderMatters: boolean;
   isBonus: boolean;
+  imageLink?: string;
   notes?: string;
 }
 

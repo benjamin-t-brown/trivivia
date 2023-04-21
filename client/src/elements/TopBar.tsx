@@ -7,7 +7,6 @@ const Root = styled.div<Object>(() => {
     width: '100%',
     background: getColors().PRIMARY,
     color: getColors().TEXT_DEFAULT,
-    padding: '4px',
     boxSizing: 'border-box',
     display: 'flex',
     justifyContent: 'center',
@@ -29,7 +28,7 @@ const InnerRoot = styled.div<Object>(() => {
 
 const TopBar = (props: React.PropsWithChildren) => {
   return (
-    <Root>
+    <Root id="top-bar">
       <InnerRoot>{props.children}</InnerRoot>
     </Root>
   );

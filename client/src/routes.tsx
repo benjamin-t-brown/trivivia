@@ -39,6 +39,7 @@ import {
 import { JoinQuizRoute, JoinRoute } from 'routes/Join';
 import { LiveQuizRoute, LiveQuizUpdateRoute } from 'routes/LiveQuiz';
 import { LiveQuizAdminGradingRoute } from 'routes/LiveQuizAdminGrading';
+import { QRCodeRoute } from 'routes/QRCode';
 
 export const init = () => {
   const router = createBrowserRouter([
@@ -47,9 +48,6 @@ export const init = () => {
       errorElement: <ErrorPage />,
       children: [
         RootRoute,
-        // {
-        //   path: '/index.html',
-        // },
         LandingRoute,
         LoginRoute,
         SignupRoute,
@@ -79,6 +77,7 @@ export const init = () => {
         JoinQuizRoute,
         LiveQuizRoute,
         LiveQuizUpdateRoute,
+        QRCodeRoute,
       ],
     },
   ]);

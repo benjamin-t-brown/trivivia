@@ -779,8 +779,6 @@ export class LiveQuizService {
 
           const questionGradeState = roundGradeState[questionNumber];
 
-          console.log('check question grade state', questionGradeState);
-
           let numberOfCorrectAnswers = 0;
           for (const answerKey in questionGradeState) {
             if (questionGradeState[answerKey] === 'true') {

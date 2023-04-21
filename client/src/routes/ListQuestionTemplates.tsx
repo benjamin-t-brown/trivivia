@@ -45,6 +45,7 @@ const InnerButton = styled.div<{ isDragging: boolean }>(props => {
     alignItems: 'center',
     whiteSpace: props.isDragging ? 'pre' : 'unset',
     overflow: props.isDragging ? 'hidden' : 'unset',
+    width: '100%',
   };
 });
 
@@ -287,7 +288,7 @@ const ListQuestionTemplates = () => {
                           textOverflow: 'ellipsis',
                         }}
                       >
-                        {t.text}
+                        {t.text || t.notes || 'Image question'}
                       </div>
                     </InnerButton>
                   </div>
