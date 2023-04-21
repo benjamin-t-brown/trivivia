@@ -1,3 +1,4 @@
+import Img from 'elements/Img';
 import Input from 'elements/Input';
 import InputLabel from 'elements/InputLabel';
 import React, { useState } from 'react';
@@ -24,7 +25,7 @@ const EditImageLink = (props: {
         defaultValue={imgSrc}
         onChange={handleChange}
       />
-      {Boolean(imgSrc) ? (
+      {imgSrc ? (
         <div
           style={{
             display: 'flex',
@@ -33,7 +34,7 @@ const EditImageLink = (props: {
             border: '1px solid ' + getColors().TEXT_DESCRIPTION,
           }}
         >
-          <img
+          <Img
             style={{
               maxWidth: '100%',
             }}

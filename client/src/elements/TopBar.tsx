@@ -1,12 +1,12 @@
 import React from 'react';
-import { getColors } from 'style';
+import { colorsDark, getColors } from 'style';
 import styled from 'styled-components';
 
 const Root = styled.div<Object>(() => {
   return {
     width: '100%',
-    background: getColors().PRIMARY,
-    color: getColors().TEXT_DEFAULT,
+    background: colorsDark.PRIMARY,
+    color: colorsDark.TEXT_DEFAULT,
     boxSizing: 'border-box',
     display: 'flex',
     justifyContent: 'center',

@@ -22,7 +22,10 @@ import {
   EditRoundTemplateRoute,
   NewRoundTemplateRoute,
 } from 'routes/EditRoundTemplate';
-import { ListQuestionTemplatesRoute } from 'routes/ListQuestionTemplates';
+import {
+  DuplicateQuestionRoute,
+  ListQuestionTemplatesRoute,
+} from 'routes/ListQuestionTemplates';
 import {
   DeleteQuestionTemplateRoute,
   EditQuestionTemplateRoute,
@@ -40,6 +43,7 @@ import { JoinQuizRoute, JoinRoute } from 'routes/Join';
 import { LiveQuizRoute, LiveQuizUpdateRoute } from 'routes/LiveQuiz';
 import { LiveQuizAdminGradingRoute } from 'routes/LiveQuizAdminGrading';
 import { QRCodeRoute } from 'routes/QRCode';
+import { SettingsRoute } from 'routes/Settings';
 
 export const init = () => {
   const router = createBrowserRouter([
@@ -56,6 +60,7 @@ export const init = () => {
         ListQuizTemplatesRoute,
         ListRoundTemplatesRoute,
         ListQuestionTemplatesRoute,
+        DuplicateQuestionRoute,
         EditQuizTemplateRoute,
         NewQuizTemplateRoute,
         DeleteQuizTemplateRoute,
@@ -78,6 +83,7 @@ export const init = () => {
         LiveQuizRoute,
         LiveQuizUpdateRoute,
         QRCodeRoute,
+        SettingsRoute,
       ],
     },
   ]);

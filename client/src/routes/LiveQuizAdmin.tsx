@@ -24,6 +24,7 @@ import {
   LiveQuizResponse,
   LiveQuizState,
   LiveRoundState,
+  QuestionTemplateResponse,
   RoundTemplateResponse,
 } from 'shared/responses';
 import FormErrorText from 'components/FormErrorText';
@@ -50,6 +51,8 @@ import {
   isWaitingForQuizToStart,
   isWaitingForRoundToStart,
 } from 'quizUtils';
+import { CorrectAnswers } from './LiveQuiz';
+import Img from 'elements/Img';
 
 const InnerRoot = styled.div<Object>(() => {
   return {
@@ -101,6 +104,211 @@ const Question = styled.div<{ selected: boolean }>(props => {
       : getColors().BACKGROUND2,
   };
 });
+
+const QuestionSection = (props: {
+  liveQuiz: LiveQuizResponse;
+  currentRound: RoundTemplateResponse;
+  showAnswers: boolean;
+  i: number;
+  q: QuestionTemplateResponse;
+  updateAction: string;
+}) => {
+  const { liveQuiz, currentRound, i, q, updateAction } = props;
+  const fetcher = useFetcher();
+  const [selectedPublicTeamId, setSelectedPublicTeamId] = React.useState('');
+  const stats = props.liveQuiz.stats[currentRound.id][i + 1];
+  const bonusCorrectPublicTeamIds =
+    (stats?.publicTeamIdsCorrect as string[]) ?? [];
+
+  const handleShowQuestionClick = (ev: React.MouseEvent) => {
+    ev.preventDefault();
+    const formData = new FormData();
+    formData.set(
+      'questionNumber',
+      String((liveQuiz?.currentQuestionNumber ?? 0) + 1)
+    );
+    fetcher.submit(formData, {
+      method: 'post',
+      action: updateAction,
+    });
+  };
+
+  const handleHideQuestionClick = (ev: React.MouseEvent) => {
+    ev.preventDefault();
+    const formData = new FormData();
+    formData.set(
+      'questionNumber',
+      String((liveQuiz?.currentQuestionNumber ?? 1) - 1)
+    );
+    fetcher.submit(formData, {
+      method: 'post',
+      action: updateAction,
+    });
+  };
+
+  const handleRandomizeTeamIdClick = (ev: React.MouseEvent) => {
+    ev.preventDefault();
+    setSelectedPublicTeamId(
+      bonusCorrectPublicTeamIds[
+        Math.floor(Math.random() * bonusCorrectPublicTeamIds.length)
+      ] ?? ''
+    );
+  };
+
+  return (
+    <Question key={q.id} selected={i === liveQuiz.currentQuestionNumber}>
+      {props.showAnswers ? (
+        <>
+          {i + 1}. {q.text}
+          {q.imageLink ? (
+            <Img
+              style={{
+                width: '100%',
+              }}
+              src={q.imageLink}
+              alt="Question"
+            />
+          ) : null}
+          <div
+            style={{
+              marginTop: '8px',
+            }}
+          >
+            <CorrectAnswers
+              key="answer"
+              correctAnswers={
+                Object.keys(q.answers ?? {})
+                  .filter(key => key.includes('answer'))
+                  .sort()
+                  .map(i => q.answers?.[i]) ?? []
+              }
+              answersStats={stats}
+              numTeams={props.liveQuiz.liveQuizTeams.length}
+            />
+            {q.isBonus ? (
+              <div
+                style={{
+                  margin: '8px 0px',
+                  padding: '8px',
+                  paddingTop: '0px',
+                  border: '1px solid ' + getColors().TEXT_DESCRIPTION,
+                }}
+              >
+                <div
+                  style={{
+                    color: getColors().TEXT_DESCRIPTION,
+                    marginTop: '16px',
+                  }}
+                >
+                  Teams Who Got Bonus:
+                  <br />
+                  <br />
+                </div>
+                <div>
+                  {bonusCorrectPublicTeamIds.map(publicTeamId => {
+                    return (
+                      <div
+                        key={publicTeamId}
+                        style={{
+                          color:
+                            publicTeamId === selectedPublicTeamId
+                              ? getColors().PRIMARY_TEXT
+                              : getColors().TEXT_DEFAULT,
+                          textDecoration:
+                            publicTeamId === selectedPublicTeamId
+                              ? 'underline'
+                              : 'none',
+                        }}
+                      >
+                        {
+                          props.liveQuiz.liveQuizTeams.find(
+                            t => t.publicId === publicTeamId
+                          )?.teamName
+                        }
+                      </div>
+                    );
+                  })}
+                  <Button
+                    color="primary"
+                    onClick={handleRandomizeTeamIdClick}
+                    style={{
+                      marginTop: '24px',
+                    }}
+                  >
+                    Pick Random
+                  </Button>
+                </div>
+              </div>
+            ) : null}
+          </div>
+        </>
+      ) : (
+        <>
+          <div
+            style={{
+              margin: '16px 0px',
+              height: '40px',
+              display: 'flex',
+              alignItems: 'center',
+            }}
+          >
+            {i === liveQuiz.currentQuestionNumber ? (
+              <Button
+                color="primary"
+                onClick={handleShowQuestionClick}
+                disabled={isRoundLocked(liveQuiz)}
+              >
+                Show Question
+              </Button>
+            ) : null}
+            {i < liveQuiz.currentQuestionNumber ? (
+              <div
+                style={{
+                  color: getColors().SUCCESS_TEXT,
+                  marginBottom: '8px',
+                }}
+              >
+                <Button
+                  color="cancel"
+                  onClick={handleHideQuestionClick}
+                  disabled={
+                    i < liveQuiz.currentQuestionNumber - 1 ||
+                    isRoundLocked(liveQuiz)
+                  }
+                  style={{
+                    marginRight: '16px',
+                  }}
+                >
+                  Hide Question
+                </Button>
+                <div>Question is Visible!</div>
+              </div>
+            ) : null}
+            {i > liveQuiz.currentQuestionNumber ? (
+              <div
+                style={{
+                  color: getColors().TEXT_DESCRIPTION,
+                }}
+              >
+                Waiting to show...
+              </div>
+            ) : null}
+          </div>
+          {i + 1}. {q.text}
+          {q.imageLink ? (
+            <Img
+              style={{
+                width: '100%',
+              }}
+              src={q.imageLink}
+              alt="Question"
+            />
+          ) : null}
+        </>
+      )}
+    </Question>
+  );
+};
 
 interface UpdateQuizValues {
   roundNumber?: number | string;
@@ -180,8 +388,6 @@ const updateScoresAction = createAction(
       values.upToRoundNum = parseInt(values.upToRoundNum as string);
     }
 
-    console.log('UPDATE SCORES', values);
-
     const result = await fetchAsync<LiveQuizResponse>(
       'put',
       '/api/live-quiz-admin/quiz/' + params.liveQuizId + '/update-scores',
@@ -225,31 +431,32 @@ const AdminQuestionList = (props: {
   const { liveQuiz, updateAction } = props;
   const fetcher = useFetcher();
 
-  const handleShowQuestionClick = (ev: React.MouseEvent) => {
+  const handleShowAllClick = (ev: React.MouseEvent) => {
     ev.preventDefault();
     const formData = new FormData();
-    formData.set(
-      'questionNumber',
-      String((liveQuiz?.currentQuestionNumber ?? 0) + 1)
-    );
+    formData.set('questionNumber', String(currentRound.questionOrder.length));
     fetcher.submit(formData, {
       method: 'post',
       action: updateAction,
     });
   };
 
-  const handleHideQuestionClick = (ev: React.MouseEvent) => {
+  const handleHideAllClick = (ev: React.MouseEvent) => {
     ev.preventDefault();
     const formData = new FormData();
-    formData.set(
-      'questionNumber',
-      String((liveQuiz?.currentQuestionNumber ?? 1) - 1)
-    );
+    formData.set('questionNumber', String(0));
     fetcher.submit(formData, {
       method: 'post',
       action: updateAction,
     });
   };
+
+  const currentRound =
+    getRoundsFromLiveQuiz(liveQuiz)[
+      isShowingRoundAnswers(liveQuiz)
+        ? liveQuiz.currentRoundAnswerNumber - 1
+        : liveQuiz.currentRoundNumber - 1
+    ];
 
   return (
     <div>
@@ -287,92 +494,47 @@ const AdminQuestionList = (props: {
             color: getColors().TEXT_DEFAULT,
           }}
         >
-          Description:
+          {currentRound?.title}
           <br />
           <br />
-          {getCurrentRound(liveQuiz)?.description}
+          {currentRound?.description}
+          <div
+            style={{
+              display: isShowingRoundAnswers(liveQuiz) ? 'none' : 'block',
+            }}
+          >
+            <br />
+            <Button
+              color="secondary"
+              onClick={handleShowAllClick}
+              style={{
+                marginRight: '8px',
+              }}
+            >
+              Show All
+            </Button>
+            <Button color="secondary" onClick={handleHideAllClick}>
+              Hide All
+            </Button>
+          </div>
         </div>
         <ContentSpacer />
         {getQuestionsFromRoundInLiveQuiz(
           liveQuiz,
-          liveQuiz.currentRoundNumber - 1
+          isShowingRoundAnswers(liveQuiz)
+            ? liveQuiz.currentRoundAnswerNumber - 1
+            : liveQuiz.currentRoundNumber - 1
         ).map((q, i) => {
           return (
-            <Question
+            <QuestionSection
               key={q.id}
-              selected={i === liveQuiz.currentQuestionNumber}
-            >
-              {props.showAnswers ? (
-                <>
-                  {i + 1}. {q.text}
-                  <p
-                    style={{
-                      color:
-                        liveQuiz.quizState ===
-                        LiveQuizState.SHOWING_ANSWERS_ANSWERS_VISIBLE
-                          ? getColors().SUCCESS_TEXT
-                          : getColors().TEXT_DESCRIPTION,
-                    }}
-                  >
-                    Answer: &quot;{getQuestionAnswerString(q)}&quot;
-                  </p>
-                </>
-              ) : (
-                <>
-                  <div
-                    style={{
-                      margin: '16px 0px',
-                      height: '40px',
-                      display: 'flex',
-                      alignItems: 'center',
-                    }}
-                  >
-                    {i === liveQuiz.currentQuestionNumber ? (
-                      <Button
-                        color="primary"
-                        onClick={handleShowQuestionClick}
-                        disabled={isRoundLocked(liveQuiz)}
-                      >
-                        Show Question
-                      </Button>
-                    ) : null}
-                    {i < liveQuiz.currentQuestionNumber ? (
-                      <div
-                        style={{
-                          color: getColors().SUCCESS_TEXT,
-                          marginBottom: '8px',
-                        }}
-                      >
-                        <Button
-                          color="cancel"
-                          onClick={handleHideQuestionClick}
-                          disabled={
-                            i < liveQuiz.currentQuestionNumber - 1 ||
-                            isRoundLocked(liveQuiz)
-                          }
-                          style={{
-                            marginRight: '16px',
-                          }}
-                        >
-                          Hide Question
-                        </Button>
-                        <div>Question is Visible!</div>
-                      </div>
-                    ) : null}
-                    {i > liveQuiz.currentQuestionNumber ? (
-                      <div
-                        style={{
-                          color: getColors().TEXT_DESCRIPTION,
-                        }}
-                      >
-                        Waiting to show...
-                      </div>
-                    ) : null}
-                  </div>
-                  {i + 1}. {q.text}
-                </>
-              )}
-            </Question>
+              liveQuiz={props.liveQuiz}
+              q={q}
+              i={i}
+              currentRound={currentRound}
+              showAnswers={props.showAnswers}
+              updateAction={updateAction}
+            />
           );
         })}
       </div>
@@ -461,11 +623,7 @@ const AdminRoundSubmissionControlsButtons = (props: {
       });
     };
 
-  const lockRoundDisabled =
-    liveQuiz.currentQuestionNumber > 0 &&
-    liveQuiz.currentQuestionNumber <
-      getQuestionsFromRoundInLiveQuiz(liveQuiz, liveQuiz.currentRoundNumber - 1)
-        ?.length;
+  const lockRoundDisabled = false;
 
   return (
     <div>
@@ -931,7 +1089,11 @@ const LiveQuizAdmin = (props: EditLiveQuizProps) => {
                   Resume Showing Round
                 </Button>
                 <ContentSpacer />
-                <Button color="primary" onClick={handleGradeClick}>
+                <Button
+                  disabled={!isRoundLocked(liveQuiz)}
+                  color="primary"
+                  onClick={handleGradeClick}
+                >
                   Grade Answers
                 </Button>
               </>
@@ -986,8 +1148,13 @@ const LiveQuizAdmin = (props: EditLiveQuizProps) => {
                   liveQuiz={liveQuiz}
                   updateAction={updateAction}
                 />
-                <Button color="primary" onClick={handleGradeClick}>
-                  Grade Answers
+                <Button
+                  disabled={!isRoundLocked(liveQuiz)}
+                  color="primary"
+                  onClick={handleGradeClick}
+                >
+                  Grade Answers{' '}
+                  {!isRoundLocked(liveQuiz) ? '(Ensure round is locked.)' : ''}
                 </Button>
                 <AdminQuestionList
                   liveQuiz={liveQuiz}

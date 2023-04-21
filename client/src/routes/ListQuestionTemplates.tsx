@@ -6,6 +6,7 @@ import {
   Form,
   json,
   redirect,
+  useFetcher,
   useNavigate,
   useParams,
   useSubmit,
@@ -28,7 +29,7 @@ import { getColors } from 'style';
 import InlineIconButton from 'elements/InlineIconButton';
 import IconLeft from 'elements/IconLeft';
 import HiddenTextField from 'components/HiddenTextField';
-import { updateCacheRoundTemplate } from 'cache';
+import { updateCacheQuestionTemplate, updateCacheRoundTemplate } from 'cache';
 
 const InnerRoot = styled.div<Object>(() => {
   return {
@@ -75,6 +76,26 @@ const action = createAction(async (values: ReorderRoundsValues, params) => {
 
   return null;
 });
+
+const duplicateAction = createAction(
+  async (values: { questionTemplateId: string }, params) => {
+    const result = await fetchAsync<QuestionTemplateResponse>(
+      'post',
+      `/api/template/question/${values.questionTemplateId}/duplicate`,
+      {}
+    );
+
+    if (result.error) {
+      throwValidationError(result.message, values);
+    }
+
+    updateCacheQuestionTemplate(params.roundTemplateId, result.data.id, result);
+
+    return redirect(
+      `/quiz-template/${params.quizTemplateId}/round-template/${params.roundTemplateId}/question-template/${result.data.id}/edit`
+    );
+  }
+);
 
 interface ListQuestionTemplatesLoaderResponse {
   questionTemplates: QuestionTemplateResponse[];
@@ -127,6 +148,7 @@ const ListQuestionTemplates = () => {
   const navigate = useNavigate();
   const params = useParams();
   const submit = useSubmit();
+  const fetcher = useFetcher();
 
   const loaderResponse = useTypedLoaderData<
     FetchResponse<ListQuestionTemplatesLoaderResponse>
@@ -154,15 +176,6 @@ const ListQuestionTemplates = () => {
     );
   };
 
-  // const handleEditQuestionTemplateClick =
-  //   (id: string) => (ev: React.MouseEvent) => {
-  //     ev.preventDefault();
-  //     ev.stopPropagation();
-  //     navigate(
-  //       `/quiz-template/${params.roundTemplateId}/round-template/${params.roundTemplateResponse}/question-template/${id}/edit`
-  //     );
-  //   };
-
   const handleQuestionTemplateClick =
     (id: string) => (ev: React.MouseEvent) => {
       ev.preventDefault();
@@ -182,6 +195,18 @@ const ListQuestionTemplates = () => {
         '/edit'
     );
   };
+
+  const handleDuplicateQuestionTemplateClick =
+    (id: string) => (ev: React.MouseEvent) => {
+      ev.preventDefault();
+      ev.stopPropagation();
+      const formData = new FormData();
+      formData.append('questionTemplateId', id);
+      fetcher.submit(formData, {
+        method: 'post',
+        action: `/quiz-template/${params.quizTemplateId}/round-template/${params.roundTemplateId}/question-templates/${id}/duplicate`,
+      });
+    };
 
   return (
     <>
@@ -220,82 +245,95 @@ const ListQuestionTemplates = () => {
             Question Templates ({loaderResponse?.data.questionTemplates?.length}
             )
           </p>
-          {orderedQuestionTemplates.map((questionId, i) => {
-            const t = loaderResponse?.data.questionTemplates.find(
-              t => t.id === questionId
-            );
-            if (!t) {
-              return <div key={questionId}></div>;
-            }
+          <fetcher.Form
+            style={{
+              margin: '0px',
+            }}
+          >
+            {orderedQuestionTemplates.map((questionId, i) => {
+              const t = loaderResponse?.data.questionTemplates.find(
+                t => t.id === questionId
+              );
+              if (!t) {
+                return <div key={questionId}></div>;
+              }
 
-            const isDraggingThis = dragState.dragging && t.id === dragState.id;
+              const isDraggingThis =
+                dragState.dragging && t.id === dragState.id;
 
-            return (
-              <div key={t.id}>
-                {isDraggingThis ? (
-                  <div
+              return (
+                <div key={t.id}>
+                  {isDraggingThis ? (
+                    <div
+                      style={{
+                        width: '100%',
+                        height: '52px',
+                        border: '1px solid ' + getColors().PRIMARY,
+                        boxSizing: 'border-box',
+                      }}
+                    ></div>
+                  ) : null}
+
+                  <Button
+                    id={t.id}
+                    color="secondary"
                     style={{
-                      width: '100%',
-                      height: '52px',
-                      border: '1px solid ' + getColors().PRIMARY,
-                      boxSizing: 'border-box',
+                      width: isDraggingThis ? 'calc(100% - 50px)' : '100%',
+                      maxWidth: '800px',
+                      position: isDraggingThis ? 'absolute' : 'unset',
                     }}
-                  ></div>
-                ) : null}
-                <Button
-                  id={t.id}
-                  color="secondary"
-                  style={{
-                    width: '100%',
-                    maxWidth: '800px',
-                    position: isDraggingThis ? 'absolute' : 'unset',
-                  }}
-                  onClick={
-                    dragState.dragging
-                      ? () => void 0
-                      : handleQuestionTemplateClick(t.id)
-                  }
-                >
-                  <div
-                    style={{
-                      display: 'flex',
-                      justifyContent: 'space-between',
-                      width: '100%',
-                    }}
+                    onClick={
+                      dragState.dragging
+                        ? () => void 0
+                        : handleQuestionTemplateClick(t.id)
+                    }
                   >
-                    <InnerButton isDragging={true}>
-                      <InlineIconButton
-                        imgSrc="/res/drag-handle.svg"
-                        onMouseDown={ev => handleDragStart(t.id)(ev)}
-                        onTouchStart={ev => handleDragStart(t.id)(ev)}
-                        onClick={ev => {
-                          ev.stopPropagation();
-                          ev.preventDefault();
-                        }}
-                      ></InlineIconButton>
-                      <span
-                        style={{
-                          marginRight: '16px',
-                        }}
-                      >
-                        {i + 1}.
-                      </span>
-                      <div
-                        style={{
-                          width: 'calc(100% - 100px)',
-                          overflow: 'hidden',
-                          whiteSpace: 'pre',
-                          textOverflow: 'ellipsis',
-                        }}
-                      >
-                        {t.text || t.notes || 'Image question'}
-                      </div>
-                    </InnerButton>
-                  </div>
-                </Button>
-              </div>
-            );
-          })}
+                    <div
+                      style={{
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        width: '100%',
+                      }}
+                    >
+                      <InnerButton isDragging={true}>
+                        <InlineIconButton
+                          imgSrc="/res/drag-handle.svg"
+                          onMouseDown={ev => handleDragStart(t.id)(ev)}
+                          onTouchStart={ev => handleDragStart(t.id)(ev)}
+                          onClick={ev => {
+                            ev.stopPropagation();
+                            ev.preventDefault();
+                          }}
+                        ></InlineIconButton>
+                        <span
+                          style={{
+                            marginRight: '16px',
+                          }}
+                        >
+                          {i + 1}.
+                        </span>
+                        <div
+                          style={{
+                            width: 'calc(100% - 100px)',
+                            overflow: 'hidden',
+                            whiteSpace: 'pre',
+                            textOverflow: 'ellipsis',
+                            marginRight: '16px',
+                          }}
+                        >
+                          {t.text || t.notes || 'Image question'}
+                        </div>
+                        <InlineIconButton
+                          imgSrc="/res/trade.svg"
+                          onClick={handleDuplicateQuestionTemplateClick(t.id)}
+                        ></InlineIconButton>
+                      </InnerButton>
+                    </div>
+                  </Button>
+                </div>
+              );
+            })}
+          </fetcher.Form>
           <Form method="post" id="reorder-questions-form">
             {dragWasEdited ? (
               <p>
@@ -346,4 +384,9 @@ export const ListQuestionTemplatesRoute = {
   element: <ListQuestionTemplates />,
   loader,
   action,
+};
+
+export const DuplicateQuestionRoute = {
+  path: '/quiz-template/:quizTemplateId/round-template/:roundTemplateId/question-templates/:questionTemplateId/duplicate',
+  action: duplicateAction,
 };

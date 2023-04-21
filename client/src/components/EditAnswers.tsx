@@ -12,6 +12,7 @@ import {
 } from 'shared/responses';
 import { getColors } from 'style';
 import HiddenTextField from './HiddenTextField';
+import Img from 'elements/Img';
 
 interface EditAnswersProps {
   questionTemplate?: QuestionTemplateResponse;
@@ -109,7 +110,7 @@ const EditAnswers = (props: EditAnswersProps) => {
           defaultValue={state['answer' + (i + 1)]}
           onChange={handleAnswerChange(i + 1)}
           style={{
-            width: '50%',
+            width: '75%',
           }}
         />
       </div>
@@ -127,7 +128,7 @@ const EditAnswers = (props: EditAnswersProps) => {
           defaultValue={state['radio' + (i + 1)]}
           onChange={handleRadioChange(i + 1)}
           style={{
-            width: '50%',
+            width: '75%',
           }}
         />
       </div>
@@ -180,31 +181,43 @@ const EditAnswers = (props: EditAnswersProps) => {
         </label>
         <br />
         <br />
-        <input
-          type="checkbox"
-          name="isBonus"
-          id="isBonus"
-          defaultChecked={props.questionTemplate?.isBonus}
+        <div
           style={{
-            transform: 'scale(1.5)',
+            display: 'flex',
+            alignItems: 'center',
           }}
-        ></input>
-        <label htmlFor="isBonus"> This is a bonus question.</label>
+        >
+          <input
+            type="checkbox"
+            name="isBonus"
+            id="isBonus"
+            defaultChecked={props.questionTemplate?.isBonus}
+            style={{
+              transform: 'scale(1.5)',
+              marginRight: '8px',
+            }}
+          ></input>
+          <Img
+            style={{
+              width: '22px',
+              marginRight: '8px',
+            }}
+            alt="star"
+            src="/res/allied-star.svg"
+          />
+          <label htmlFor="isBonus"> This is a bonus question.</label>
+        </div>
       </div>
-      {/* <div
+      <div
+        id="radio boxes"
         style={{
-          marginBottom: '16px'
+          border: '1px solid ' + getColors().TEXT_DESCRIPTION,
+          padding: '8px',
+          display: radioBoxes.length <= 0 ? 'none' : 'block',
         }}
       >
-        <input
-          type="checkbox"
-          name="anyCorrect"
-          id="anyCorrect"
-          defaultChecked={props.questionTemplate?.orderMatters}
-        ></input>
-        <label htmlFor="anyCorrect"> Any of these answers is correct. </label>
-      </div> */}
-      {radioBoxes}
+        {radioBoxes}
+      </div>
       {radioBoxes.length > 0 ? (
         <div
           style={{
@@ -214,7 +227,15 @@ const EditAnswers = (props: EditAnswersProps) => {
           }}
         ></div>
       ) : null}
-      {answerBoxes}
+      <div
+        id="answer-boxes"
+        style={{
+          border: '1px solid ' + getColors().PRIMARY_TEXT,
+          padding: '8px',
+        }}
+      >
+        {answerBoxes}
+      </div>
     </>
   );
 };

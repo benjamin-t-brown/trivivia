@@ -93,7 +93,7 @@ export type AnswerStateGraded = Record<
   Partial<keyof AnswerState>,
   'true' | 'false'
 >;
-export type AnswerStateStats = Record<number, number>;
+export type AnswerStateStats = Record<number | string, number | string[]>;
 
 export const stringToAnswerState = (s?: string): AnswerState => {
   try {

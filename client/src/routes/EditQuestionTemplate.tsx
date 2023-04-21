@@ -374,19 +374,6 @@ const EditQuestionTemplate = (props: EditQuestionProps) => {
                 Delete
               </Button>
             )}
-            {/* {props.isNew ? null : (
-              <Button
-                flex
-                color="primary"
-                style={{
-                  width: '100%',
-                }}
-                onClick={handleDuplicateClick}
-              >
-                <IconLeft src="/res/trash-can.svg" />
-                Duplicate
-              </Button>
-            )} */}
           </InnerRoot>
         </Form>
       </MobileLayout>

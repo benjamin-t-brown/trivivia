@@ -25,6 +25,7 @@ import InlineIconButton from 'elements/InlineIconButton';
 import IconLeft from 'elements/IconLeft';
 import HiddenTextField from 'components/HiddenTextField';
 import { updateCacheQuizTemplate } from 'cache';
+import Img from 'elements/Img';
 
 const InnerRoot = styled.div<Object>(() => {
   return {
@@ -254,6 +255,7 @@ const ListRoundTemplates = () => {
                     <div
                       style={{
                         display: 'flex',
+                        width: '100%',
                       }}
                     >
                       <InlineIconButton
@@ -272,22 +274,27 @@ const ListRoundTemplates = () => {
                       >
                         {i + 1}.
                       </span>
-                      <span
+                      <div
                         style={{
+                          width: 'calc(100% - 100px)',
+                          overflow: 'hidden',
+                          whiteSpace: 'pre',
+                          marginRight: '8px',
+                          textOverflow: 'ellipsis',
                           textAlign: 'left',
                         }}
                       >
-                        {t.title}
-                      </span>
-                    </div>
-                    <div
-                      style={{
-                        width: '22px',
-                        flexShrink: 0,
-                      }}
-                      onClick={handleEditRoundTemplateClick(t.id)}
-                    >
-                      <img alt="Edit" src="/res/edit.svg" />
+                        <span>{t.title}</span>
+                      </div>
+                      <div
+                        style={{
+                          width: '22px',
+                          flexShrink: 0,
+                        }}
+                        onClick={handleEditRoundTemplateClick(t.id)}
+                      >
+                        <Img alt="Edit" src="/res/edit.svg" />
+                      </div>
                     </div>
                   </div>
                 </Button>

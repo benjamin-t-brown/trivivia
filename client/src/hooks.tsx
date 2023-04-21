@@ -214,6 +214,9 @@ export const useDnDListHandlers = (args: {
 
   const handleDragStart = (id: string) => (ev: MouseEvent | TouchEvent) => {
     const elem = document.getElementById(id);
+    if (ev.type === 'mousedown') {
+      ev.preventDefault();
+    }
     if (elem) {
       const clientY = getClientYFromClickBasedEvent(ev);
       elem.style.transform = `translateY(${-args.clickOffset}px)`;
@@ -259,7 +262,7 @@ export const useDnDListHandlers = (args: {
           offset++;
         }
 
-        console.log('drag offset', offset);
+        // console.log('drag offset', offset);
 
         const reorder = (arr: string[], ind: number, offset: number) => {
           arr = [...arr];
@@ -290,8 +293,6 @@ export const useDnDListHandlers = (args: {
           offset
         );
         args.setArr(newArr);
-
-        console.log('old arr new arr', args.arr, newArr);
 
         setWasEdited(true);
 

@@ -1,7 +1,7 @@
 import { fetchAsync, FetchResponse } from 'actions';
 import MobileLayout from 'elements/MobileLayout';
 import React from 'react';
-import { json, redirect } from 'react-router-dom';
+import { json, redirect, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { useTypedLoaderData } from 'hooks';
 import NavButton from 'components/NavButton';
@@ -13,6 +13,7 @@ import CardTitle from 'elements/CardTitle';
 import Button from 'elements/Button';
 import { LiveQuizStartRoute } from './LiveQuizStart';
 import { ListQuizTemplatesRoute } from './ListQuizTemplates';
+import Img from 'elements/Img';
 
 const InnerRoot = styled.div<Object>(() => {
   return {
@@ -46,6 +47,7 @@ const AdminLanding = () => {
   const accountResponse = useTypedLoaderData<FetchResponse<AccountResponse>>({
     isError: false,
   });
+  const navigate = useNavigate();
 
   return (
     <>
@@ -55,10 +57,16 @@ const AdminLanding = () => {
         </CardTitleZone>
         <CardTitle>Trivivia</CardTitle>
         <CardTitleZone align="right">
-          <Button color="plain">
-            <img
+          <Button
+            color="plain"
+            onClick={() => {
+              navigate('/settings');
+            }}
+          >
+            <Img
               style={{
                 width: '22px',
+                background: 'unset',
               }}
               alt="Settings"
               src="/res/cog.svg"

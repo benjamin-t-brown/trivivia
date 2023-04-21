@@ -1,7 +1,13 @@
 import { createAction, fetchAsync, FetchResponse } from 'actions';
 import MobileLayout from 'elements/MobileLayout';
 import React, { ReactNode } from 'react';
-import { json, redirect, useFetcher, useParams } from 'react-router-dom';
+import {
+  json,
+  redirect,
+  useFetcher,
+  useNavigate,
+  useParams,
+} from 'react-router-dom';
 import styled from 'styled-components';
 import {
   throwValidationError,
@@ -45,6 +51,7 @@ import {
   isWaitingForRoundToComplete,
   isWaitingForRoundToStart,
 } from 'quizUtils';
+import Img from 'elements/Img';
 
 const InnerRoot = styled.div<Object>(() => {
   return {
@@ -298,7 +305,7 @@ const SubmittedAnswersRound = (props: {
   );
 };
 
-const CorrectAnswers = (props: {
+export const CorrectAnswers = (props: {
   correctAnswers: string[];
   numTeams: number;
   answersStats?: AnswerStateStats;
@@ -307,7 +314,8 @@ const CorrectAnswers = (props: {
     // the percentage of teams who got 1 answer correct (since there's only one input, then this is
     // all the data)
     const pct = Math.round(
-      (100 * (props.answersStats?.[1] ?? 0)) / props.numTeams
+      (100 * ((props.answersStats?.[1] as number | undefined) ?? 0)) /
+        props.numTeams
     );
 
     return (
@@ -361,7 +369,8 @@ const CorrectAnswers = (props: {
     let ctr = 0;
     for (let i = 0; i <= props.correctAnswers.length; i++) {
       const numCorrect = i;
-      const pct = (100 * (answersStats[numCorrect] ?? 0)) / props.numTeams;
+      const pct =
+        (100 * ((answersStats[numCorrect] as number) ?? 0)) / props.numTeams;
       pctResult.push(pct);
       if (pct) {
         background += `${colors[ctr]} ${pctResult
@@ -530,7 +539,7 @@ const QuestionAnswer = (props: {
       const isCorrectAnswer = props.answersGraded[answerKey] === 'true';
 
       icon = (
-        <img
+        <Img
           style={{
             width: '22px',
             marginRight: '16px',
@@ -602,7 +611,7 @@ const QuestionAnswer = (props: {
       if (props.answersGraded[radioAnswerKey] === 'true' && checked) {
         style.border = '1px solid ' + getColors().SUCCESS_TEXT;
         icon = (
-          <img
+          <Img
             style={{
               width: '22px',
               marginRight: '16px',
@@ -618,7 +627,7 @@ const QuestionAnswer = (props: {
       if (props.answersGraded[radioAnswerKey] === 'false' && checked) {
         style.border = '1px solid ' + getColors().ERROR_TEXT;
         icon = (
-          <img
+          <Img
             style={{
               width: '22px',
               marginRight: '16px',
@@ -697,7 +706,7 @@ const QuestionAnswer = (props: {
         {props.questionNumber}. {props.question.text}
       </div>
       {props.question.imageLink ? (
-        <img
+        <Img
           style={{
             width: '100%',
           }}
@@ -880,7 +889,7 @@ const QuizInRound = (props: { quizState: LiveQuizPublicStateResponse }) => {
                     alignItems: 'center',
                   }}
                 >
-                  <img
+                  <Img
                     style={{
                       width: '42px',
                     }}
@@ -1019,6 +1028,7 @@ const LiveQuiz = (props: { error?: boolean }) => {
   const params = useParams();
   const formId = 'live-quiz-form';
   const fetcher = useFetcher();
+  const navigate = useNavigate();
 
   let liveQuizResponse = useTypedLoaderData<
     FetchResponse<LiveQuizPublicStateResponse>
@@ -1046,10 +1056,16 @@ const LiveQuiz = (props: { error?: boolean }) => {
         <CardTitleZone align="left"></CardTitleZone>
         <CardTitle>Trivivia</CardTitle>
         <CardTitleZone align="right">
-          <Button color="plain">
-            <img
+          <Button
+            color="plain"
+            onClick={() => {
+              navigate('/settings');
+            }}
+          >
+            <Img
               style={{
                 width: '22px',
+                background: 'unset',
               }}
               alt="Settings"
               src="/res/cog.svg"

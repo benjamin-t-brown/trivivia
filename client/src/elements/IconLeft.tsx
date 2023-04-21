@@ -1,8 +1,9 @@
 import React from 'react';
+import Img from './Img';
 
 const IconLeft = (props: { src: string; style?: Record<string, string> }) => {
   return (
-    <img
+    <Img
       alt="icon"
       style={{
         width: '20px',

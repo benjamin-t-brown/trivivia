@@ -1,6 +1,7 @@
 import React, { MouseEvent } from 'react';
 import { getColors } from 'style';
 import styled from 'styled-components';
+import Img from './Img';
 
 const Root = styled.span(() => {
   return {
@@ -31,7 +32,7 @@ const InlineIconButton = (
       onMouseDown={props.onMouseDown}
       onTouchStart={props.onTouchStart}
     >
-      <img
+      <Img
         style={{
           width: '22px',
         }}

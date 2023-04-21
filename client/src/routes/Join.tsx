@@ -1,7 +1,14 @@
 import { createAction, fetchAsync, FetchResponse } from 'actions';
 import MobileLayout from 'elements/MobileLayout';
 import React from 'react';
-import { Form, json, Link, redirect, useParams } from 'react-router-dom';
+import {
+  Form,
+  json,
+  Link,
+  redirect,
+  useNavigate,
+  useParams,
+} from 'react-router-dom';
 import styled from 'styled-components';
 import {
   throwValidationError,
@@ -35,6 +42,7 @@ import {
   setLiveQuizAnswersLs,
   setLiveQuizTeamId,
 } from 'utils';
+import Img from 'elements/Img';
 
 const InnerRoot = styled.div<Object>(() => {
   return {
@@ -153,6 +161,7 @@ const QuizTeamsList = (props: { quizState: LiveQuizPublicStateResponse }) => {
 const JoinQuiz = (props: { error?: boolean }) => {
   const params = useParams();
   const formId = 'join-quiz-form';
+  const navigate = useNavigate();
 
   const liveQuizResponse = useTypedLoaderData<
     FetchResponse<LiveQuizPublicStateResponse>
@@ -176,10 +185,16 @@ const JoinQuiz = (props: { error?: boolean }) => {
         </CardTitleZone>
         <CardTitle>Trivivia</CardTitle>
         <CardTitleZone align="right">
-          <Button color="plain">
-            <img
+          <Button
+            color="plain"
+            onClick={() => {
+              navigate('/settings');
+            }}
+          >
+            <Img
               style={{
                 width: '22px',
+                background: 'unset',
               }}
               alt="Settings"
               src="/res/cog.svg"

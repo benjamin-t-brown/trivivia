@@ -1,4 +1,6 @@
-const colorsDark = {
+import { getSettingsFromLs } from 'utils';
+
+export const colorsDark = {
   PRIMARY: '#005278',
   SECONDARY: '#202020',
   CANCEL: '#561616',
@@ -12,65 +14,26 @@ const colorsDark = {
   SUCCESS_BACKGROUND: '#005f1b',
   PRIMARY_TEXT: '#8cdaff',
   WARNING_TEXT: '#dd9251',
-  // BLACK: '#111',
-  // WHITE: '#F8F8F8',
-  // LIGHTGREY: '#BCB7C5',
-  // GREY: '#999',
-  // DARKGREY: '#2E3740',
-  // DARKGREY_ALT: '#5A5353',
-  // BGGREY: '#333',
-  // RED: '#BE2633',
-  // LIGHTRED: '#E1534A',
-  // DARKRED: '#5E3643',
-  // PINK: '#FFAEB6',
-  // LIGHTGREEN: '#B6D53C',
-  // GREEN: '#44891A',
-  // DARKGREEN: '#005F1B',
-  // BROWN: '#A46422',
-  // ORANGE: '#FAB40B',
-  // LIGHTPURPLE: '#AE57A4',
-  // PURPLE: '#9964F9',
-  // DARKPURPLE: '#39314B',
-  // LIGHTBLUE: '#42CAFD',
-  // BLUE: '#31A2F2',
-  // DARKBLUE: '#243F72',
-  // DARKBLUE_ALT: '#3978A8',
-  // YELLOW: '#F4B41B',
-  // DARKYELLOW: '#A05B53',
-  // TRANSPARENT: 'rgba(0, 0, 0, 0)',
 };
 
-const colorsLight = {
-  // BLACK: '#111',
-  // WHITE: '#F8F8F8',
-  // LIGHTGREY: '#BCB7C5',
-  // GREY: '#999',
-  // DARKGREY: '#2E3740',
-  // DARKGREY_ALT: '#5A5353',
-  // BGGREY: '#333',
-  // RED: '#BE2633',
-  // LIGHTRED: '#E1534A',
-  // DARKRED: '#5E3643',
-  // PINK: '#FFAEB6',
-  // LIGHTGREEN: '#B6D53C',
-  // GREEN: '#44891A',
-  // DARKGREEN: '#005F1B',
-  // BROWN: '#A46422',
-  // ORANGE: '#FAB40B',
-  // LIGHTPURPLE: '#AE57A4',
-  // PURPLE: '#9964F9',
-  // DARKPURPLE: '#39314B',
-  // LIGHTBLUE: '#42CAFD',
-  // BLUE: '#31A2F2',
-  // DARKBLUE: '#243F72',
-  // DARKBLUE_ALT: '#3978A8',
-  // YELLOW: '#F4B41B',
-  // DARKYELLOW: '#A05B53',
-  // TRANSPARENT: 'rgba(0, 0, 0, 0)',
+export const colorsLight = {
+  PRIMARY: '#9ad3ed',
+  SECONDARY: '#e3e0e0',
+  CANCEL: '#ff8181',
+  BACKGROUND: '#FFF',
+  BACKGROUND2: '#ededed',
+  TEXT_DEFAULT: 'black',
+  TEXT_DESCRIPTION: 'rgba(0, 0, 0, 0.85)',
+  ERROR_TEXT: '#aa0000',
+  ERROR_BACKGROUND: '#8f3333',
+  SUCCESS_TEXT: '#00aa00',
+  SUCCESS_BACKGROUND: '#005f1b',
+  PRIMARY_TEXT: '#005278',
+  WARNING_TEXT: '#884312',
 };
 
 export const getColors = () => {
-  return colorsDark;
+  return getSettingsFromLs().lightMode ? colorsLight : colorsDark;
 };
 
 export const MEDIA_QUERY_PHONE_WIDTH = '@media (max-width: 800px)';

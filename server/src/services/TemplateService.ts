@@ -364,10 +364,13 @@ export class TemplateService {
     return questionTemplate.save();
   }
 
-  async deleteQuestionTemplate(params: { questionId: string }) {
-    const questionTemplate = await this.findQuestionById(params.questionId);
+  async deleteQuestionTemplate(params: { questionTemplateId: string }) {
+    const questionTemplate = await this.findQuestionById(
+      params.questionTemplateId
+    );
 
     if (!questionTemplate) {
+      logger.error(`No question found to delete:`, params.questionTemplateId);
       return;
     }
 
@@ -376,7 +379,9 @@ export class TemplateService {
     );
     if (roundTemplate) {
       const questionOrder: string[] = JSON.parse(roundTemplate.questionOrder);
-      const ind = questionOrder.findIndex(id => id === params.questionId);
+      const ind = questionOrder.findIndex(
+        id => id === params.questionTemplateId
+      );
       if (ind > -1) {
         questionOrder.splice(ind, 1);
       }
@@ -386,5 +391,32 @@ export class TemplateService {
 
     await questionTemplate.destroy();
     return questionTemplate;
+  }
+
+  async duplicateQuestionTemplate(params: { questionTemplateId: string }) {
+    const questionTemplate = await this.findQuestionById(
+      params.questionTemplateId
+    );
+
+    if (!questionTemplate) {
+      logger.error(
+        `No question found to duplicate:`,
+        params.questionTemplateId
+      );
+      return;
+    }
+
+    const duplicatedQuestionTemplate = await this.createQuestionTemplate({
+      roundTemplateId: questionTemplate.roundTemplate.id,
+      text: '(DUPLICATE) ' + questionTemplate.text,
+      answers: questionTemplate.answers,
+      answerType: questionTemplate.answerType,
+      orderMatters: questionTemplate.orderMatters,
+      isBonus: questionTemplate.isBonus,
+      notes: questionTemplate.notes,
+      imageLink: questionTemplate.imageLink,
+    });
+
+    return duplicatedQuestionTemplate;
   }
 }

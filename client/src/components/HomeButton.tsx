@@ -1,4 +1,5 @@
 import Button from 'elements/Button';
+import Img from 'elements/Img';
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -12,9 +13,10 @@ const HomeButton = () => {
 
   return (
     <Button color="plain" onClick={handleClick}>
-      <img
+      <Img
         style={{
           width: '22px',
+          background: 'unset',
         }}
         alt="Home"
         src="/res/house.svg"

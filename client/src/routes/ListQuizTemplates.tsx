@@ -10,6 +10,7 @@ import { QuizTemplateResponse } from 'shared/responses';
 import TextCenter from 'elements/TextCenter';
 import { getColors } from 'style';
 import { quizTemplateIsReady } from 'validation';
+import Img from 'elements/Img';
 
 const InnerRoot = styled.div<Object>(() => {
   return {
@@ -94,6 +95,15 @@ const ListQuizTemplates = () => {
               >
                 <div
                   style={{
+                    fontSize: '12px',
+                    textAlign: 'left',
+                    color: getColors().TEXT_DESCRIPTION,
+                  }}
+                >
+                  Updated: {new Date(t.updatedOn).toISOString()}
+                </div>
+                <div
+                  style={{
                     display: 'flex',
                     justifyContent: 'space-between',
                     alignItems: 'center',
@@ -109,26 +119,18 @@ const ListQuizTemplates = () => {
                   >
                     <span
                       style={{
-                        width: 'calc(100% - 132px)',
+                        width: 'calc(100% - 90px)',
                       }}
                     >
                       {t.name}
                     </span>
-                    {/* <span
-                      style={{
-                        color: getColors().TEXT_DESCRIPTION,
-                        width: '100px',
-                        marginLeft: '16px',
-                      }}
-                    >
-                      {t.numRounds} Rounds
-                    </span> */}
                     <span
                       style={{
                         color: quizTemplateIsReady(t)
                           ? getColors().SUCCESS_TEXT
                           : getColors().ERROR_TEXT,
-                        width: '112px',
+                        width: '60px',
+                        textAlign: 'center',
                       }}
                     >
                       {quizTemplateIsReady(t) ? 'Ready' : 'Not Ready'}
@@ -140,7 +142,7 @@ const ListQuizTemplates = () => {
                     }}
                     onClick={handleEditQuizTemplateClick(t.id)}
                   >
-                    <img alt="Edit" src="/res/edit.svg" />
+                    <Img alt="Edit" src="/res/edit.svg" />
                   </div>
                 </div>
               </Button>

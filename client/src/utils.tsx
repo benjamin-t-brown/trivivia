@@ -111,6 +111,28 @@ export const getLiveQuizAnswersLs = (
   }
 };
 
+interface SettingsArgs {
+  lightMode: boolean;
+}
+
+export const saveSettingsToLs = (settings: SettingsArgs) => {
+  localStorage.setItem('trivivia-settings', JSON.stringify(settings));
+};
+
+export const getSettingsFromLs = (): SettingsArgs => {
+  const defaultSettings = {
+    lightMode: false,
+  };
+  try {
+    return (
+      JSON.parse(localStorage.getItem('trivivia-settings') as string) ||
+      defaultSettings
+    );
+  } catch (e) {
+    return defaultSettings;
+  }
+};
+
 export const ANSWER_DELIMITER = ' | ';
 
 export const getRoundAnswersArrays = (

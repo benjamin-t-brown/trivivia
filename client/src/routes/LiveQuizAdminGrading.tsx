@@ -22,6 +22,7 @@ import Input from 'elements/Input';
 import { AnswerStateGraded } from 'shared/responses';
 import { GradeInputState } from 'shared/requests';
 import Accordion, { AccordionItem } from 'elements/Accordion';
+import Img from 'elements/Img';
 
 const InnerRoot = styled.div<Object>(() => {
   return {
@@ -280,13 +281,14 @@ const RoundAnswer = (props: {
                       marginLeft: '16px',
                     }}
                   >
-                    <img
+                    <Img
+                      draggable={false}
                       style={{
                         width: '22px',
                         background:
                           gradeState[gradeKey] === 'true'
                             ? getColors().SUCCESS_BACKGROUND
-                            : 'unset',
+                            : undefined,
                       }}
                       alt="Correct"
                       src="/res/check-mark.svg"
@@ -307,13 +309,14 @@ const RoundAnswer = (props: {
                       marginLeft: '16px',
                     }}
                   >
-                    <img
+                    <Img
+                      draggable={false}
                       style={{
                         width: '22px',
                         background:
                           gradeState[gradeKey] === 'false'
                             ? getColors().ERROR_BACKGROUND
-                            : 'unset',
+                            : undefined,
                       }}
                       alt="Incorrect"
                       src="/res/cancel.svg"
@@ -529,9 +532,10 @@ const LiveQuizAdminGrading = (props: EditLiveQuizProps) => {
             }}
           >
             {isGraded ? (
-              <img
+              <Img
                 alt="Graded"
                 src="/res/check-mark.svg"
+                draggable={false}
                 style={{
                   marginRight: '16px',
                   background: getColors().SUCCESS_BACKGROUND,
@@ -539,9 +543,10 @@ const LiveQuizAdminGrading = (props: EditLiveQuizProps) => {
                 }}
               />
             ) : (
-              <img
+              <Img
                 alt="Not Graded"
                 src="/res/cancel.svg"
+                draggable={false}
                 style={{
                   marginRight: '16px',
                   background: getColors().ERROR_BACKGROUND,
@@ -619,7 +624,7 @@ const LiveQuizAdminGrading = (props: EditLiveQuizProps) => {
             >
               Go Back To Quiz
             </Button>
-            <Button
+            {/* <Button
               color="primary"
               style={{
                 width: '100%',
@@ -630,8 +635,21 @@ const LiveQuizAdminGrading = (props: EditLiveQuizProps) => {
             </Button>
             <div style={{ color: getColors().ERROR_TEXT }}>
               {validationError}
-            </div>
+            </div> */}
             {elems}
+            <Button
+              color="primary"
+              style={{
+                width: '100%',
+                marginTop: '32px',
+              }}
+              onClick={handleSubmitGradeClick}
+            >
+              Submit Grades
+            </Button>
+            <div style={{ color: getColors().ERROR_TEXT }}>
+              {validationError}
+            </div>
           </InnerRoot>
         </fetcher.Form>
       </MobileLayout>

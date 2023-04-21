@@ -8,7 +8,7 @@ const Root = styled.div<Object>(() => {
     left: '0px',
     top: '0px',
     width: '100%',
-    height: 'calc(100% - 52px)',
+    height: 'calc(100% - 55px)',
     display: 'flex',
     justifyContent: 'center',
     overflow: 'auto',
@@ -35,7 +35,7 @@ const MobileLayout = (
     <Root
       id="content-root"
       style={{
-        top: props.topBar ? '52px' : '0px',
+        top: props.topBar ? '55px' : '0px',
       }}
     >
       <InnerRoot useBoxShadow={props.useBoxShadow}>

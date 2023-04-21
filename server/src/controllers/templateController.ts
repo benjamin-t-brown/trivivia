@@ -388,7 +388,7 @@ export const initTemplateControllers = (router: Router) => {
     '/api/template/question/:id',
     async function deleteRoundTemplate(params) {
       const questionTemplate = await templateService.deleteQuestionTemplate({
-        questionId: params.id,
+        questionTemplateId: params.id,
       });
 
       if (!questionTemplate) {
@@ -396,6 +396,20 @@ export const initTemplateControllers = (router: Router) => {
       }
 
       return questionTemplate.getResponseJson();
+    }
+  );
+
+  registerPost(
+    router,
+    '/api/template/question/:questionTemplateId/duplicate',
+    async function duplicateQuestionTemplateController(params: {
+      questionTemplateId: string;
+    }) {
+      const questionTemplate = await templateService.duplicateQuestionTemplate({
+        questionTemplateId: params.questionTemplateId,
+      });
+
+      return questionTemplate?.getResponseJson();
     }
   );
 };

@@ -1,4 +1,5 @@
 import Button from 'elements/Button';
+import Img from 'elements/Img';
 import { useConfirmDialog } from 'hooks';
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -37,10 +38,11 @@ const BackButton = (props: BackButtonProps) => {
   return (
     <>
       <Button color="plain" onClick={handleClick}>
-        <img
+        <Img
           style={{
             width: '22px',
             transform: 'rotate(90deg)',
+            background: 'unset',
           }}
           alt="Home"
           src="/res/plain-arrow.svg"

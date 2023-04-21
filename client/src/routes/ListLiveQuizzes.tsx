@@ -10,6 +10,7 @@ import { LiveQuizResponse } from 'shared/responses';
 import TextCenter from 'elements/TextCenter';
 import { getColors } from 'style';
 import { LiveQuizStartRoute } from './LiveQuizStart';
+import Img from 'elements/Img';
 
 const InnerRoot = styled.div<Object>(() => {
   return {
@@ -115,7 +116,7 @@ const ListLiveQuizzes = () => {
                     }}
                     onClick={handleEditQuizClick(t.id)}
                   >
-                    <img alt="Edit" src="/res/edit.svg" />
+                    <Img alt="Edit" src="/res/edit.svg" />
                   </div>
                 </div>
               </Button>

@@ -746,8 +746,13 @@ export class LiveQuizService {
     const modelsToSave: Model[] = [];
 
     const stats: QuizStats = {};
+    const quizTemplate: QuizTemplateResponse = JSON.parse(
+      liveQuiz.quizTemplateJson
+    );
 
     for (const teamId in gradeState) {
+      const team = liveQuiz.liveQuizTeams.find(t => t.id === teamId);
+
       for (const roundId in gradeState[teamId]) {
         if (!stats[roundId]) {
           stats[roundId] = {};
@@ -757,7 +762,7 @@ export class LiveQuizService {
 
         if (!liveQuizRoundAnswers) {
           logger.error(
-            `Could not submit grades for team ${teamId}, no round answers found for roundId=${roundId}.`
+            `Could not submit grades for team ${teamId}, no LiveQuizRoundAnswer found for roundId=${roundId}.`
           );
           throw new Error('Failed to submit grades.');
         }
@@ -765,7 +770,7 @@ export class LiveQuizService {
         const roundGradeState = gradeState?.[teamId]?.[roundId];
         if (!roundGradeState) {
           logger.error(
-            `Could not submit grades for team ${teamId}, no answer state found for roundId=${roundId}.`
+            `Could not submit grades for team ${teamId}, no roundGradeState found for roundId=${roundId}.`
           );
           throw new Error('Failed to submit grades.');
         }
@@ -779,6 +784,14 @@ export class LiveQuizService {
 
           const questionGradeState = roundGradeState[questionNumber];
 
+          const roundTemplate = quizTemplate.rounds?.find(
+            r => r.id === roundId
+          );
+          const questionTemplate = roundTemplate?.questions?.find(
+            q =>
+              q.id === roundTemplate.questionOrder[Number(questionNumber) - 1]
+          );
+
           let numberOfCorrectAnswers = 0;
           for (const answerKey in questionGradeState) {
             if (questionGradeState[answerKey] === 'true') {
@@ -790,8 +803,20 @@ export class LiveQuizService {
           ) {
             stats[roundId][questionNumber][numberOfCorrectAnswers] = 1;
           } else {
-            stats[roundId][questionNumber][numberOfCorrectAnswers]++;
+            (stats[roundId][questionNumber][
+              numberOfCorrectAnswers
+            ] as number)++;
           }
+
+          const teamsWhoGotCorrect: string[] =
+            (stats[roundId][questionNumber].publicTeamIdsCorrect as string[]) ??
+            [];
+
+          if (numberOfCorrectAnswers === 1 && team?.publicId) {
+            teamsWhoGotCorrect.push(team.publicId);
+          }
+          stats[roundId][questionNumber].publicTeamIdsCorrect =
+            teamsWhoGotCorrect;
         }
       }
     }
