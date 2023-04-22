@@ -291,7 +291,7 @@ export const initTemplateControllers = (router: Router) => {
       if (!validateString(text, 0, 500)) {
         throw new InvalidInputError('Not valid text.');
       }
-      if (!validateString(answers)) {
+      if (!validateString(answers, 0, 1000)) {
         throw new InvalidInputError('Not valid answers.');
       }
       if (!validateAnswerType(answerType)) {
@@ -352,7 +352,7 @@ export const initTemplateControllers = (router: Router) => {
       if (!validateString(text, 0, 500)) {
         throw new InvalidInputError('Not valid text.');
       }
-      if (!validateString(answers)) {
+      if (!validateString(answers, 0, 1000)) {
         throw new InvalidInputError('Not valid answers.');
       }
       if (!validateAnswerType(answerType)) {

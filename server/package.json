@@ -26,6 +26,7 @@
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
+    "compression": "^1.7.4",
     "cookie-session": "^2.0.0",
     "cors": "^2.8.5",
     "email-validator": "^2.0.4",
