@@ -116,7 +116,7 @@ const QuestionSection = (props: {
   const { liveQuiz, currentRound, i, q, updateAction } = props;
   const fetcher = useFetcher();
   const [selectedPublicTeamId, setSelectedPublicTeamId] = React.useState('');
-  const stats = props.liveQuiz.stats[currentRound.id][i + 1];
+  const stats = props.liveQuiz.stats?.[currentRound.id]?.[i + 1] ?? {};
   const bonusCorrectPublicTeamIds =
     (stats?.publicTeamIdsCorrect as string[]) ?? [];
 
@@ -296,13 +296,17 @@ const QuestionSection = (props: {
           </div>
           {i + 1}. {q.text}
           {q.imageLink ? (
-            <Img
-              style={{
-                width: '100%',
-              }}
-              src={q.imageLink}
-              alt="Question"
-            />
+            q.imageLink.includes('<iframe ') ? (
+              <div dangerouslySetInnerHTML={{ __html: q.imageLink }}></div>
+            ) : (
+              <Img
+                style={{
+                  width: '100%',
+                }}
+                src={q.imageLink}
+                alt="Question"
+              />
+            )
           ) : null}
         </>
       )}

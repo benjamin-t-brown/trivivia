@@ -706,13 +706,19 @@ const QuestionAnswer = (props: {
         {props.questionNumber}. {props.question.text}
       </div>
       {props.question.imageLink ? (
-        <Img
-          style={{
-            width: '100%',
-          }}
-          src={props.question.imageLink}
-          alt="Question"
-        />
+        props.question.imageLink.includes('<iframe ') ? (
+          <div
+            dangerouslySetInnerHTML={{ __html: props.question.imageLink }}
+          ></div>
+        ) : (
+          <Img
+            style={{
+              width: '100%',
+            }}
+            src={props.question.imageLink}
+            alt="Question"
+          />
+        )
       ) : null}
       <div
         style={{
