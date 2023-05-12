@@ -8,7 +8,7 @@ import { useTypedLoaderData } from 'hooks';
 import DefaultTopBar from 'components/DefaultTopBar';
 import { LiveQuizResponse } from 'shared/responses';
 import TextCenter from 'elements/TextCenter';
-import { getColors } from 'style';
+import { colorsDark, getColors } from 'style';
 import { LiveQuizStartRoute } from './LiveQuizStart';
 import Img from 'elements/Img';
 
@@ -105,7 +105,7 @@ const ListLiveQuizzes = () => {
                     }}
                   >
                     <div>{t.name}</div>
-                    <span style={{ color: getColors().TEXT_DESCRIPTION }}>
+                    <span style={{ color: colorsDark.TEXT_DESCRIPTION }}>
                       Current Round: {t.currentRoundNumber} /{' '}
                       {t.quizTemplateJson.numRounds}
                     </span>

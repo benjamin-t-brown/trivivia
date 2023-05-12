@@ -8,7 +8,7 @@ import { useTypedLoaderData } from 'hooks';
 import DefaultTopBar from 'components/DefaultTopBar';
 import { QuizTemplateResponse } from 'shared/responses';
 import TextCenter from 'elements/TextCenter';
-import { getColors } from 'style';
+import { colorsDark, getColors } from 'style';
 import { quizTemplateIsReady } from 'validation';
 import Img from 'elements/Img';
 
@@ -97,7 +97,7 @@ const ListQuizTemplates = () => {
                   style={{
                     fontSize: '12px',
                     textAlign: 'left',
-                    color: getColors().TEXT_DESCRIPTION,
+                    color: colorsDark.TEXT_DESCRIPTION,
                   }}
                 >
                   Updated: {new Date(t.updatedOn).toISOString()}
@@ -114,21 +114,29 @@ const ListQuizTemplates = () => {
                       width: 'calc(100% - 22px)',
                       display: 'flex',
                       textAlign: 'left',
-                      alignItems: 'center',
+                      alignItems: 'flex-start',
                     }}
                   >
                     <span
                       style={{
-                        width: 'calc(100% - 90px)',
+                        width: 'calc(100% - 32px)',
                       }}
                     >
                       {t.name}
                     </span>
+                  </div>
+                  <div
+                    style={{
+                      width: '122px',
+                      transform: 'translateY(-6px)',
+                      marginRight: '23px',
+                    }}
+                  >
                     <span
                       style={{
                         color: quizTemplateIsReady(t)
-                          ? getColors().SUCCESS_TEXT
-                          : getColors().ERROR_TEXT,
+                          ? colorsDark.SUCCESS_TEXT
+                          : colorsDark.ERROR_TEXT,
                         width: '60px',
                         textAlign: 'center',
                       }}
@@ -139,6 +147,8 @@ const ListQuizTemplates = () => {
                   <div
                     style={{
                       width: '22px',
+                      transform: 'translateY(-6px)',
+                      flexShrink: 0,
                     }}
                     onClick={handleEditQuizTemplateClick(t.id)}
                   >

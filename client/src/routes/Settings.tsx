@@ -10,12 +10,17 @@ import {
   useNavigation,
   useNavigate,
   redirect,
+  useFetcher,
+  json,
 } from 'react-router-dom';
 import { getColors } from 'style';
 import styled from 'styled-components';
 import DefaultTopBar from 'components/DefaultTopBar';
 import { getSettingsFromLs, saveSettingsToLs } from 'utils';
 import SectionTitle from 'elements/SectionTitle';
+import { throwValidationError } from 'hooks';
+import { AccountResponse } from 'shared/responses';
+import FormErrorText from 'components/FormErrorText';
 
 const InnerRoot = styled.div<Object>(() => {
   return {
@@ -25,14 +30,76 @@ const InnerRoot = styled.div<Object>(() => {
   };
 });
 
-const Settings = (props: { error?: boolean }) => {
-  const [settings, setSettings] = React.useState(getSettingsFromLs());
+const updatePwAction = createAction(
+  async (values: { password: string }, params) => {
+    if (!values.password) {
+      throwValidationError('Please fill out the form.', values);
+    }
+    if (values.password.length < 3 || values.password.length > 50) {
+      throwValidationError('Invalid password.', values);
+    }
 
-  console.log('SETTINGS!', settings);
+    const result = await fetchAsync<any>('put', `/api/account/pw`, {
+      password: values.password,
+    });
+
+    if (result.error) {
+      throwValidationError(result.message, values);
+    }
+
+    return null;
+  }
+);
+
+const loader = async () => {
+  const accountResponse = await fetchAsync<AccountResponse>(
+    'get',
+    '/api/account'
+  );
+
+  if (accountResponse.error) {
+    return redirect('/login');
+  }
+
+  return json(accountResponse);
+};
+
+const Settings = (props: { error?: boolean; admin?: boolean }) => {
+  const [settings, setSettings] = React.useState(getSettingsFromLs());
+  const [password, setPassword] = React.useState('');
+  const [loading, setLoading] = React.useState(false);
+  const fetcher = useFetcher();
+
+  const handleUpdatePasswordChange: React.ChangeEventHandler<
+    HTMLInputElement
+  > = ev => {
+    setPassword(ev.target.value);
+  };
+
+  const handleUpdatePasswordSubmitClick = (ev: React.MouseEvent) => {
+    ev.preventDefault();
+    const formData = new FormData();
+    formData.append('password', password);
+    fetcher.submit(formData, {
+      method: 'put',
+      action: 'updatePwAction',
+    });
+    setPassword('');
+  };
+
+  const handleLogoutClick = (ev: React.MouseEvent) => {
+    ev.preventDefault();
+    window.location.href = '/logout';
+  };
+
+  if (loading && fetcher.state === 'submitting') {
+    setLoading(false);
+    setPassword('');
+  }
 
   return (
     <>
-      <DefaultTopBar useBackConfirm={false} />
+      <DefaultTopBar useBackConfirm={false} disableHome={!props.admin} />
       <MobileLayout topBar>
         <InnerRoot>
           <SectionTitle>Settings</SectionTitle>
@@ -49,7 +116,7 @@ const Settings = (props: { error?: boolean }) => {
                 };
                 setSettings(newSettings);
                 saveSettingsToLs(newSettings);
-                // window.location.reload();
+                window.location.reload();
               }}
               style={{
                 transform: 'scale(1.5)',
@@ -57,6 +124,53 @@ const Settings = (props: { error?: boolean }) => {
               }}
             ></input>
             <label htmlFor="lightMode">Light Mode</label>
+
+            {props.admin ? (
+              <fetcher.Form id="update-pw-form">
+                <div
+                  style={{
+                    width: '50%',
+                    marginTop: '16px',
+                  }}
+                >
+                  <label htmlFor="updatePw">Update Password</label>
+                  <Input
+                    fullWidth={true}
+                    type="password"
+                    placeholder="New Password"
+                    aria-label="password"
+                    name="updatePw"
+                    maxLength={50}
+                    minLength={3}
+                    value={password}
+                    onChange={handleUpdatePasswordChange}
+                  />
+                  <Button
+                    disabled={loading}
+                    color="primary"
+                    style={{ marginTop: '8px' }}
+                    onClick={handleUpdatePasswordSubmitClick}
+                  >
+                    {loading ? 'Loading...' : 'Update Password'}
+                  </Button>
+                </div>
+                <div
+                  style={{
+                    marginTop: '16px',
+                  }}
+                >
+                  <Button
+                    disabled={loading}
+                    color="secondary"
+                    // style={{ marginTop: '8px' }}
+                    onClick={handleLogoutClick}
+                  >
+                    Logout
+                  </Button>
+                </div>
+              </fetcher.Form>
+            ) : null}
+            <FormErrorText />
           </div>
         </InnerRoot>
       </MobileLayout>
@@ -67,4 +181,16 @@ const Settings = (props: { error?: boolean }) => {
 export const SettingsRoute = {
   path: 'settings',
   element: <Settings />,
+};
+
+export const SettingsAdminRoute = {
+  path: 'admin-settings',
+  element: <Settings admin={true} />,
+  errorElement: <Settings error={true} admin={true} />,
+  loader,
+};
+
+export const UpdatePasswordRoute = {
+  path: 'updatePwAction',
+  action: updatePwAction,
 };

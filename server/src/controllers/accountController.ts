@@ -95,7 +95,7 @@ export const initAccountControllers = (router: Router) => {
       context
     ) {
       const { password } = body;
-      if (!validateString(password)) {
+      if (!validateString(password, 3, 50)) {
         throw new InvalidInputError('Not a valid password.');
       }
 

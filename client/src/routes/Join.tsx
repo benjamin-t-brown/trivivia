@@ -183,7 +183,16 @@ const JoinQuiz = (props: { error?: boolean }) => {
         <CardTitleZone align="left">
           {/* <BackButton useConfirm={false} /> */}
         </CardTitleZone>
-        <CardTitle>Trivivia</CardTitle>
+        <CardTitle
+          style={{
+            cursor: 'pointer',
+          }}
+          onClick={() => {
+            window.location.href = '/login';
+          }}
+        >
+          Trivivia
+        </CardTitle>
         <CardTitleZone align="right">
           <Button
             color="plain"

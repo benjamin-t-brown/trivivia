@@ -60,7 +60,7 @@ const AdminLanding = () => {
           <Button
             color="plain"
             onClick={() => {
-              navigate('/settings');
+              navigate('/admin-settings');
             }}
           >
             <Img

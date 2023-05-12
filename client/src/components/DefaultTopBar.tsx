@@ -10,6 +10,7 @@ const DefaultTopBar = (props: {
   title?: string;
   useBackConfirm?: boolean;
   upTo?: string;
+  disableHome?: boolean;
 }) => {
   return (
     <TopBar>
@@ -19,9 +20,18 @@ const DefaultTopBar = (props: {
           <UpButton to={props.upTo} useConfirm={props.useBackConfirm} />
         ) : null}
       </CardTitleZone>
-      <CardTitle>{props.title ?? 'Trivivia'}</CardTitle>
+      <CardTitle
+        style={{
+          cursor: 'pointer',
+        }}
+        onClick={() => {
+          window.location.href = '/login';
+        }}
+      >
+        {props.title ?? 'Trivivia'}
+      </CardTitle>
       <CardTitleZone align="right">
-        <HomeButton />
+        {!props.disableHome ? <HomeButton /> : <div></div>}
       </CardTitleZone>
     </TopBar>
   );

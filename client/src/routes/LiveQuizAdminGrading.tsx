@@ -10,7 +10,7 @@ import {
   useParams,
 } from 'react-router-dom';
 import styled from 'styled-components';
-import { getColors } from 'style';
+import { colorsDark, getColors } from 'style';
 import { throwValidationError, useTypedLoaderData } from 'hooks';
 import DefaultTopBar from 'components/DefaultTopBar';
 import { updateCacheLiveQuizAdmin } from 'cache';
@@ -128,6 +128,8 @@ const RoundAnswer = (props: {
   const individualAnswersCorrect = props.correctAnswers.split(ANSWER_DELIMITER);
   const gradeState =
     props.state[props.team.id][props.roundId][props.questionNumber] ?? {};
+
+  console.log('GradeState', gradeState);
 
   const handleAnswerGradeChange: (
     i: number,
@@ -288,7 +290,7 @@ const RoundAnswer = (props: {
                         background:
                           gradeState[gradeKey] === 'true'
                             ? getColors().SUCCESS_BACKGROUND
-                            : undefined,
+                            : colorsDark.BACKGROUND,
                       }}
                       alt="Correct"
                       src="/res/check-mark.svg"
@@ -316,7 +318,7 @@ const RoundAnswer = (props: {
                         background:
                           gradeState[gradeKey] === 'false'
                             ? getColors().ERROR_BACKGROUND
-                            : undefined,
+                            : colorsDark.BACKGROUND,
                       }}
                       alt="Incorrect"
                       src="/res/cancel.svg"
@@ -516,6 +518,22 @@ const LiveQuizAdminGrading = (props: EditLiveQuizProps) => {
       const { answersArr, teamAnswersArr, orderMattersArr } =
         getRoundAnswersArrays(roundTemplate, team);
 
+      const handleMarkAllIncorrectClick = () => {
+        answersArr.map((correctAnswers, j) => {
+          const individualAnswersCorrect =
+            correctAnswers.split(ANSWER_DELIMITER);
+          individualAnswersCorrect.map((answer, i) => {
+            setGradeForAnswer({
+              roundId: roundId,
+              teamId: team.id,
+              questionNumber: j + 1,
+              answerNumber: i + 1,
+              isCorrect: false,
+            });
+          });
+        });
+      };
+
       const isGraded = areAllAnswersGradedForTeamRound({
         state,
         teamId: team.id,
@@ -572,6 +590,24 @@ const LiveQuizAdminGrading = (props: EditLiveQuizProps) => {
               >
                 {team.teamName}
               </span>
+              <div
+                style={{
+                  marginBottom: '8px',
+                }}
+              >
+                <span
+                  onClick={handleMarkAllIncorrectClick}
+                  style={{
+                    color: getColors().TEXT_DESCRIPTION,
+                    textDecoration: 'underline',
+                    cursor: 'pointer',
+                    fontSize: '12px',
+                    userSelect: 'none',
+                  }}
+                >
+                  Mark All Incorrect
+                </span>
+              </div>
             </div>
             {answersArr.map((correctAnswers, j) => {
               const submittedAnswers = teamAnswersArr[j];

@@ -48,7 +48,6 @@ export const authSession = (
       message: 'No token provided!',
     });
   }
-  console.log('decode');
   jwt.verify(token, env.cookieSecret, (err, decoded) => {
     if (err) {
       console.log('not verified');
@@ -56,7 +55,6 @@ export const authSession = (
         message: 'Unauthorized!',
       });
     } else {
-      console.log('verified');
       req.userId = decoded.id;
       next();
     }

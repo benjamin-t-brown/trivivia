@@ -10,7 +10,7 @@ import {
   QuestionTemplateResponse,
   stringToAnswerState,
 } from 'shared/responses';
-import { getColors } from 'style';
+import { colorsDark, getColors } from 'style';
 import HiddenTextField from './HiddenTextField';
 import Img from 'elements/Img';
 
@@ -201,6 +201,7 @@ const EditAnswers = (props: EditAnswersProps) => {
             style={{
               width: '22px',
               marginRight: '8px',
+              background: colorsDark.BACKGROUND,
             }}
             alt="star"
             src="/res/allied-star.svg"

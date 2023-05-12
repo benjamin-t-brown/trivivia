@@ -17,9 +17,9 @@ export const colorsDark = {
 };
 
 export const colorsLight = {
-  PRIMARY: '#9ad3ed',
-  SECONDARY: '#e3e0e0',
-  CANCEL: '#ff8181',
+  PRIMARY: '#005278',
+  SECONDARY: '#202020',
+  CANCEL: '#561616',
   BACKGROUND: '#FFF',
   BACKGROUND2: '#ededed',
   TEXT_DEFAULT: 'black',
