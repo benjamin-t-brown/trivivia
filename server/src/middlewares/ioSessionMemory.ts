@@ -7,6 +7,7 @@ import logger from '../logger';
 export interface IoSession {
   liveQuizUserFriendlyId: string;
   teamId: string;
+  spectateTeamId?: string;
   socket: Socket;
 }
 
@@ -28,12 +29,13 @@ export const setupIo = (io: Server) => {
     socket.on('join', json => {
       console.log('receive join', json);
       try {
-        const { gameId, teamId } = JSON.parse(json);
+        const { gameId, teamId, spectateTeamId } = JSON.parse(json);
 
-        if (gameId && teamId) {
+        if (gameId && (teamId || spectateTeamId)) {
           ioSessions.push({
             liveQuizUserFriendlyId: gameId,
-            teamId,
+            spectateTeamId,
+            teamId: teamId || spectateTeamId,
             socket,
           });
           socket.emit('joined');

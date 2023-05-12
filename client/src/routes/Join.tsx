@@ -6,6 +6,7 @@ import {
   json,
   Link,
   redirect,
+  useFetcher,
   useNavigate,
   useParams,
 } from 'react-router-dom';
@@ -40,6 +41,7 @@ import { getFromCache, updateCacheLiveQuiz } from 'cache';
 import {
   getLiveQuizTeamId,
   setLiveQuizAnswersLs,
+  setLiveQuizSpectateId,
   setLiveQuizTeamId,
 } from 'utils';
 import Img from 'elements/Img';
@@ -55,6 +57,7 @@ const InnerRoot = styled.div<Object>(() => {
 interface JoinQuizValues {
   code?: string;
   teamName?: string;
+  spectate?: string;
 }
 const action = createAction(async (values: JoinQuizValues, params) => {
   if (values.code) {
@@ -62,37 +65,48 @@ const action = createAction(async (values: JoinQuizValues, params) => {
     return redirect(`/join/${values.code.toLowerCase()}`);
   }
 
-  if (!values.teamName) {
-    throwValidationError('Please fill out the form.', values);
-  } else if (values.teamName.length < 3) {
-    throwValidationError(
-      'Team name too short (must be 3 or more characters).',
-      values
-    );
-  } else if (values.teamName.length > 40) {
-    throwValidationError(
-      'Team name too long (must be 40 or less characters).',
-      values
-    );
+  if (values.spectate !== 'true') {
+    if (!values.teamName) {
+      throwValidationError('Please specify a team name.', values);
+    } else if (values.teamName.length < 3) {
+      throwValidationError(
+        'Team name too short (must be 3 or more characters).',
+        values
+      );
+    } else if (values.teamName.length > 40) {
+      throwValidationError(
+        'Team name too long (must be 40 or less characters).',
+        values
+      );
+    }
   }
+
+  setLiveQuizSpectateId('');
 
   const joinResponse = await fetchAsync<LiveQuizTeamResponse>(
     'post',
     '/api/live/' + params.userFriendlyQuizId + '/join',
-    values
+    {
+      ...values,
+      spectate: values.spectate === 'true',
+    }
   );
 
   if (joinResponse.error) {
     throwValidationError(joinResponse.message, values);
   }
 
-  console.log('Joined quiz, teamId=', joinResponse.data.id);
-
-  setLiveQuizTeamId(joinResponse.data.id);
+  if (values.spectate === 'true') {
+    setLiveQuizSpectateId(joinResponse.data.id);
+  } else {
+    setLiveQuizTeamId(joinResponse.data.id);
+    updateCacheLiveQuiz(params.userFriendlyQuizId);
+  }
   for (let i = 0; i < 16; i++) {
     setLiveQuizAnswersLs(i, {});
   }
-  updateCacheLiveQuiz(params.userFriendlyQuizId);
+
+  console.log('Joined quiz, teamId/spectateId=', joinResponse.data.id);
 
   return redirect(`/live/${params.userFriendlyQuizId}`);
 });
@@ -162,6 +176,7 @@ const JoinQuiz = (props: { error?: boolean }) => {
   const params = useParams();
   const formId = 'join-quiz-form';
   const navigate = useNavigate();
+  const fetcher = useFetcher();
 
   const liveQuizResponse = useTypedLoaderData<
     FetchResponse<LiveQuizPublicStateResponse>
@@ -172,6 +187,17 @@ const JoinQuiz = (props: { error?: boolean }) => {
       '/api/live/' + params.userFriendlyQuizId + '/meta'
     ),
   });
+
+  const handleSpectateClick = (ev: React.MouseEvent) => {
+    ev.preventDefault();
+
+    const formData = new FormData();
+    formData.set('spectate', String(true));
+    fetcher.submit(formData, {
+      method: 'post',
+      action: `/join/${params.userFriendlyQuizId}`,
+    });
+  };
 
   useFormResetValues(formId);
 
@@ -309,6 +335,19 @@ const JoinQuiz = (props: { error?: boolean }) => {
                   <IconLeft src="/res/check-mark.svg" />
                   Join Quiz
                 </Button>
+                <p>Or</p>
+                <Button
+                  flex
+                  center
+                  color="secondary"
+                  style={{
+                    width: '100%',
+                  }}
+                  onClick={handleSpectateClick}
+                >
+                  <IconLeft src="/res/trade.svg" />
+                  Spectate Quiz
+                </Button>
                 <QuizTeamsList quizState={liveQuizResponse.data} />
               </Form>
             </>
@@ -326,7 +365,7 @@ const JoinQuiz = (props: { error?: boolean }) => {
                   textAlign: 'center',
                 }}
               >
-                Enter a quiz code to join a quiz.
+                Enter a quiz code to find a quiz.
               </p>
               <Form method="post" id={formId}>
                 <div

@@ -6,6 +6,7 @@ export interface ApiRequest extends Request {
   userId: string | undefined;
   requestId: string;
   liveTeamId?: string;
+  liveSpectateId?: string;
   io: Server;
   ioSessions: IoSession[];
 }

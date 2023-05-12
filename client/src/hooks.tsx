@@ -10,7 +10,7 @@ import {
   FetcherWithComponents,
 } from 'react-router-dom';
 import { FormError } from 'components/FormErrorText';
-import { getLiveQuizTeamId } from 'utils';
+import { getLiveQuizSpectateId, getLiveQuizTeamId } from 'utils';
 import { updateCacheLiveQuiz } from 'cache';
 
 export const useReRender = () => {
@@ -343,7 +343,11 @@ export const useSocketIoRefreshState = (
   const [connected, setConnected] = React.useState(false);
   const [joined, setJoined] = React.useState(false);
   const params = useParams();
-  const sendJoinRequest = (args: { teamId: string; gameId: string }) => {
+  const sendJoinRequest = (args: {
+    teamId: string;
+    gameId: string;
+    spectateTeamId: string;
+  }) => {
     console.log('emit join request', args);
     socket.emit('join', JSON.stringify(args));
   };
@@ -384,15 +388,17 @@ export const useSocketIoRefreshState = (
 
   React.useEffect(() => {
     if (socket && connected && !joined) {
-      const teamId = getLiveQuizTeamId();
+      const teamId = getLiveQuizTeamId() ?? '';
       const gameId = params.userFriendlyQuizId;
+      const spectateTeamId = getLiveQuizSpectateId() ?? '';
 
-      console.log('check for join', teamId, gameId);
+      console.log('check for join', teamId, gameId, spectateTeamId);
 
-      if (teamId && gameId) {
+      if ((teamId || spectateTeamId) && gameId) {
         sendJoinRequest({
           teamId,
           gameId,
+          spectateTeamId,
         });
       }
     }

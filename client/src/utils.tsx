@@ -84,6 +84,14 @@ export const getLiveQuizTeamId = () => {
   return localStorage.getItem('trivivia-liveTeamId');
 };
 
+export const setLiveQuizSpectateId = (spectateId: string) => {
+  localStorage.setItem('trivivia-liveSpectateId', spectateId);
+};
+
+export const getLiveQuizSpectateId = () => {
+  return localStorage.getItem('trivivia-liveSpectateId') ?? '';
+};
+
 export const setLiveQuizAnswersLs = (
   roundNum: number,
   savedAnswers: Record<string, AnswerState> | undefined

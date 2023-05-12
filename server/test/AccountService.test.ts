@@ -18,6 +18,7 @@ describe('AccountService', () => {
     });
     const context = {
       userId: '',
+      ioSessions: [],
       session: {
         token: undefined,
       },
@@ -44,6 +45,7 @@ describe('AccountService', () => {
     });
     const context = {
       userId: '',
+      ioSessions: [],
       session: {},
     };
 
@@ -56,6 +58,7 @@ describe('AccountService', () => {
     const accountService = new AccountService();
     const context = {
       userId: '',
+      ioSessions: [],
       session: {
         token: 'asdf',
       },

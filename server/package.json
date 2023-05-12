@@ -5,6 +5,7 @@
   "main": "src/server.ts",
   "scripts": {
     "test": "vitest --coverage",
+    "test:prod": "vitest --run",
     "start": "ts-node-dev --project ./tsconfig.json src/server.ts",
     "start:dev": "yarn start",
     "start:prod": "ts-node --project ./tsconfig.json src/server.ts",
@@ -21,6 +22,7 @@
     "@types/node": "^18.15.5",
     "express": "^4.18.2",
     "sequelize-cli": "^6.6.0",
+    "sequelize-mock": "^0.10.2",
     "shared": "1.0.0",
     "ts-node-dev": "^2.0.0"
   },

@@ -99,6 +99,8 @@ export const initAccountControllers = (router: Router) => {
         throw new InvalidInputError('Not a valid password.');
       }
 
+      console.log('UPDATE PW');
+
       const account = await accountService.updatePassword(password, context);
       if (!account) {
         return undefined;

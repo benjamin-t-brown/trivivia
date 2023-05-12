@@ -9,6 +9,7 @@ import {
   AnswerStateStats,
   LiveQuizPublicQuestionResponse,
   LiveQuizPublicStateResponse,
+  LiveQuizRoundAnswersResponse,
   LiveQuizState,
   LiveQuizTeamResponse,
   LiveRoundState,
@@ -499,6 +500,7 @@ export class LiveQuizService {
       forceIncludeAllQuestions?: boolean;
       forceIncludeAnswers?: boolean;
       forceIncludeStatistics?: boolean;
+      ignoreTeamId?: boolean;
     }
   ): Promise<LiveQuizPublicStateResponse | undefined> {
     const quizTemplate: QuizTemplateResponse = JSON.parse(
@@ -542,11 +544,13 @@ export class LiveQuizService {
 
     const liveQuizRoundAnswers =
       // adding a comment here because vscode syntax highlighting is not working correctly
-      (await this.findAllLiveQuizRoundAnswersForTeam(liveQuizTeamId))
-        ?.find(a => {
-          return a.roundId === roundTemplate.id;
-        })
-        ?.getResponseJson();
+      args?.ignoreTeamId
+        ? ({} as LiveQuizRoundAnswersResponse)
+        : (await this.findAllLiveQuizRoundAnswersForTeam(liveQuizTeamId))
+            ?.find(a => {
+              return a.roundId === roundTemplate.id;
+            })
+            ?.getResponseJson();
 
     const includeAnswers =
       args?.forceIncludeAnswers ??
@@ -612,7 +616,7 @@ export class LiveQuizService {
     delete quizState.liveQuizTeams;
 
     const liveQuizTeam = await this.findLiveQuizTeamById(liveQuizTeamId);
-    if (!liveQuizTeam) {
+    if (!liveQuizTeam && !args?.ignoreTeamId) {
       logger.error(
         `Could not get public state for team ${liveQuizTeamId}, no team found with teamId=${liveQuizTeamId}.`
       );
@@ -627,7 +631,7 @@ export class LiveQuizService {
       teams,
       teamsScores,
       hasUsedJoker: Boolean(
-        liveQuizTeam.liveQuizRoundAnswers?.find(a => a.didJoker === true)
+        liveQuizTeam?.liveQuizRoundAnswers?.find(a => a.didJoker === true)
       ),
       isComplete:
         liveQuiz.currentRoundAnswerNumber >= quizTemplate.roundOrder.length,

@@ -37,6 +37,7 @@ export const authSession = (
     } else {
       req.userId = '';
       req.liveTeamId = String(req.headers['live-team-id'] ?? '');
+      req.liveSpectateId = String(req.headers['live-spectate-id'] ?? '');
       next();
       return;
     }
@@ -47,7 +48,9 @@ export const authSession = (
     res.status(403).send({
       message: 'No token provided!',
     });
+    return;
   }
+
   jwt.verify(token, env.cookieSecret, (err, decoded) => {
     if (err) {
       console.log('not verified');

@@ -3,6 +3,7 @@ import MobileLayout from 'elements/MobileLayout';
 import React, { ReactNode } from 'react';
 import {
   json,
+  Link,
   redirect,
   useFetcher,
   useNavigate,
@@ -38,6 +39,7 @@ import { getColors } from 'style';
 import { getFromCache, updateCacheLiveQuiz } from 'cache';
 import {
   getLiveQuizAnswersLs,
+  getLiveQuizSpectateId,
   getLiveQuizTeamId,
   setLiveQuizAnswersLs,
 } from 'utils';
@@ -145,8 +147,8 @@ const updateNameAction = createAction(
 );
 
 const loader = async ({ params }) => {
-  if (!getLiveQuizTeamId()) {
-    console.error('No team id in LS');
+  if (!getLiveQuizTeamId() && !getLiveQuizSpectateId()) {
+    console.error('No team id or spectate id in LS');
     return redirect('/join/' + params.userFriendlyQuizId);
   }
 
@@ -157,6 +159,7 @@ const loader = async ({ params }) => {
     {
       headers: {
         'live-team-id': getLiveQuizTeamId() ?? '',
+        'live-spectate-id': getLiveQuizSpectateId() ?? '',
       },
     }
   );
@@ -167,6 +170,10 @@ const loader = async ({ params }) => {
       statusText: `That quiz could not be found.`,
     });
     return redirect('/join/' + params.userFriendlyQuizId);
+  }
+
+  if (getLiveQuizSpectateId()) {
+    return json(quizResponse);
   }
 
   if (!quizResponse.data.teams.find(t => t.id === getLiveQuizTeamId())) {
@@ -747,7 +754,7 @@ const QuizInRound = (props: { quizState: LiveQuizPublicStateResponse }) => {
   );
 
   if (!initialState || isShowingRoundAnswers(props.quizState.quiz)) {
-    initialState = props.quizState?.round?.answersSubmitted;
+    initialState = props.quizState?.round?.answersSubmitted ?? {};
   }
 
   const [state, dispatch]: [Record<string, AnswerState>, any] =
@@ -800,6 +807,7 @@ const QuizInRound = (props: { quizState: LiveQuizPublicStateResponse }) => {
   const isPristine = true || state === initialState;
   const isLoading = fetcher.state === 'submitting';
   const hasSubmitted = submitted;
+  const isSpectating = Boolean(getLiveQuizSpectateId());
 
   const isRoundAcceptingSubmissions =
     currentRound.questionNumber >= currentRound.totalNumberOfQuestions &&
@@ -859,7 +867,7 @@ const QuizInRound = (props: { quizState: LiveQuizPublicStateResponse }) => {
             <>
               <div
                 style={{
-                  display: 'flex',
+                  display: isSpectating ? 'none' : 'flex',
                   alignItems: 'center',
                   minHeight: '42px',
                   marginTop: '16px',
@@ -916,38 +924,40 @@ const QuizInRound = (props: { quizState: LiveQuizPublicStateResponse }) => {
                   Your joker has already been used{' '}
                 </div>
               ) : null}
-              <Button
-                flex
-                center
-                color="primary"
-                style={{
-                  marginTop: '16px',
-                  width: '100%',
-                }}
-                disabled={!isRoundAcceptingSubmissions}
-                type="submit"
-                onClick={handleSubmitClick}
-              >
-                {isRoundAcceptingSubmissions ? (
-                  <>
-                    {hasSubmitted ? (
-                      <IconLeft src="/res/check-mark.svg" />
-                    ) : (
-                      <IconLeft src="/res/edit.svg" />
-                    )}
-                    <span>{isPristine ? 'Submit' : 'Submit (changed)'}</span>
-                  </>
-                ) : (
-                  <>
-                    <IconLeft src="/res/padlock.svg" />
-                    {isRoundLocked(props.quizState.quiz) ? (
-                      <span>Submit (Round locked)</span>
-                    ) : (
-                      <span>Submit (Wait to submit)</span>
-                    )}
-                  </>
-                )}
-              </Button>
+              {isSpectating ? null : (
+                <Button
+                  flex
+                  center
+                  color="primary"
+                  style={{
+                    marginTop: '16px',
+                    width: '100%',
+                  }}
+                  disabled={!isRoundAcceptingSubmissions}
+                  type="submit"
+                  onClick={handleSubmitClick}
+                >
+                  {isRoundAcceptingSubmissions ? (
+                    <>
+                      {hasSubmitted ? (
+                        <IconLeft src="/res/check-mark.svg" />
+                      ) : (
+                        <IconLeft src="/res/edit.svg" />
+                      )}
+                      <span>{isPristine ? 'Submit' : 'Submit (changed)'}</span>
+                    </>
+                  ) : (
+                    <>
+                      <IconLeft src="/res/padlock.svg" />
+                      {isRoundLocked(props.quizState.quiz) ? (
+                        <span>Submit (Round locked)</span>
+                      ) : (
+                        <span>Submit (Wait to submit)</span>
+                      )}
+                    </>
+                  )}
+                </Button>
+              )}
               {hasSubmitted ? (
                 <div
                   style={{
@@ -1054,6 +1064,8 @@ const LiveQuiz = (props: { error?: boolean }) => {
     return <div>The page will redirect soon...</div>;
   }
 
+  const isSpectating = Boolean(getLiveQuizSpectateId());
+
   console.log('render live quiz', liveQuizResponse, 'joined?', joined);
 
   return (
@@ -1096,6 +1108,19 @@ const LiveQuiz = (props: { error?: boolean }) => {
               </span>
               <br />
               {liveQuizResponse.data.quiz.name}
+              {isSpectating ? (
+                <>
+                  <br />
+                  <span
+                    style={{
+                      textAlign: 'center',
+                      color: getColors().TEXT_DESCRIPTION,
+                    }}
+                  >
+                    You are spectating this quiz.
+                  </span>
+                </>
+              ) : null}
             </p>
             {isWaitingForQuizToStart(liveQuizResponse.data.quiz) ? (
               <>
@@ -1115,7 +1140,21 @@ const LiveQuiz = (props: { error?: boolean }) => {
                 >
                   Waiting for quiz to start...
                 </p>
-                <UpdateTeamNameForm />
+                {isSpectating ? (
+                  <p
+                    style={{
+                      textAlign: 'center',
+                      color: getColors().TEXT_DESCRIPTION,
+                    }}
+                  >
+                    Want to join instead?{' '}
+                    <Link to={`/join/${params.userFriendlyQuizId}`}>
+                      Click here.
+                    </Link>
+                  </p>
+                ) : (
+                  <UpdateTeamNameForm />
+                )}
               </>
             ) : null}
             {isWaitingForRoundToStart(liveQuizResponse.data.quiz) ||

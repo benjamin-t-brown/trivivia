@@ -9,6 +9,7 @@ import { LiveQuizService } from '../services/LiveQuizService';
 import { AnswerState } from 'shared';
 import { validateAnswersSubmitted, validateString } from '../validators';
 import logger from '../logger';
+import { randomUUID } from 'crypto';
 
 export const initLiveQuizControllers = (router: Router) => {
   const liveQuizService = new LiveQuizService();
@@ -23,8 +24,8 @@ export const initLiveQuizControllers = (router: Router) => {
       _,
       context
     ) {
-      const { liveTeamId } = context;
-      if (!liveTeamId) {
+      const { liveTeamId, liveSpectateId } = context;
+      if (!liveTeamId && !liveSpectateId) {
         return undefined;
       }
 
@@ -36,12 +37,24 @@ export const initLiveQuizControllers = (router: Router) => {
         return undefined;
       }
 
-      const state = await liveQuizService.getPublicLiveQuizState(
-        liveQuiz,
-        liveTeamId
-      );
+      if (liveSpectateId) {
+        const state = await liveQuizService.getPublicLiveQuizState(
+          liveQuiz,
+          '',
+          {
+            ignoreTeamId: true,
+          }
+        );
+        return state;
+      } else if (liveTeamId) {
+        const state = await liveQuizService.getPublicLiveQuizState(
+          liveQuiz,
+          liveTeamId
+        );
+        return state;
+      }
 
-      return state;
+      return undefined;
     }
   );
 
@@ -73,9 +86,15 @@ export const initLiveQuizControllers = (router: Router) => {
     '/api/live/:liveQuizUserFriendlyId/join',
     async function joinLiveQuiz(
       params: { liveQuizUserFriendlyId: string },
-      body: { teamName: string; numberOfPlayers: number }
+      body: { teamName: string; numberOfPlayers: number; spectate: boolean }
     ) {
-      const { teamName, numberOfPlayers } = body;
+      const { teamName, numberOfPlayers, spectate } = body;
+
+      if (spectate) {
+        return {
+          id: randomUUID(),
+        };
+      }
 
       if (!validateString(teamName, 3, 40)) {
         throw new InvalidInputError('Not a valid name.');

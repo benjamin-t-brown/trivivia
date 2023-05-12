@@ -7,6 +7,7 @@ export interface RouteContext {
   userId: string;
   session: any;
   liveTeamId?: string;
+  liveSpectateId?: string;
   ioSessions: IoSession[];
 }
 
@@ -37,6 +38,7 @@ export function registerRoute<T, R>(
         userId: req.userId ?? '',
         session: req.session,
         liveTeamId: req.liveTeamId,
+        liveSpectateId: req.liveSpectateId,
         ioSessions: req.ioSessions,
       });
       if (result) {

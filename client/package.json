@@ -5,6 +5,7 @@
   "main": "src/index.html",
   "scripts": {
     "test": "vitest --coverage",
+    "test:prod": "vitest run",
     "start": "vite serve src --config ./vite.config.ts",
     "start:dev": "yarn start",
     "build": "yarn clean && vite build src --config ./vite.config.ts",
