@@ -9,7 +9,7 @@ yarn 1.22.11^
 
 ## Deployment on ec2
 
-This application is deployed at [https://trivivia.twilightparadox.com/join](https://trivivia.twilightparadox.com)
+This application is deployed at [https://trivivia.twilightparadox.com](https://trivivia.twilightparadox.com/login)
 
 ```
 # ssh into ecs instance
