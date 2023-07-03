@@ -504,7 +504,7 @@ const QuestionAnswer = (props: {
   disabled?: boolean;
   dispatch: React.Dispatch<any>;
   answersSaved: AnswerState;
-  answersQuestion: AnswerState;
+  answersQuestion?: AnswerState;
   answersGraded?: AnswerStateGraded;
   answersStats?: AnswerStateStats;
   numTeams: number;
@@ -542,8 +542,8 @@ const QuestionAnswer = (props: {
     };
 
     let icon;
-    if (props.answersGraded) {
-      const isCorrectAnswer = props.answersGraded[answerKey] === 'true';
+    if (props.answersGraded || props.answersQuestion) {
+      const isCorrectAnswer = props.answersGraded?.[answerKey] === 'true';
 
       icon = (
         <Img
@@ -585,7 +585,7 @@ const QuestionAnswer = (props: {
     );
   }
 
-  if (answerBoxes.length && props.answersGraded) {
+  if (answerBoxes.length && props.answersQuestion) {
     answerBoxes.push(
       <CorrectAnswers
         key="answer"
@@ -604,7 +604,7 @@ const QuestionAnswer = (props: {
   const radioName = 'radio' + props.questionNumber;
   const radioAnswerKey = 'answer1';
   for (let i = 0; i < numRadioBoxes; i++) {
-    const value = props.answersQuestion['radio' + (i + 1)] ?? '';
+    const value = props.answersQuestion?.['radio' + (i + 1)] ?? '';
     const id = props.questionNumber + '-' + i + '-' + value;
 
     const style: Record<string, string> = {
@@ -613,9 +613,9 @@ const QuestionAnswer = (props: {
     const checked = props.answersSaved?.[radioAnswerKey] === value;
 
     let icon;
-    if (props.answersGraded) {
-      const isCorrectAnswer = props.answersGraded[radioAnswerKey] === 'true';
-      if (props.answersGraded[radioAnswerKey] === 'true' && checked) {
+    if (props.answersGraded || props.answersStats) {
+      const isCorrectAnswer = props.answersGraded?.[radioAnswerKey] === 'true';
+      if (props.answersGraded?.[radioAnswerKey] === 'true' && checked) {
         style.border = '1px solid ' + getColors().SUCCESS_TEXT;
         icon = (
           <Img
@@ -631,7 +631,7 @@ const QuestionAnswer = (props: {
           />
         );
       }
-      if (props.answersGraded[radioAnswerKey] === 'false' && checked) {
+      if (props.answersGraded?.[radioAnswerKey] === 'false' && checked) {
         style.border = '1px solid ' + getColors().ERROR_TEXT;
         icon = (
           <Img
@@ -842,6 +842,10 @@ const QuizInRound = (props: { quizState: LiveQuizPublicStateResponse }) => {
         {currentRound?.description}
       </p>
       {currentRound?.questions.map((q, i) => {
+        let answers = q.answers;
+        if (answers && Object.keys(answers).length === 0) {
+          answers = undefined;
+        }
         return (
           <QuestionAnswer
             key={i}
@@ -849,7 +853,7 @@ const QuizInRound = (props: { quizState: LiveQuizPublicStateResponse }) => {
             question={q}
             dispatch={dispatch}
             answersSaved={state[i + 1] ?? {}}
-            answersQuestion={q.answers ?? {}}
+            answersQuestion={answers}
             answersGraded={currentRound.answersGraded?.[i + 1]}
             answersStats={currentRound.stats?.[i + 1]}
             disabled={isRoundLocked(props.quizState.quiz)}

@@ -13,8 +13,12 @@ yarn 1.22.11^
 # ssh into ecs instance
 ssh admin@52.91.8.165
 
+# pull changes
+cd trivivia
+git pull
+
 # test and build client
-cd trivivia/client
+cd client
 yarn test:prod
 yarn build
 
@@ -27,6 +31,7 @@ forever list
 forever stop 1
 
 # forever doesn't actually kill the ts-node process so you have to find it
+# 'forever restart' also does not work correctly
 ps aux | grep node
 
 # you're looking for:
@@ -39,3 +44,15 @@ forever start --uid "trivivia" --minUptime 1000 --spinSleepTime 1000 --append -c
 # to check if it's running correctly
 forever list
 ```
+
+## Nginx Restart
+
+ecs server uses nginx to route ssl and domain names to the proper port where the server is listening:
+
+```
+/etc/nginx/conf.d/trivivia.conf
+```
+
+Check this conf if something is wrong.
+
+SSL stuff is managed by certbot.
