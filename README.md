@@ -24,6 +24,9 @@ cd client
 yarn test:prod
 yarn build
 
+# the client code is not built!  If you need to deploy the server then do the following
+# but no need to if you have no server changes.
+
 # test server
 cd ../server
 yarn test:prod
