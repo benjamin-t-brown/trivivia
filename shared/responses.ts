@@ -47,6 +47,10 @@ export enum AnswerBoxType {
   RADIO3 = 'radio3',
   RADIO4 = 'radio4',
   RADIO8 = 'radio8',
+  INPUT1_LIST = 'input1_list',
+  INPUT2_LIST = 'input2_list',
+  INPUT3_LIST = 'input3_list',
+  INPUT4_LIST = 'input4_list',
 }
 
 export interface QuestionTemplateResponse extends CreateUpdateDelete {
@@ -117,12 +121,16 @@ export const getNumAnswers = (answerType: AnswerBoxType) => {
     case AnswerBoxType.RADIO4:
     case AnswerBoxType.RADIO8:
     case AnswerBoxType.INPUT1:
+    case AnswerBoxType.INPUT1_LIST:
       return 1;
     case AnswerBoxType.INPUT2:
+    case AnswerBoxType.INPUT2_LIST:
       return 2;
     case AnswerBoxType.INPUT3:
+    case AnswerBoxType.INPUT3_LIST:
       return 3;
     case AnswerBoxType.INPUT4:
+    case AnswerBoxType.INPUT4_LIST:
       return 4;
     case AnswerBoxType.INPUT8:
       return 8;
@@ -147,6 +155,29 @@ export const getNumRadioBoxes = (answerType: AnswerBoxType) => {
       return 0;
   }
   return 0;
+};
+
+export const getNumCorrectAnswers = (answerType: AnswerBoxType) => {
+  switch (answerType) {
+    case AnswerBoxType.RADIO2:
+    case AnswerBoxType.RADIO3:
+    case AnswerBoxType.RADIO4:
+    case AnswerBoxType.RADIO8:
+    case AnswerBoxType.INPUT1:
+    case AnswerBoxType.INPUT16:
+    case AnswerBoxType.INPUT16_WITH_EXTRA:
+    case AnswerBoxType.INPUT2:
+    case AnswerBoxType.INPUT3:
+    case AnswerBoxType.INPUT4:
+    case AnswerBoxType.INPUT8:
+      return getNumAnswers(answerType);
+    case AnswerBoxType.INPUT3_LIST:
+    case AnswerBoxType.INPUT1_LIST:
+    case AnswerBoxType.INPUT2_LIST:
+    case AnswerBoxType.INPUT4_LIST:
+      return Infinity;
+  }
+  return 1;
 };
 
 export enum LiveQuizState {

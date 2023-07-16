@@ -6,6 +6,7 @@ import {
   AnswerState,
   answerStateToString,
   getNumAnswers,
+  getNumCorrectAnswers,
   getNumRadioBoxes,
   QuestionTemplateResponse,
   stringToAnswerState,
@@ -98,23 +99,43 @@ const EditAnswers = (props: EditAnswersProps) => {
 
   const numAnswers = getNumAnswers(answerType);
   const numRadioBoxes = getNumRadioBoxes(answerType);
+  const numListAnswers = getNumCorrectAnswers(answerType);
 
   const answerBoxes: ReactNode[] = [];
-  for (let i = 0; i < numAnswers; i++) {
-    answerBoxes.push(
-      <div key={i}>
-        <InputLabel>Answer {i + 1}</InputLabel>
-        <Input
-          aria-label="Answer"
-          type="text"
-          defaultValue={state['answer' + (i + 1)]}
-          onChange={handleAnswerChange(i + 1)}
-          style={{
-            width: '75%',
-          }}
-        />
-      </div>
-    );
+  if (numAnswers !== numListAnswers) {
+    for (let i = 0; i < 8; i++) {
+      answerBoxes.push(
+        <div key={i}>
+          <InputLabel>Potential Answer {i + 1}</InputLabel>
+          <Input
+            aria-label="Answer"
+            type="text"
+            defaultValue={state['answer' + (i + 1)]}
+            onChange={handleAnswerChange(i + 1)}
+            style={{
+              width: '75%',
+            }}
+          />
+        </div>
+      );
+    }
+  } else {
+    for (let i = 0; i < numAnswers; i++) {
+      answerBoxes.push(
+        <div key={i}>
+          <InputLabel>Answer {i + 1}</InputLabel>
+          <Input
+            aria-label="Answer"
+            type="text"
+            defaultValue={state['answer' + (i + 1)]}
+            onChange={handleAnswerChange(i + 1)}
+            style={{
+              width: '75%',
+            }}
+          />
+        </div>
+      );
+    }
   }
 
   const radioBoxes: ReactNode[] = [];
@@ -160,6 +181,10 @@ const EditAnswers = (props: EditAnswersProps) => {
         <option value={AnswerBoxType.RADIO3}>Radio 3</option>
         <option value={AnswerBoxType.RADIO4}>Radio 4</option>
         <option value={AnswerBoxType.RADIO8}>Radio 8</option>
+        <option value={AnswerBoxType.INPUT1_LIST}>Input 1 List</option>
+        <option value={AnswerBoxType.INPUT2_LIST}>Input 2 List</option>
+        <option value={AnswerBoxType.INPUT3_LIST}>Input 3 List</option>
+        <option value={AnswerBoxType.INPUT4_LIST}>Input 4 List</option>
       </select>
       <div
         style={{

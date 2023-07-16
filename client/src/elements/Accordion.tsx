@@ -12,6 +12,7 @@ const Header = styled.div(() => {
     padding: '16px',
     borderRadius: '8px',
     margin: '4px 0px',
+    userSelect: 'none' as any,
   };
 });
 
@@ -102,7 +103,7 @@ const Accordion = (props: AccordionProps) => {
             <div
               style={{
                 maxHeight: isOpen ? '2000px' : '0',
-                transition: 'max-height 0.3s ease-out',
+                transition: 'max-height 0.1s linear',
                 padding: '0 16px',
                 overflow: 'hidden',
               }}

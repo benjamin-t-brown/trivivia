@@ -27,6 +27,7 @@ import {
   AnswerState,
   answerStateToString,
   getNumAnswers,
+  getNumCorrectAnswers,
   getNumRadioBoxes,
   QuestionTemplateResponse,
   stringToAnswerState,
@@ -75,12 +76,22 @@ const action = createAction(async (values: EditQuestionValues, params) => {
 
   const answerState = stringToAnswerState(values.answers);
   const numAnswers = getNumAnswers(values.answerType);
+  const numCorrectAnswers = getNumCorrectAnswers(values.answerType);
   const numRadioBoxes = getNumRadioBoxes(values.answerType);
   const newAnswerState: AnswerState = {};
-  for (let i = 0; i < numAnswers; i++) {
-    const key = 'answer' + (i + 1);
-    if (answerState[key]) {
-      newAnswerState[key] = answerState[key];
+  if (numCorrectAnswers !== numAnswers) {
+    for (let i = 0; i < 8; i++) {
+      const key = 'answer' + (i + 1);
+      if (answerState[key]) {
+        newAnswerState[key] = answerState[key];
+      }
+    }
+  } else {
+    for (let i = 0; i < numAnswers; i++) {
+      const key = 'answer' + (i + 1);
+      if (answerState[key]) {
+        newAnswerState[key] = answerState[key];
+      }
     }
   }
   for (let i = 0; i < numRadioBoxes; i++) {

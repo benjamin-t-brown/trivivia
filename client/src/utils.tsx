@@ -8,6 +8,7 @@ import {
   QuestionTemplateResponse,
   RoundTemplateResponse,
   getNumAnswers,
+  getNumCorrectAnswers,
 } from 'shared/responses';
 
 export const quizStateToLabel = (quizState: string) => {
@@ -165,15 +166,28 @@ export const getRoundAnswersArrays = (
     }
 
     const numAnswers = getNumAnswers(questionTemplate.answerType);
+    const numCorrectAnswers = getNumCorrectAnswers(questionTemplate.answerType);
 
     const qArr: string[] = [];
     const qTeamArr: string[] = [];
-    for (let k = 0; k < numAnswers; k++) {
-      const key = 'answer' + (k + 1);
-      const answers = questionTemplate.answers[key];
-      const teamAnswers = submittedAnswers[j + 1]?.[key];
-      qArr.push(answers);
-      qTeamArr.push(teamAnswers);
+    if (numCorrectAnswers !== numAnswers) {
+      for (let k = 0; k < 8; k++) {
+        const key = 'answer' + (k + 1);
+        const answers = questionTemplate.answers[key];
+        if (answers) {
+          const teamAnswers = submittedAnswers[j + 1]?.[key];
+          qArr.push(answers);
+          qTeamArr.push(teamAnswers);
+        }
+      }
+    } else {
+      for (let k = 0; k < numAnswers; k++) {
+        const key = 'answer' + (k + 1);
+        const answers = questionTemplate.answers[key];
+        const teamAnswers = submittedAnswers[j + 1]?.[key];
+        qArr.push(answers);
+        qTeamArr.push(teamAnswers);
+      }
     }
     answersArr.push(qArr.join(ANSWER_DELIMITER));
     teamAnswersArr.push(qTeamArr.join(ANSWER_DELIMITER));

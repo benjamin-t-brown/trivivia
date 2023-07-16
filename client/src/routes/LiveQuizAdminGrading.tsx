@@ -14,7 +14,14 @@ import { colorsDark, getColors } from 'style';
 import { throwValidationError, useTypedLoaderData } from 'hooks';
 import DefaultTopBar from 'components/DefaultTopBar';
 import { updateCacheLiveQuizAdmin } from 'cache';
-import { LiveQuizResponse, LiveQuizTeamResponse } from 'shared/responses';
+import {
+  AnswerBoxType,
+  LiveQuizResponse,
+  LiveQuizTeamResponse,
+  QuestionTemplateResponse,
+  RoundTemplateResponse,
+  getNumAnswers,
+} from 'shared/responses';
 import FormErrorText from 'components/FormErrorText';
 import SectionTitle from 'elements/SectionTitle';
 import { ANSWER_DELIMITER, getRoundAnswersArrays } from 'utils';
@@ -93,6 +100,7 @@ const loader = async ({ params }) => {
 const CustomRadioInput = styled.div(() => {
   return {
     margin: '4px',
+    display: 'flex',
   };
 });
 
@@ -113,6 +121,7 @@ const RoundAnswer = (props: {
   teamAnswers: string;
   correctAnswers: string;
   orderMatters: boolean;
+  questionTemplate?: QuestionTemplateResponse;
   setGradeForAnswer: (args: {
     teamId: string;
     roundId: string;
@@ -129,7 +138,9 @@ const RoundAnswer = (props: {
   const gradeState =
     props.state[props.team.id][props.roundId][props.questionNumber] ?? {};
 
-  console.log('GradeState', gradeState);
+  const numCorrectAnswers = props.questionTemplate?.answerType
+    ? getNumAnswers(props.questionTemplate?.answerType)
+    : individualAnswersCorrect.length;
 
   const handleAnswerGradeChange: (
     i: number,
@@ -151,7 +162,7 @@ const RoundAnswer = (props: {
         margin: '4px 0px',
         // display: 'flex',
         // justifyContent: 'flex-start',
-        borderTop: '1px solid ' + getColors().TEXT_DESCRIPTION,
+        // borderTop: '1px solid ' + getColors().TEXT_DESCRIPTION,
         borderBottom: '1px solid ' + getColors().TEXT_DESCRIPTION,
         paddingBottom: '4px',
       }}
@@ -186,7 +197,7 @@ const RoundAnswer = (props: {
           flexWrap: 'wrap',
         }}
       >
-        {individualAnswersCorrect.map((answer, i) => {
+        {new Array(numCorrectAnswers).fill(numCorrectAnswers).map((_, i) => {
           const submittedAnswer = individualAnswersSubmitted[i];
 
           const correctId =
@@ -276,17 +287,25 @@ const RoundAnswer = (props: {
                     name={correctId}
                     checked={gradeState[gradeKey] === 'true'}
                     onChange={handleAnswerGradeChange(i + 1, true)}
-                  />
-                  <label
-                    htmlFor={correctId}
                     style={{
-                      marginLeft: '16px',
+                      transform: 'scale(1.5)',
+                      cursor: 'pointer',
                     }}
-                  >
+                  />
+                  <label htmlFor={correctId}>
+                    <div
+                      style={{
+                        width: '16px',
+                        display: 'inline-block',
+                        cursor: 'pointer',
+                      }}
+                    ></div>
                     <Img
                       draggable={false}
                       style={{
                         width: '22px',
+                        height: '22px',
+                        cursor: 'pointer',
                         background:
                           gradeState[gradeKey] === 'true'
                             ? getColors().SUCCESS_BACKGROUND
@@ -304,17 +323,24 @@ const RoundAnswer = (props: {
                     name={correctId}
                     checked={gradeState[gradeKey] === 'false'}
                     onChange={handleAnswerGradeChange(i + 1, false)}
-                  />
-                  <label
-                    htmlFor={incorrectId}
                     style={{
-                      marginLeft: '16px',
+                      transform: 'scale(1.5)',
+                      cursor: 'pointer',
                     }}
-                  >
+                  />
+                  <label htmlFor={incorrectId}>
+                    <div
+                      style={{
+                        width: '16px',
+                        display: 'inline-block',
+                        cursor: 'pointer',
+                      }}
+                    ></div>
                     <Img
                       draggable={false}
                       style={{
                         width: '22px',
+                        height: '22px',
                         background:
                           gradeState[gradeKey] === 'false'
                             ? getColors().ERROR_BACKGROUND
@@ -357,6 +383,7 @@ const areAllAnswersGradedForTeamRound = (args: {
   state: GradeInputState;
   teamId: string;
   roundId: string;
+  roundTemplate: RoundTemplateResponse;
   answersArr: string[];
 }) => {
   const roundGradeState = args.state[args.teamId][args.roundId];
@@ -366,14 +393,23 @@ const areAllAnswersGradedForTeamRound = (args: {
   }
 
   for (let i = 0; i < args.answersArr.length; i++) {
+    const questionId = args.roundTemplate.questionOrder[i];
+    const questionTemplate = args.roundTemplate.questions?.find(
+      q => q.id === questionId
+    );
+    if (!questionTemplate) {
+      return false;
+    }
+
+    const numAnswers = getNumAnswers(questionTemplate.answerType);
+
     const questionGradeState = roundGradeState[i + 1];
-    const splitAnswers = args.answersArr[i].split(ANSWER_DELIMITER);
 
     if (!questionGradeState) {
       return false;
     }
 
-    for (let j = 0; j < splitAnswers.length; j++) {
+    for (let j = 0; j < numAnswers; j++) {
       if (questionGradeState['answer' + (j + 1)] === undefined) {
         return false;
       }
@@ -468,6 +504,7 @@ const LiveQuizAdminGrading = (props: EditLiveQuizProps) => {
             state,
             teamId,
             roundId,
+            roundTemplate,
             answersArr,
           })
         ) {
@@ -538,8 +575,12 @@ const LiveQuizAdminGrading = (props: EditLiveQuizProps) => {
         state,
         teamId: team.id,
         roundId,
+        roundTemplate,
         answersArr,
       });
+      const didJoker = team.liveQuizRoundAnswers.find(
+        a => a.roundId === roundTemplate.id
+      )?.didJoker;
 
       subElems.push({
         header: (
@@ -590,6 +631,21 @@ const LiveQuizAdminGrading = (props: EditLiveQuizProps) => {
               >
                 {team.teamName}
               </span>
+              {didJoker ? (
+                <div>
+                  <span
+                    style={{
+                      color: getColors().SUCCESS_TEXT,
+                      cursor: 'pointer',
+                      fontSize: '12px',
+                      userSelect: 'none',
+                      lineHeight: '24px',
+                    }}
+                  >
+                    Joker was used!
+                  </span>
+                </div>
+              ) : null}
               <div
                 style={{
                   marginBottom: '8px',
@@ -603,6 +659,7 @@ const LiveQuizAdminGrading = (props: EditLiveQuizProps) => {
                     cursor: 'pointer',
                     fontSize: '12px',
                     userSelect: 'none',
+                    lineHeight: '24px',
                   }}
                 >
                   Mark All Incorrect
@@ -610,6 +667,10 @@ const LiveQuizAdminGrading = (props: EditLiveQuizProps) => {
               </div>
             </div>
             {answersArr.map((correctAnswers, j) => {
+              const questionId = roundTemplate.questionOrder[j];
+              const questionTemplate = roundTemplate.questions?.find(
+                q => q.id === questionId
+              );
               const submittedAnswers = teamAnswersArr[j];
               return (
                 <div key={team.id + '-' + j}>
@@ -621,6 +682,7 @@ const LiveQuizAdminGrading = (props: EditLiveQuizProps) => {
                     setGradeForAnswer={setGradeForAnswer}
                     team={team}
                     roundId={roundId}
+                    questionTemplate={questionTemplate}
                     state={state}
                   />
                 </div>
