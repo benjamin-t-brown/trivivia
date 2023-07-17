@@ -319,6 +319,7 @@ const ListQuestionTemplates = () => {
                             whiteSpace: 'pre',
                             textOverflow: 'ellipsis',
                             marginRight: '16px',
+                            lineHeight: '16px',
                           }}
                         >
                           <span key={i}>
