@@ -37,7 +37,10 @@ const EditAnswers = (props: EditAnswersProps) => {
 
       if (action.type === 'reset') {
         if (form) {
-          return stringToAnswerState(form.elements['answers'].value ?? {});
+          const state = stringToAnswerState(
+            form.elements['answers'].value ?? {}
+          );
+          return state;
         }
       } else {
         state[action.type + action.i] = action.value;
@@ -62,11 +65,12 @@ const EditAnswers = (props: EditAnswersProps) => {
     if (form) {
       const stateAnswers = answerStateToString(state);
       const formAnswers = form.elements['answers'].value;
+      const formAnswerType = form.elements['answerType'].value;
       if (stateAnswers !== formAnswers && !props.isNew) {
-        console.log('reset');
         dispatch({
           type: 'reset',
         });
+        setAnswerType(formAnswerType as AnswerBoxType);
       }
     }
   }, [state, dispatch, props.formId]);

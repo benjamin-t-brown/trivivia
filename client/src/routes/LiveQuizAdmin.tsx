@@ -159,7 +159,15 @@ const QuestionSection = (props: {
     <Question key={q.id} selected={i === liveQuiz.currentQuestionNumber}>
       {props.showAnswers ? (
         <>
-          {i + 1}. {q.text}
+          {i + 1}.{' '}
+          {q.text.split('\n').map((line, i) => {
+            return (
+              <>
+                <span key={i} dangerouslySetInnerHTML={{ __html: line }}></span>
+                <br />
+              </>
+            );
+          })}
           {q.imageLink ? (
             <Img
               style={{
@@ -294,7 +302,15 @@ const QuestionSection = (props: {
               </div>
             ) : null}
           </div>
-          {i + 1}. {q.text}
+          {i + 1}.{' '}
+          {q.text.split('\n').map((line, i) => {
+            return (
+              <>
+                <span key={i} dangerouslySetInnerHTML={{ __html: line }}></span>
+                <br />
+              </>
+            );
+          })}
           {q.imageLink ? (
             q.imageLink.includes('<iframe ') ? (
               <div dangerouslySetInnerHTML={{ __html: q.imageLink }}></div>
@@ -1075,7 +1091,7 @@ const LiveQuizAdmin = (props: EditLiveQuizProps) => {
                 }}
                 onClick={handleBackRoundClick}
               >
-                Go To Previous Round
+                ↑ Go To Previous Round
                 {!isRoundCompleted(liveQuiz) && liveQuiz.currentRoundNumber > 0
                   ? ' (Ensure current round is locked.)'
                   : ''}
@@ -1117,7 +1133,7 @@ const LiveQuizAdmin = (props: EditLiveQuizProps) => {
                   }}
                   onClick={handleStartRoundClick}
                 >
-                  Begin Next Round{' '}
+                  ↓ Begin Next Round{' '}
                   {!isRoundCompleted(liveQuiz) &&
                   liveQuiz.currentRoundNumber > 0
                     ? '(Ensure current round is locked.)'
@@ -1145,7 +1161,7 @@ const LiveQuizAdmin = (props: EditLiveQuizProps) => {
                   }}
                   onClick={handleStopRoundClick}
                 >
-                  Stop Showing Round
+                  ✔ Complete Round
                 </Button>
                 <ContentSpacer />
                 <AdminRoundSubmissionControlsButtons

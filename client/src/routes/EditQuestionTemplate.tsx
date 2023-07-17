@@ -1,7 +1,7 @@
 import { fetchAsync, FetchResponse, createAction } from 'actions';
 import Button from 'elements/Button';
 import MobileLayout from 'elements/MobileLayout';
-import React from 'react';
+import React, { useCallback } from 'react';
 import {
   Form,
   json,
@@ -283,13 +283,6 @@ const EditQuestionTemplate = (props: EditQuestionProps) => {
       `/quiz-template/${params.quizTemplateId}/round-template/${params.roundTemplateId}/question-template/${params.questionTemplateId}/delete`
     );
   };
-
-  // const handleDuplicateClick = (ev: React.MouseEvent) => {
-  //   ev.preventDefault();
-  //   navigate(
-  //     `/quiz-template/${params.quizTemplateId}/round-template/${params.roundTemplateId}/question-template/${params.questionTemplateId}/delete`
-  //   );
-  // };
 
   return (
     <>

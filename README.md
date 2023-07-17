@@ -24,7 +24,9 @@ cd client
 yarn test:prod
 yarn build
 
-# the client code is not built!  If you need to deploy the server then do the following
+# Since it is static site, client code doesn't require a server restart.
+
+# If you need to deploy the server then do the following
 # but no need to if you have no server changes.
 
 # test server
@@ -33,7 +35,7 @@ yarn test:prod
 forever list
 
 # use the trivivia index from the forever list command
-forever stop 1
+forever stop <number>
 
 # forever doesn't actually kill the ts-node process so you have to find it
 # 'forever restart' also does not work correctly

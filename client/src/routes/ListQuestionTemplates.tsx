@@ -321,7 +321,16 @@ const ListQuestionTemplates = () => {
                             marginRight: '16px',
                           }}
                         >
-                          {t.text || t.notes || 'Image question'}
+                          <span
+                            key={i}
+                            dangerouslySetInnerHTML={{
+                              __html: (
+                                t.text ||
+                                'Notes: ' + t.notes ||
+                                'Image question'
+                              ).replace(/\n/g, ''),
+                            }}
+                          ></span>
                         </div>
                         <InlineIconButton
                           imgSrc="/res/trade.svg"

@@ -101,6 +101,7 @@ export const throwValidationError = (message: string, values: any) => {
 // if they exist
 export const useFormResetValues = (formId: string) => {
   const routeError = useRouteError() as FormError;
+
   useEffect(() => {
     const form = document.getElementById(formId) as HTMLFormElement | null;
     if (form && routeError?.values) {

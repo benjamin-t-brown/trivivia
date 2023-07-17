@@ -710,7 +710,15 @@ const QuestionAnswer = (props: {
           marginBottom: '8px',
         }}
       >
-        {props.questionNumber}. {props.question.text}
+        {props.questionNumber}.{' '}
+        {props.question.text.split('\n').map((line, i) => {
+          return (
+            <>
+              <span key={i} dangerouslySetInnerHTML={{ __html: line }}></span>
+              <br />
+            </>
+          );
+        })}
       </div>
       {props.question.imageLink ? (
         props.question.imageLink.includes('<iframe ') ? (
