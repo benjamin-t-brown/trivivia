@@ -4,17 +4,38 @@ import { QuizTemplate } from '../models/QuizTemplate';
 import { QuestionTemplate } from '../models/QuestionTemplate';
 import { RoundTemplate } from '../models/RoundTemplate';
 import { Account } from '../models/Account';
-import { AnswerBoxType, getNumAnswers } from 'shared/responses';
+import {
+  AnswerBoxType,
+  QuestionTemplateResponse,
+  getNumAnswers,
+  getNumRadioBoxes,
+} from 'shared/responses';
 import logger from '../logger';
 import { Includeable } from 'sequelize';
 import htmlPrettify from 'html-prettify';
 import fs from 'fs';
+import path from 'path';
+import { replaceInTemplate } from '../utils/templateUtils';
 
 export class TemplateService {
-  htmlExport = '';
+  htmlExportFooter = '';
+  htmlExportQuestion = '';
+  htmlExportRound = '';
   constructor() {
-    this.htmlExport = fs
-      .readFileSync(__dirname + '/../templates/html-export.html')
+    this.htmlExportFooter = fs
+      .readFileSync(
+        path.resolve(__dirname, '../templates/html-export-footer.html')
+      )
+      .toString();
+    this.htmlExportQuestion = fs
+      .readFileSync(
+        path.resolve(__dirname, '../templates/html-export-question.html')
+      )
+      .toString();
+    this.htmlExportRound = fs
+      .readFileSync(
+        path.resolve(__dirname, '../templates/html-export-round.html')
+      )
       .toString();
   }
 
@@ -438,26 +459,94 @@ export class TemplateService {
       return;
     }
 
+    const getHtmlForQuestion = (args: {
+      questionNumber: number;
+      questionTemplateResponse: QuestionTemplateResponse;
+    }) => {
+      const { questionTemplateResponse } = args;
+      let questionHtml = this.htmlExportQuestion;
+      questionHtml = replaceInTemplate(
+        questionHtml,
+        'questionNumber',
+        args.questionNumber
+      );
+      questionHtml = replaceInTemplate(
+        questionHtml,
+        'questionText',
+        questionTemplateResponse.text
+      );
+      questionHtml = replaceInTemplate(
+        questionHtml,
+        'questionImage',
+        questionTemplateResponse.imageLink
+          ? `<br /><img src="${questionTemplateResponse.imageLink}" alt="imageQuestion" style="max-width:400px" />`
+          : ''
+      );
+
+      questionHtml = replaceInTemplate(
+        questionHtml,
+        'questionNotes',
+        questionTemplateResponse.notes
+          ? `<br /><br />Notes: ${questionTemplateResponse.notes}`
+          : ''
+      );
+      questionHtml = replaceInTemplate(
+        questionHtml,
+        'questionAnswers',
+        `${Object.entries(questionTemplateResponse.answers)
+          .filter(([key]) => key.includes('answer'))
+          .map(([, value]) => value)
+          .join(', ')}`
+      );
+
+      const numAnswers = getNumAnswers(questionTemplateResponse.answerType);
+      const numRadios = getNumRadioBoxes(questionTemplateResponse.answerType);
+      let htmlInputs = '';
+      if (numRadios > 0) {
+        htmlInputs += `<div>${Object.entries(questionTemplateResponse.answers)
+          .filter(([key]) => key.includes('radio'))
+          .map(([, value]) => value)
+          .join(', ')}</div>`;
+        htmlInputs += `<br /><input type="text" style="margin: 2px 0px" />`;
+      } else {
+        for (let k = 0; k < numAnswers; k++) {
+          htmlInputs += `<br /><input type="text" style="margin: 2px 0px" />`;
+        }
+      }
+      questionHtml = replaceInTemplate(
+        questionHtml,
+        'questionInputs',
+        htmlInputs
+      );
+      return questionHtml;
+    };
+
     const getHtmlForRound = (args: {
       roundNumber: number;
       roundTemplate: RoundTemplate;
-      includeAnswers: boolean;
     }) => {
-      const { roundTemplate, includeAnswers } = args;
-      let htmlInner = '';
-      htmlInner += '<p>';
-      htmlInner += `<h2>Round ${args.roundNumber}: ${roundTemplate.title}</h2>`;
-      htmlInner += `<h4>${roundTemplate.description}</h4>`;
-      htmlInner += '<div>';
-      if (roundTemplate.notes) {
-        htmlInner += `<br /><br />Notes: ${roundTemplate.notes}</h4>`;
-      }
-      htmlInner += '</div>';
+      const { roundTemplate } = args;
 
-      htmlInner += '<br />';
-      htmlInner += '<br />';
+      let roundHtml = this.htmlExportRound;
+      roundHtml = replaceInTemplate(roundHtml, 'roundNumber', args.roundNumber);
+      roundHtml = replaceInTemplate(
+        roundHtml,
+        'roundTitle',
+        roundTemplate.title
+      );
+      roundHtml = replaceInTemplate(
+        roundHtml,
+        'roundDescription',
+        roundTemplate.description
+      );
+      roundHtml = replaceInTemplate(
+        roundHtml,
+        'roundNotes',
+        roundTemplate.notes ?? ''
+      );
+
       const questionOrder = JSON.parse(roundTemplate.questionOrder);
-
+      let questionsHtml = '';
       for (let j = 0; j < questionOrder.length; j++) {
         const questionTemplateResponse = roundTemplate.questions
           .find(q => q.id === questionOrder[j])
@@ -467,33 +556,15 @@ export class TemplateService {
           throw new Error('Question not found: ' + questionOrder[j]);
         }
 
-        htmlInner += `<b>Question ${j + 1}:</b> ${
-          questionTemplateResponse.text
-        }`;
-        if (questionTemplateResponse.imageLink) {
-          htmlInner += `<br /><br /><img src="${questionTemplateResponse.imageLink}" style="max-width: 400pxf"/>`;
-        }
-        if (includeAnswers) {
-          htmlInner += '<div class="answer">';
-          if (questionTemplateResponse.notes) {
-            htmlInner += `<br /><br />Notes: ${questionTemplateResponse.notes}</h4>`;
-          }
-          htmlInner += `<h4>Answer: ${Object.values(
-            questionTemplateResponse.answers
-          ).join(', ')}</h4>`;
-          htmlInner += '</div>';
-        }
-
-        const numAnswers = getNumAnswers(questionTemplateResponse.answerType);
-        for (let k = 0; k < numAnswers; k++) {
-          htmlInner += `<br /><input type="text" />`;
-        }
-
-        htmlInner += '<br />';
-        htmlInner += '<br />';
+        questionsHtml += getHtmlForQuestion({
+          questionTemplateResponse,
+          questionNumber: j + 1,
+        });
       }
-      htmlInner += '</p>';
-      return htmlInner;
+
+      roundHtml = replaceInTemplate(roundHtml, 'roundQuestions', questionsHtml);
+
+      return roundHtml;
     };
 
     if (params.format === 'html') {
@@ -510,13 +581,12 @@ export class TemplateService {
         htmlInner += getHtmlForRound({
           roundNumber: i + 1,
           roundTemplate,
-          includeAnswers: true,
         });
       }
 
-      const html = `<html><head><style>h4 { margin: 4px 0px } .answer { display: none}</style></head><body><h1>Quiz: ${quizTemplate.name}</h1><br />${htmlInner}${this.htmlExport}</body></html>`;
+      const html = `<html><head></head><body><h1>Quiz: ${quizTemplate.name}</h1><br />${htmlInner}${this.htmlExportFooter}</body></html>`;
 
-      return htmlPrettify(html);
+      return html;
     } else {
       throw new Error('Not implemented');
     }

@@ -12,6 +12,31 @@
         answer.style.display = 'none';
       }
     }
+    const noAnswers = document.getElementsByClassName('no-answer');
+    for (var i = 0; i < noAnswers.length; i++) {
+      const noAnswer = noAnswers[i];
+      if (!answersVisible) {
+        noAnswer.style.display = 'none';
+      } else {
+        noAnswer.style.display = 'block';
+      }
+    }
     answersVisible = !answersVisible;
   };
 </script>
+
+<style>
+  h2 {
+    margin: 4px 0px;
+  }
+  h3 {
+    margin: 4px 0px;
+  }
+  h4 {
+    margin: 4px 0px;
+    color: blue;
+  }
+  .answer {
+    display: none;
+  }
+</style>

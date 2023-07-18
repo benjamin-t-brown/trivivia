@@ -1089,6 +1089,22 @@ const LiveQuiz = (props: { error?: boolean }) => {
           <Button
             color="plain"
             onClick={() => {
+              (window as any).location =
+                'https://github.com/benjamin-t-brown/trivivia';
+            }}
+          >
+            <Img
+              style={{
+                width: '22px',
+                background: 'unset',
+              }}
+              alt="Github"
+              src="/res/github.svg"
+            />
+          </Button>
+          <Button
+            color="plain"
+            onClick={() => {
               navigate('/settings');
             }}
           >
