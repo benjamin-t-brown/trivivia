@@ -9,6 +9,7 @@ export interface RouteContext {
   liveTeamId?: string;
   liveSpectateId?: string;
   ioSessions: IoSession[];
+  res?: Response;
 }
 
 export class InvalidInputError extends Error {
@@ -29,7 +30,8 @@ export function registerRoute<T, R>(
   router: Router,
   method: 'get' | 'post' | 'put' | 'delete',
   route: string,
-  cb: RouteCb<T, R>
+  cb: RouteCb<T, R>,
+  skipJsonStringify = false
 ) {
   logger.debug('Register route', method, route);
   router[method](route, async (req: ApiRequest, res: Response) => {
@@ -40,16 +42,22 @@ export function registerRoute<T, R>(
         liveTeamId: req.liveTeamId,
         liveSpectateId: req.liveSpectateId,
         ioSessions: req.ioSessions,
+        res,
       });
       if (result) {
-        const json = JSON.stringify(result);
+        let data: string;
+        if (!skipJsonStringify) {
+          data = JSON.stringify(result);
+        } else {
+          data = result as string;
+        }
         logger.debug(
           'response=' + req.requestId,
           method,
           route,
-          json.slice(0, 50) + '...'
+          data.slice(0, 50) + '...'
         );
-        res.status(200).send(json);
+        res.status(200).send(data);
       } else {
         logger.error(
           'Not Found Error',

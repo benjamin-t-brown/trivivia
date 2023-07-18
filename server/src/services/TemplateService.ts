@@ -4,11 +4,20 @@ import { QuizTemplate } from '../models/QuizTemplate';
 import { QuestionTemplate } from '../models/QuestionTemplate';
 import { RoundTemplate } from '../models/RoundTemplate';
 import { Account } from '../models/Account';
-import { AnswerBoxType } from 'shared/responses';
+import { AnswerBoxType, getNumAnswers } from 'shared/responses';
 import logger from '../logger';
 import { Includeable } from 'sequelize';
+import htmlPrettify from 'html-prettify';
+import fs from 'fs';
 
 export class TemplateService {
+  htmlExport = '';
+  constructor() {
+    this.htmlExport = fs
+      .readFileSync(__dirname + '/../templates/html-export.html')
+      .toString();
+  }
+
   async findAllQuizTemplatesByAccountId(accountId: string) {
     const account = await Account.findByPk(accountId, {
       include: [{ model: QuizTemplate, as: 'quizTemplates' }],
@@ -167,7 +176,6 @@ export class TemplateService {
 
   async reorderRoundsInQuiz(params: { id: string; newOrder: string[] }) {
     const quizTemplate = await this.findQuizById(params.id);
-    console.log('REORDER', params.id);
 
     if (!quizTemplate) {
       return;
@@ -190,7 +198,7 @@ export class TemplateService {
     }
 
     quizTemplate.roundOrder = JSON.stringify(params.newOrder);
-    console.log('reorder rounds to', quizTemplate.roundOrder);
+    logger.info('reorder rounds to', quizTemplate.roundOrder);
     return quizTemplate.save();
   }
 
@@ -200,7 +208,7 @@ export class TemplateService {
     description?: string;
     notes?: string;
   }) {
-    console.log('create round', params);
+    logger.info('create round', params);
 
     const quizTemplate = await this.findQuizById(params.quizTemplateId);
     if (!quizTemplate) {
@@ -250,7 +258,7 @@ export class TemplateService {
   async deleteRoundTemplate(params: { roundId: string }) {
     const roundTemplate = await this.findRoundById(params.roundId);
 
-    console.log('found round template', roundTemplate);
+    logger.info('found round template', roundTemplate);
 
     if (!roundTemplate) {
       return;
@@ -418,5 +426,99 @@ export class TemplateService {
     });
 
     return duplicatedQuestionTemplate;
+  }
+
+  async exportQuizTemplate(params: {
+    quizTemplateId: string;
+    format: 'json' | 'html';
+  }) {
+    const quizTemplate = await this.findQuizById(params.quizTemplateId);
+
+    if (!quizTemplate) {
+      return;
+    }
+
+    const getHtmlForRound = (args: {
+      roundNumber: number;
+      roundTemplate: RoundTemplate;
+      includeAnswers: boolean;
+    }) => {
+      const { roundTemplate, includeAnswers } = args;
+      let htmlInner = '';
+      htmlInner += '<p>';
+      htmlInner += `<h2>Round ${args.roundNumber}: ${roundTemplate.title}</h2>`;
+      htmlInner += `<h4>${roundTemplate.description}</h4>`;
+      htmlInner += '<div>';
+      if (roundTemplate.notes) {
+        htmlInner += `<br /><br />Notes: ${roundTemplate.notes}</h4>`;
+      }
+      htmlInner += '</div>';
+
+      htmlInner += '<br />';
+      htmlInner += '<br />';
+      const questionOrder = JSON.parse(roundTemplate.questionOrder);
+
+      for (let j = 0; j < questionOrder.length; j++) {
+        const questionTemplateResponse = roundTemplate.questions
+          .find(q => q.id === questionOrder[j])
+          ?.getResponseJson();
+
+        if (!questionTemplateResponse) {
+          throw new Error('Question not found: ' + questionOrder[j]);
+        }
+
+        htmlInner += `<b>Question ${j + 1}:</b> ${
+          questionTemplateResponse.text
+        }`;
+        if (questionTemplateResponse.imageLink) {
+          htmlInner += `<br /><br /><img src="${questionTemplateResponse.imageLink}" style="max-width: 400pxf"/>`;
+        }
+        if (includeAnswers) {
+          htmlInner += '<div class="answer">';
+          if (questionTemplateResponse.notes) {
+            htmlInner += `<br /><br />Notes: ${questionTemplateResponse.notes}</h4>`;
+          }
+          htmlInner += `<h4>Answer: ${Object.values(
+            questionTemplateResponse.answers
+          ).join(', ')}</h4>`;
+          htmlInner += '</div>';
+        }
+
+        const numAnswers = getNumAnswers(questionTemplateResponse.answerType);
+        for (let k = 0; k < numAnswers; k++) {
+          htmlInner += `<br /><input type="text" />`;
+        }
+
+        htmlInner += '<br />';
+        htmlInner += '<br />';
+      }
+      htmlInner += '</p>';
+      return htmlInner;
+    };
+
+    if (params.format === 'html') {
+      let htmlInner = '';
+      const roundOrder = JSON.parse(quizTemplate.roundOrder);
+      for (let i = 0; i < roundOrder.length; i++) {
+        const roundId = roundOrder[i];
+        const roundTemplate = await this.findRoundById(roundId);
+
+        if (!roundTemplate) {
+          throw new Error(`Round not found roundId='${roundId}'`);
+        }
+
+        htmlInner += getHtmlForRound({
+          roundNumber: i + 1,
+          roundTemplate,
+          includeAnswers: true,
+        });
+      }
+
+      const html = `<html><head><style>h4 { margin: 4px 0px } .answer { display: none}</style></head><body><h1>Quiz: ${quizTemplate.name}</h1><br />${htmlInner}${this.htmlExport}</body></html>`;
+
+      return htmlPrettify(html);
+    } else {
+      throw new Error('Not implemented');
+    }
   }
 }

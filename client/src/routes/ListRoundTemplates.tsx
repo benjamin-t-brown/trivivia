@@ -339,6 +339,14 @@ const ListRoundTemplates = () => {
           {loaderResponse?.data.roundTemplates.length === 0 ? (
             <TextCenter>(none)</TextCenter>
           ) : null}
+          <a
+            href={
+              '/api/template/export/quiz/' +
+              loaderResponse?.data?.quizTemplate.id
+            }
+          >
+            Download as HTML
+          </a>
         </InnerRoot>
       </MobileLayout>
       {confirmDialog}

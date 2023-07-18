@@ -1,0 +1,17 @@
+<button onclick="window.toggleAnswers()">Toggle Answers</button>
+
+<script>
+  let answersVisible = false;
+  window.toggleAnswers = function () {
+    const answers = document.getElementsByClassName('answer');
+    for (var i = 0; i < answers.length; i++) {
+      const answer = answers[i];
+      if (!answersVisible) {
+        answer.style.display = 'block';
+      } else {
+        answer.style.display = 'none';
+      }
+    }
+    answersVisible = !answersVisible;
+  };
+</script>

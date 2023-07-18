@@ -5,6 +5,7 @@ import {
   registerGet,
   registerPost,
   registerPut,
+  registerRoute,
 } from '../routing';
 import { TemplateService } from '../services/TemplateService';
 import { validateAnswerType, validateInt, validateString } from '../validators';
@@ -411,5 +412,28 @@ export const initTemplateControllers = (router: Router) => {
 
       return questionTemplate?.getResponseJson();
     }
+  );
+
+  registerRoute(
+    router,
+    'get',
+    '/api/template/export/quiz/:quizTemplateId',
+    async function exportQuizTemplate(params, _, context) {
+      const str = await templateService.exportQuizTemplate({
+        quizTemplateId: params.quizTemplateId,
+        format: 'html',
+      });
+
+      if (context.res) {
+        context.res.setHeader('Content-Type', 'text/plain');
+        context.res.setHeader(
+          'Content-Disposition',
+          'attachment; filename=quiz.html'
+        );
+      }
+
+      return str;
+    },
+    true
   );
 };
