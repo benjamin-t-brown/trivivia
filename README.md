@@ -4,11 +4,11 @@ This is a web application for desktop and mobile to create and run real time "Ge
 
 This application is deployed at [https://trivivia.twilightparadox.com](https://trivivia.twilightparadox.com)
 
-## Does the quiz update in real time
+## Does the quiz update in real time?
 
 Yes!  When running a quiz, the quiz admin can hide or show questions and answers, grade contestants/teams, and keep track of the score all in the application.  This information is all updated in real time without requiring participants to refresh.
 
-## Do users need an account to play a quiz I've made
+## Do users need an account to play a quiz I've made?
 
 No.  Once you have signed up, created, and started a quiz, users can visit a simple url or snap a QR code to join the quiz you are running.
 
