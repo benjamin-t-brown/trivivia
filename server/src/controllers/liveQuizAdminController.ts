@@ -8,7 +8,7 @@ import {
   registerPut,
 } from '../routing';
 import { LiveQuizService } from '../services/LiveQuizService';
-import { LiveQuizResponse, LiveQuizState, LiveRoundState } from 'shared';
+import { LiveQuizState, LiveRoundState } from 'shared';
 import { validateString } from '../validators';
 import { GradeInputState } from '@shared/requests';
 import logger from '../logger';

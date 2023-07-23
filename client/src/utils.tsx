@@ -93,6 +93,34 @@ export const getLiveQuizSpectateId = () => {
   return localStorage.getItem('trivivia-liveSpectateId') ?? '';
 };
 
+export const setLiveQuizJoinedId = (quizId: string) => {
+  localStorage.setItem('trivivia-liveQuizId', quizId);
+};
+
+export const getLiveQuizJoinedId = () => {
+  return localStorage.getItem('trivivia-liveQuizId');
+};
+
+export const setLiveQuizJoinedDate = (date: Date) => {
+  localStorage.setItem('trivivia-liveJoinedDate', date.toISOString());
+};
+
+let noRedirect = false;
+export const setNoRedirect = (_noRedirect: boolean) => {
+  noRedirect = _noRedirect;
+};
+export const getIsNoRedirect = () => {
+  return noRedirect;
+};
+
+export const getLiveQuizJoinedDate = () => {
+  const dateStr = localStorage.getItem('trivivia-liveJoinedDate');
+  if (dateStr) {
+    return new Date(dateStr);
+  }
+  return new Date(0);
+};
+
 export const setLiveQuizAnswersLs = (
   roundNum: number,
   savedAnswers: Record<string, AnswerState> | undefined

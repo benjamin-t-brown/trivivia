@@ -19,7 +19,7 @@ const InnerRoot = styled.div<{ useBoxShadow?: boolean }>(props => {
   return {
     maxWidth: '800px',
     boxSizing: 'border-box',
-    width: window.innerWidth - 50,
+    width: window.innerWidth - 20,
     boxShadow: props.useBoxShadow
       ? '0px 0px 16px 0px rgba(0,0,0,0.75)'
       : 'unset',

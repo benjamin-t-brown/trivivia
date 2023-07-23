@@ -1,6 +1,6 @@
 import { createAction, fetchAsync, FetchResponse } from 'actions';
 import MobileLayout from 'elements/MobileLayout';
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
   Form,
   json,
@@ -39,12 +39,19 @@ import SectionTitle from 'elements/SectionTitle';
 import { getColors } from 'style';
 import { getFromCache, updateCacheLiveQuiz } from 'cache';
 import {
+  getIsNoRedirect,
+  getLiveQuizJoinedDate,
+  getLiveQuizJoinedId,
   getLiveQuizTeamId,
   setLiveQuizAnswersLs,
+  setLiveQuizJoinedDate,
+  setLiveQuizJoinedId,
   setLiveQuizSpectateId,
   setLiveQuizTeamId,
+  setNoRedirect,
 } from 'utils';
 import Img from 'elements/Img';
+import dayjs from 'dayjs';
 
 const InnerRoot = styled.div<Object>(() => {
   return {
@@ -106,7 +113,9 @@ const action = createAction(async (values: JoinQuizValues, params) => {
     setLiveQuizAnswersLs(i, {});
   }
 
-  console.log('Joined quiz, teamId/spectateId=', joinResponse.data.id);
+  console.log('Joined quiz, teamId/spectateId=', params.userFriendlyQuizId);
+  setLiveQuizJoinedId(params.userFriendlyQuizId);
+  setLiveQuizJoinedDate(new Date());
 
   return redirect(`/live/${params.userFriendlyQuizId}`);
 });
@@ -125,6 +134,7 @@ const loader = async ({ params }) => {
   }
 
   if (accountResponse.data.teams.find(t => t.id === getLiveQuizTeamId())) {
+    setNoRedirect(false);
     return redirect(`/live/${params.userFriendlyQuizId}`);
   }
 
@@ -201,7 +211,25 @@ const JoinQuiz = (props: { error?: boolean }) => {
 
   useFormResetValues(formId);
 
-  console.log('render join', liveQuizResponse);
+  useEffect(() => {
+    const existingTeamId = getLiveQuizTeamId();
+    const existingQuizId = getLiveQuizJoinedId();
+    const existingQuizJoinedDate = getLiveQuizJoinedDate();
+    const dayjsJoinedDate = dayjs(existingQuizJoinedDate);
+    const dayjsNow = dayjs();
+    const isNoRedirect =
+      new URLSearchParams(window.location.search).get('noredirect') ===
+        'true' || getIsNoRedirect();
+    if (
+      existingTeamId &&
+      existingQuizId &&
+      dayjsJoinedDate.add(5, 'hours').isAfter(dayjsNow) &&
+      !isNoRedirect &&
+      !params.userFriendlyQuizId
+    ) {
+      (window as any).location = '/live/' + existingQuizId + '?noredirect=true';
+    }
+  }, []);
 
   return (
     <>

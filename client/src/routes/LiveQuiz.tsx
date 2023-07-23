@@ -42,6 +42,7 @@ import {
   getLiveQuizSpectateId,
   getLiveQuizTeamId,
   setLiveQuizAnswersLs,
+  setNoRedirect,
 } from 'utils';
 import {
   getCurrentRoundFromPublicQuizState,
@@ -149,6 +150,7 @@ const updateNameAction = createAction(
 const loader = async ({ params }) => {
   if (!getLiveQuizTeamId() && !getLiveQuizSpectateId()) {
     console.error('No team id or spectate id in LS');
+    setNoRedirect(true);
     return redirect('/join/' + params.userFriendlyQuizId);
   }
 
@@ -178,6 +180,7 @@ const loader = async ({ params }) => {
 
   if (!quizResponse.data.teams.find(t => t.id === getLiveQuizTeamId())) {
     console.error('teamId does not exist in quiz.', quizResponse.data);
+    setNoRedirect(true);
     return redirect('/join/' + params.userFriendlyQuizId);
   }
 
@@ -588,7 +591,7 @@ const QuestionAnswer = (props: {
   if (answerBoxes.length && props.answersQuestion) {
     answerBoxes.push(
       <CorrectAnswers
-        key="answer"
+        key={'answer' + props.questionNumber}
         correctAnswers={
           Object.keys(props.question.answers ?? {})
             .sort()
@@ -651,7 +654,7 @@ const QuestionAnswer = (props: {
 
     radioBoxes.push(
       <div
-        key={i}
+        key={'radio' + i}
         style={{
           display: 'flex',
           margin: '9px 0px',
@@ -687,7 +690,7 @@ const QuestionAnswer = (props: {
   if (radioBoxes.length && props.question.answers?.[radioAnswerKey]) {
     radioBoxes.push(
       <CorrectAnswers
-        key="answer"
+        key={'radio-answer' + props.questionNumber}
         correctAnswers={[props.question.answers?.[radioAnswerKey]]}
         answersStats={props.answersStats}
         numTeams={props.numTeams}
@@ -713,10 +716,10 @@ const QuestionAnswer = (props: {
         {props.questionNumber}.{' '}
         {props.question.text.split('\n').map((line, i) => {
           return (
-            <>
+            <React.Fragment key={i}>
               <span key={i} dangerouslySetInnerHTML={{ __html: line }}></span>
               <br />
-            </>
+            </React.Fragment>
           );
         })}
       </div>
@@ -944,6 +947,8 @@ const QuizInRound = (props: { quizState: LiveQuizPublicStateResponse }) => {
                   style={{
                     marginTop: '16px',
                     width: '100%',
+                    textAlign: 'left',
+                    justifyContent: 'flex-start',
                   }}
                   disabled={!isRoundAcceptingSubmissions}
                   type="submit"

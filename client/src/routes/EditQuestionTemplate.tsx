@@ -1,7 +1,7 @@
 import { fetchAsync, FetchResponse, createAction } from 'actions';
 import Button from 'elements/Button';
 import MobileLayout from 'elements/MobileLayout';
-import React, { useCallback } from 'react';
+import React from 'react';
 import {
   Form,
   json,

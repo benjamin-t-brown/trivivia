@@ -1,7 +1,7 @@
 import { fetchAsync, FetchResponse, createAction } from 'actions';
 import Button from 'elements/Button';
 import MobileLayout from 'elements/MobileLayout';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Link,
   json,
@@ -9,6 +9,7 @@ import {
   useFetcher,
   useNavigate,
   useParams,
+  useRevalidator,
 } from 'react-router-dom';
 import styled from 'styled-components';
 import { getColors } from 'style';
@@ -162,10 +163,10 @@ const QuestionSection = (props: {
           {i + 1}.{' '}
           {q.text.split('\n').map((line, i) => {
             return (
-              <>
+              <React.Fragment key={i}>
                 <span key={i} dangerouslySetInnerHTML={{ __html: line }}></span>
                 <br />
-              </>
+              </React.Fragment>
             );
           })}
           {q.imageLink ? (
@@ -305,10 +306,10 @@ const QuestionSection = (props: {
           {i + 1}.{' '}
           {q.text.split('\n').map((line, i) => {
             return (
-              <>
+              <React.Fragment key={i}>
                 <span key={i} dangerouslySetInnerHTML={{ __html: line }}></span>
                 <br />
-              </>
+              </React.Fragment>
             );
           })}
           {q.imageLink ? (
@@ -426,7 +427,11 @@ const updateScoresAction = createAction(
 const loader = async ({ params }) => {
   const quizTemplatesResponse = await fetchAsync<LiveQuizResponse>(
     'get',
-    '/api/live-quiz-admin/quiz/' + params.liveQuizId
+    '/api/live-quiz-admin/quiz/' + params.liveQuizId,
+    undefined,
+    {
+      bustCache: true,
+    }
   );
 
   if (quizTemplatesResponse.error) {
@@ -825,6 +830,16 @@ const LiveQuizAdmin = (props: EditLiveQuizProps) => {
   const render = useReRender();
   const formId = 'edit-live-quiz-form';
   const updateAction = '/live-quiz-admin/' + params.liveQuizId;
+  const revalidator = useRevalidator();
+
+  // useEffect(() => {
+  //   const interval = setInterval(() => {
+  //     revalidator.revalidate();
+  //   }, 20000);
+  //   return () => {
+  //     clearInterval(interval);
+  //   };
+  // }, []);
 
   const { setOpen: setResetConfirmOpen, confirmDialog: resetConfirmDialog } =
     useConfirmDialog({
@@ -1233,6 +1248,15 @@ const LiveQuizAdmin = (props: EditLiveQuizProps) => {
                 />
               </>
             ) : null}
+            <ContentSpacer />
+            <Button
+              color="primary"
+              onClick={() => {
+                revalidator.revalidate();
+              }}
+            >
+              Refresh
+            </Button>
             <ContentSpacer />
             <AdminQuizTeamsList liveQuiz={liveQuiz} />
             <SectionTitle>{'The "Be Careful" Zone!'}</SectionTitle>

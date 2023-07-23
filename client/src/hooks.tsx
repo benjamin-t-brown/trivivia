@@ -6,7 +6,6 @@ import {
   useRouteError,
   useNavigate,
   useParams,
-  useFetcher,
   FetcherWithComponents,
 } from 'react-router-dom';
 import { FormError } from 'components/FormErrorText';
@@ -114,6 +113,7 @@ export const useFormResetValues = (formId: string) => {
   }, [formId, routeError]);
 };
 
+// returns true if the form with the given id is pristine (hasn't been edited)
 export const useFormPristine = (
   formId: string,
   initialValues: Record<string, any>
@@ -200,6 +200,7 @@ const getClientYFromClickBasedEvent = (ev: MouseEvent | TouchEvent) => {
   return clientY;
 };
 
+// This hook handles the drag and drop logic for a list of items with a fixed itemHeight
 export const useDnDListHandlers = (args: {
   itemHeight: number;
   clickOffset: number;
@@ -262,8 +263,6 @@ export const useDnDListHandlers = (args: {
         if (offset < 0) {
           offset++;
         }
-
-        // console.log('drag offset', offset);
 
         const reorder = (arr: string[], ind: number, offset: number) => {
           arr = [...arr];
