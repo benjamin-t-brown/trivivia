@@ -15,7 +15,13 @@ import {
   LiveRoundState,
   QuizStats,
   QuizTemplateResponse,
+  StructuredQuizQuestion,
+  StructuredQuizResponse,
+  StructuredQuizRound,
+  StructuredQuizTeam,
+  StructuredQuizTeamAnswersSubmission,
   getNumAnswers,
+  getNumCorrectAnswers,
 } from 'shared';
 import logger from '../logger';
 import { TemplateService } from './TemplateService';
@@ -736,6 +742,144 @@ export class LiveQuizService {
     await liveQuizRoundAnswers.save();
 
     return liveQuizRoundAnswers.getResponseJson();
+  }
+
+  async exportLiveQuiz(
+    liveQuizId: string
+  ): Promise<StructuredQuizResponse | undefined> {
+    const liveQuiz = (
+      await this.findLiveQuizById(liveQuizId)
+    )?.getResponseJson();
+    if (!liveQuiz) {
+      logger.error(`Could not export live quiz ${liveQuizId}, no quiz found.`);
+      return undefined;
+    }
+
+    const quizTemplate = liveQuiz.quizTemplateJson;
+
+    const rounds: StructuredQuizRound[] = [];
+    const questions: StructuredQuizQuestion[] = [];
+    const teams: StructuredQuizTeam[] = [];
+
+    // const roundQuestionIdMap: Record<string, string[]> = {};
+
+    const roundOrder = quizTemplate.roundOrder;
+    for (let i = 0; i < roundOrder.length; i++) {
+      const roundId = roundOrder[i];
+      const roundTemplate = quizTemplate.rounds?.find(t => t.id === roundId);
+
+      if (!roundTemplate) {
+        throw new Error(`Round not found roundId='${roundId}'`);
+      }
+
+      const questionIds = roundTemplate.questionOrder;
+
+      rounds.push({
+        id: roundTemplate.id,
+        title: roundTemplate.title,
+        description: roundTemplate.description,
+        notes: roundTemplate.notes ?? '',
+        questions: questionIds,
+      });
+
+      for (const questionId of questionIds) {
+        const questionTemplate = roundTemplate.questions?.find(
+          t => t.id === questionId
+        );
+
+        if (!questionTemplate) {
+          throw new Error(`Question not found questionId='${questionId}'`);
+        }
+
+        const answers: string[] = [];
+        for (let j = 0; j < getNumAnswers(questionTemplate.answerType); j++) {
+          answers.push(questionTemplate.answers['answer' + (j + 1)]);
+        }
+
+        questions.push({
+          id: questionTemplate.id,
+          text: questionTemplate.text,
+          answerType: questionTemplate.answerType,
+          notes: questionTemplate.notes ?? '',
+          orderMatters: questionTemplate.orderMatters,
+          roundId: roundTemplate.id,
+          isBonus: questionTemplate.isBonus,
+          numAnswers: getNumAnswers(questionTemplate.answerType),
+          numCorrectAnswers: getNumCorrectAnswers(questionTemplate.answerType),
+          answers,
+        });
+      }
+    }
+
+    for (const liveQuizTeam of liveQuiz.liveQuizTeams) {
+      const submittedAnswers: StructuredQuizTeamAnswersSubmission[] = [];
+
+      for (let i = 0; i < roundOrder.length; i++) {
+        const roundId = roundOrder[i];
+        const roundTemplate = quizTemplate.rounds?.find(t => t.id === roundId);
+        if (!roundTemplate) {
+          throw new Error(`Round not found roundId='${roundId}'`);
+        }
+
+        const liveQuizRoundAnswers = (
+          await this.findLiveQuizRoundAnswerByTeamIdAndRoundId(
+            liveQuizTeam.id,
+            roundId
+          )
+        )?.getResponseJson();
+
+        const submittedForRound = liveQuizRoundAnswers?.answers;
+
+        const questionIds = roundTemplate.questionOrder;
+        for (let j = 0; j < questionIds.length; j++) {
+          const answerState = submittedForRound?.[j + 1];
+
+          if (!answerState) {
+            submittedAnswers.push({
+              roundId,
+              questionId: questionIds[j],
+              answers: [],
+            });
+            continue;
+          }
+
+          const questionTemplate = questions.find(q => q.id === questionIds[j]);
+
+          if (!questionTemplate) {
+            throw new Error(
+              `Question not found questionId='${questionIds[j]}'`
+            );
+          }
+
+          const answers: string[] = [];
+          const numAnswers = getNumAnswers(questionTemplate.answerType);
+          for (let k = 0; k < numAnswers; k++) {
+            answers.push(answerState['answer' + (k + 1)]);
+          }
+
+          submittedAnswers.push({
+            roundId,
+            questionId: questionIds[j],
+            answers,
+          });
+        }
+      }
+
+      teams.push({
+        id: liveQuizTeam.id,
+        name: liveQuizTeam.teamName,
+        submittedAnswers,
+      });
+    }
+
+    return {
+      id: liveQuiz.id,
+      title: quizTemplate.name,
+      name: liveQuiz.name,
+      questions,
+      rounds,
+      teams,
+    };
   }
 
   async submitGrades(liveQuizId: string, gradeState: GradeInputState) {

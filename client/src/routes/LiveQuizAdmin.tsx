@@ -1079,6 +1079,12 @@ const LiveQuizAdmin = (props: EditLiveQuizProps) => {
                   </span>
                 </>
               ) : null}
+              <>
+                <br />
+                <a href={`/api/live-quiz-admin/quiz/${liveQuiz?.id}/export`}>
+                  Export JSON
+                </a>
+              </>
             </p>
             <ContentSpacer />
             {isWaitingForQuizToStart(liveQuiz) ? (

@@ -6,6 +6,7 @@ import {
   registerGet,
   registerPost,
   registerPut,
+  registerRoute,
 } from '../routing';
 import { LiveQuizService } from '../services/LiveQuizService';
 import { LiveQuizState, LiveRoundState } from 'shared';
@@ -224,6 +225,28 @@ export const initLiveQuizAdminControllers = (router: Router) => {
         body.upToRoundNum
       );
     }
+  );
+
+  registerRoute(
+    router,
+    'get',
+    '/api/live-quiz-admin/quiz/:liveQuizId/export',
+    async function exportQuizTemplate(params, _, context) {
+      const str = JSON.stringify(
+        await liveQuizService.exportLiveQuiz(params.liveQuizId)
+      );
+
+      if (context.res) {
+        context.res.setHeader('Content-Type', 'text/json');
+        context.res.setHeader(
+          'Content-Disposition',
+          'attachment; filename=export.json'
+        );
+      }
+
+      return str;
+    },
+    true
   );
 
   const emitStateUpdate = (

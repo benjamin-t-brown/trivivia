@@ -8,7 +8,6 @@ const Input = styled.input<{ fullWidth?: boolean; disabled?: boolean }>(
       padding: '8px',
       width: props.fullWidth ? '100%' : undefined,
       color: props.disabled ? '#111' : undefined,
-      // background: props.disabled ? getColors().BACKGROUND2 : undefined,
     };
   }
 );

@@ -503,10 +503,10 @@ export class TemplateService {
       const numRadios = getNumRadioBoxes(questionTemplateResponse.answerType);
       let htmlInputs = '';
       if (numRadios > 0) {
-        htmlInputs += `<div>${Object.entries(questionTemplateResponse.answers)
+        htmlInputs += `<span>${Object.entries(questionTemplateResponse.answers)
           .filter(([key]) => key.includes('radio'))
           .map(([, value]) => value)
-          .join(', ')}</div>`;
+          .join(', ')}</span>`;
         htmlInputs += `<br /><input type="text" style="margin: 2px 0px" />`;
       } else {
         for (let k = 0; k < numAnswers; k++) {

@@ -282,3 +282,47 @@ export interface LiveQuizPublicStateResponse {
     stats?: Record<string, AnswerStateStats>;
   };
 }
+
+// Used for JSON exports ---------------------------------------------
+
+export interface StructuredQuizRound {
+  id: string;
+  title: string;
+  description: string;
+  notes: string;
+  questions: string[];
+}
+
+export interface StructuredQuizQuestion {
+  id: string;
+  roundId: string;
+  text: string;
+  notes: string;
+  answers: string[];
+  orderMatters: boolean;
+  isBonus: boolean;
+  answerType: AnswerBoxType;
+  numAnswers: number;
+  numCorrectAnswers: number;
+}
+
+export interface StructuredQuizTeamAnswersSubmission {
+  questionId: string;
+  roundId: string;
+  answers: string[];
+}
+
+export interface StructuredQuizTeam {
+  id: string;
+  name: string;
+  submittedAnswers: StructuredQuizTeamAnswersSubmission[];
+}
+
+export interface StructuredQuizResponse {
+  id: string;
+  name: string;
+  title: string;
+  questions: StructuredQuizQuestion[];
+  rounds: StructuredQuizRound[];
+  teams: StructuredQuizTeam[];
+}
