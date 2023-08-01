@@ -175,7 +175,7 @@ export const getNumCorrectAnswers = (answerType: AnswerBoxType) => {
     case AnswerBoxType.INPUT1_LIST:
     case AnswerBoxType.INPUT2_LIST:
     case AnswerBoxType.INPUT4_LIST:
-      return Infinity;
+      return 16;
   }
   return 1;
 };

@@ -791,9 +791,18 @@ export class LiveQuizService {
           throw new Error(`Question not found questionId='${questionId}'`);
         }
 
+        let numCorrectAnswers = 0;
         const answers: string[] = [];
-        for (let j = 0; j < getNumAnswers(questionTemplate.answerType); j++) {
-          answers.push(questionTemplate.answers['answer' + (j + 1)]);
+        for (
+          let j = 0;
+          j < getNumCorrectAnswers(questionTemplate.answerType);
+          j++
+        ) {
+          const answer = questionTemplate.answers['answer' + (j + 1)];
+          if (answer) {
+            numCorrectAnswers++;
+            answers.push(answer);
+          }
         }
 
         questions.push({
@@ -805,7 +814,7 @@ export class LiveQuizService {
           roundId: roundTemplate.id,
           isBonus: questionTemplate.isBonus,
           numAnswers: getNumAnswers(questionTemplate.answerType),
-          numCorrectAnswers: getNumCorrectAnswers(questionTemplate.answerType),
+          numCorrectAnswers,
           answers,
         });
       }
