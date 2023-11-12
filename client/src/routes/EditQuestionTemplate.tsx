@@ -59,16 +59,16 @@ interface EditQuestionValues {
   notes: string;
 }
 const action = createAction(async (values: EditQuestionValues, params) => {
-  if (
-    !(values.text || values.imageLink) ||
-    !values.answers ||
-    !values.answerType
-  ) {
+  if (!values.answers || !values.answerType) {
     throw {
       message: 'Please fill out the form.',
       values,
     } as FormError;
   }
+  if (!values.text && !values.imageLink) {
+    values.text = '(empty)';
+  }
+
   const valuesCopy = { ...values };
 
   values.orderMatters = Boolean(values.orderMatters);
