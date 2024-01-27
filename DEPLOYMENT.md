@@ -58,4 +58,14 @@ ecs server uses nginx to route ssl and domain names to the proper port where the
 
 Check this conf if something is wrong.
 
+Changes can be reflected with:
+
+```
+sudo service nginx restart
+```
+
 SSL stuff is managed by certbot.
+
+## Domains
+
+Free domain hosting is provided at https://freedns.afraid.org/

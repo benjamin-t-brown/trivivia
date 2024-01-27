@@ -22,6 +22,7 @@ export interface QuizTemplateResponse extends CreateUpdateDelete {
   rounds?: RoundTemplateResponse[];
   numRounds: number;
   notes?: string;
+  isJoker?: boolean;
 }
 
 export interface RoundTemplateResponse extends CreateUpdateDelete {
@@ -216,6 +217,7 @@ export interface LiveQuizResponse extends CreateUpdateDelete {
   stats: QuizStats;
   startedAt: string;
   completedAt: string;
+  isJoker?: boolean;
 }
 
 export interface LiveQuizTeamResponse extends CreateUpdateDelete {
@@ -268,6 +270,7 @@ export interface LiveQuizPublicStateResponse {
   }[];
   hasUsedJoker: boolean;
   isComplete: boolean;
+  isJoker?: boolean;
   round?: {
     id: string;
     roundNumber: number;

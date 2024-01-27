@@ -14,6 +14,7 @@ import Button from 'elements/Button';
 import { LiveQuizStartRoute } from './LiveQuizStart';
 import { ListQuizTemplatesRoute } from './ListQuizTemplates';
 import Img from 'elements/Img';
+import IconLeft from 'elements/IconLeft';
 
 const InnerRoot = styled.div<Object>(() => {
   return {
@@ -55,7 +56,19 @@ const AdminLanding = () => {
         <CardTitleZone align="left">
           <BackButton useConfirm={false} />
         </CardTitleZone>
-        <CardTitle>Trivivia</CardTitle>
+        <CardTitle>
+          {' '}
+          <>
+            Trivivia
+            <IconLeft
+              verticalAdjust={-2}
+              style={{
+                verticalAlign: 'middle',
+              }}
+              src="/res/secret-book.svg"
+            />
+          </>
+        </CardTitle>
         <CardTitleZone align="right">
           <Button
             color="plain"

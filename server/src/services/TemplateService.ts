@@ -162,6 +162,7 @@ export class TemplateService {
       name: params.name,
       roundOrder: '[]',
       notes: params.notes ?? '',
+      isJoker: false,
     });
     return quizTemplate.save();
   }

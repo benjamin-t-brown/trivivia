@@ -5,6 +5,7 @@ import MobileLayout from 'elements/MobileLayout';
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
+import IconLeft from 'elements/IconLeft';
 
 const InnerRoot = styled.div<Object>(() => {
   return {
@@ -26,7 +27,19 @@ const AccountCreated = () => {
     <>
       <TopBar>
         <div />
-        <CardTitle>Trivivia</CardTitle>
+        <CardTitle>
+          {' '}
+          <>
+            Trivivia
+            <IconLeft
+              style={{
+                verticalAlign: 'middle',
+              }}
+              verticalAdjust={-2}
+              src="/res/secret-book.svg"
+            />
+          </>
+        </CardTitle>
         <div />
       </TopBar>
       <MobileLayout topBar>

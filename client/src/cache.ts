@@ -9,7 +9,7 @@ import {
 
 const cache: Record<string, FetchResponse<any>> = ((window as any).cache = {});
 
-const getCacheKey = (method: string, url: string) => {
+export const getCacheKey = (method: string, url: string) => {
   return `${method}:${url}`;
 };
 

@@ -1089,7 +1089,19 @@ const LiveQuiz = (props: { error?: boolean }) => {
     <>
       <TopBar>
         <CardTitleZone align="left"></CardTitleZone>
-        <CardTitle>Trivivia</CardTitle>
+        <CardTitle>
+          {' '}
+          <>
+            Trivivia
+            <IconLeft
+              verticalAdjust={-2}
+              style={{
+                verticalAlign: 'middle',
+              }}
+              src="/res/secret-book.svg"
+            />
+          </>
+        </CardTitle>
         <CardTitleZone align="right">
           <Button
             color="plain"

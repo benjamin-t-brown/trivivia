@@ -5,6 +5,7 @@ import React from 'react';
 import BackButton from './BackButton';
 import HomeButton from './HomeButton';
 import UpButton from './UpButton';
+import IconLeft from 'elements/IconLeft';
 
 const DefaultTopBar = (props: {
   title?: string;
@@ -28,7 +29,18 @@ const DefaultTopBar = (props: {
           window.location.href = '/login';
         }}
       >
-        {props.title ?? 'Trivivia'}
+        {props.title ?? (
+          <>
+            Trivivia
+            <IconLeft
+              style={{
+                verticalAlign: 'middle',
+              }}
+              verticalAdjust={-2}
+              src="/res/secret-book.svg"
+            />
+          </>
+        )}
       </CardTitle>
       <CardTitleZone align="right">
         {!props.disableHome ? <HomeButton /> : <div></div>}

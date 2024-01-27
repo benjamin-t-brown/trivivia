@@ -22,7 +22,10 @@ const Button = styled.button<IButtonProps>(props => {
     fontFamily: 'monospace',
     fontSize: '18px',
     cursor: 'pointer',
-    border: props.color === 'plain' ? '0' : undefined,
+    border:
+      props.color === 'plain' ? '0' : '1px solid ' + getColors().BACKGROUND2,
+    // I hate it
+    // borderRadius: '12px',
   };
   if (props.flex) {
     ret.display = 'flex';

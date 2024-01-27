@@ -15,6 +15,8 @@ import {
   RoundTemplateRequest,
 } from 'shared/requests';
 
+const BIG_TEXT_MAX_LENGTH = 2000;
+
 export const initTemplateControllers = (router: Router) => {
   const templateService = new TemplateService();
 
@@ -62,10 +64,9 @@ export const initTemplateControllers = (router: Router) => {
       if (!validateInt(numRounds, 1, 100)) {
         throw new InvalidInputError('Not a number of rounds.');
       }
-      if (notes && !validateString(notes, 0, 1000)) {
+      if (notes && !validateString(notes, 0, BIG_TEXT_MAX_LENGTH)) {
         throw new InvalidInputError('Not valid notes.');
       }
-
       const quizTemplate = await templateService.createQuizTemplate(
         {
           name,
@@ -102,7 +103,7 @@ export const initTemplateControllers = (router: Router) => {
       if (!validateInt(numRounds, 1, 100)) {
         throw new InvalidInputError('Not a number of rounds.');
       }
-      if (notes && !validateString(notes, 0, 1000)) {
+      if (notes && !validateString(notes, 0, BIG_TEXT_MAX_LENGTH)) {
         throw new InvalidInputError('Not valid notes.');
       }
 
@@ -168,10 +169,10 @@ export const initTemplateControllers = (router: Router) => {
       if (!validateString(title)) {
         throw new InvalidInputError('Not a valid title.');
       }
-      if (!validateString(description ?? '', 0, 1000)) {
+      if (!validateString(description ?? '', 0, BIG_TEXT_MAX_LENGTH)) {
         throw new InvalidInputError('Not a valid description.');
       }
-      if (notes && !validateString(notes, 0, 1000)) {
+      if (notes && !validateString(notes, 0, BIG_TEXT_MAX_LENGTH)) {
         throw new InvalidInputError('Not valid notes.');
       }
 
@@ -214,10 +215,10 @@ export const initTemplateControllers = (router: Router) => {
       if (!validateString(title)) {
         throw new InvalidInputError('Not a valid title.');
       }
-      if (description && !validateString(description, 0, 1000)) {
+      if (description && !validateString(description, 0, BIG_TEXT_MAX_LENGTH)) {
         throw new InvalidInputError('Not a valid description.');
       }
-      if (notes && !validateString(notes, 0, 1000)) {
+      if (notes && !validateString(notes, 0, BIG_TEXT_MAX_LENGTH)) {
         throw new InvalidInputError('Not valid notes.');
       }
 
@@ -292,16 +293,16 @@ export const initTemplateControllers = (router: Router) => {
       if (!validateString(text, 0, 500)) {
         throw new InvalidInputError('Not valid text.');
       }
-      if (!validateString(answers, 0, 1000)) {
+      if (!validateString(answers, 0, BIG_TEXT_MAX_LENGTH)) {
         throw new InvalidInputError('Not valid answers.');
       }
       if (!validateAnswerType(answerType)) {
         throw new InvalidInputError('Not valid answerType.');
       }
-      if (notes && !validateString(notes, 0, 1000)) {
+      if (notes && !validateString(notes, 0, BIG_TEXT_MAX_LENGTH)) {
         throw new InvalidInputError('Not valid notes.');
       }
-      if (imageLink && !validateString(imageLink, 0, 1000)) {
+      if (imageLink && !validateString(imageLink, 0, BIG_TEXT_MAX_LENGTH)) {
         throw new InvalidInputError('Not valid imageLink.');
       }
 
@@ -353,16 +354,16 @@ export const initTemplateControllers = (router: Router) => {
       if (!validateString(text, 0, 500)) {
         throw new InvalidInputError('Not valid text.');
       }
-      if (!validateString(answers, 0, 1000)) {
+      if (!validateString(answers, 0, BIG_TEXT_MAX_LENGTH)) {
         throw new InvalidInputError('Not valid answers.');
       }
       if (!validateAnswerType(answerType)) {
         throw new InvalidInputError('Not valid answers.');
       }
-      if (notes && !validateString(notes, 0, 1000)) {
+      if (notes && !validateString(notes, 0, BIG_TEXT_MAX_LENGTH)) {
         throw new InvalidInputError('Not valid notes.');
       }
-      if (imageLink && !validateString(imageLink, 0, 1000)) {
+      if (imageLink && !validateString(imageLink, 0, BIG_TEXT_MAX_LENGTH)) {
         throw new InvalidInputError('Not valid imageLink.');
       }
 

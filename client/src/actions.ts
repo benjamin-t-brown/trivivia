@@ -1,4 +1,4 @@
-import { getFromCache, removeFromCache, updateCache } from 'cache';
+import { getCacheKey, getFromCache, removeFromCache, updateCache } from 'cache';
 
 interface BasicFetchResponse {
   error?: boolean;
@@ -11,6 +11,12 @@ export type LocalErrorResponse = Response | undefined;
 export interface FetchResponse<T> extends BasicFetchResponse {
   data: T;
 }
+
+const activeFetches: string[] = [];
+let activeFetchAwaits: {
+  cacheKey: string;
+  resolve: any;
+}[] = [];
 
 export async function fetchAsync<T>(
   method: 'get' | 'post' | 'put' | 'delete',
@@ -35,10 +41,21 @@ export async function fetchAsync<T>(
       body: jsonBody,
       result: cacheResult,
     });
-    return cacheResult;
   }
 
-  const result: FetchResponse<T> = await fetch(url, {
+  // activeFetches combine requests to the same url+method if there is already one in progress
+  const activeFetchKey = getCacheKey(method, url);
+  if (activeFetches.includes(activeFetchKey)) {
+    console.log('combining active fetch');
+    return new Promise(resolve => {
+      activeFetchAwaits.push({
+        cacheKey: activeFetchKey,
+        resolve,
+      });
+    });
+  }
+
+  const promise = fetch(url, {
     method,
     body: jsonBody,
     headers: {
@@ -55,11 +72,26 @@ export async function fetchAsync<T>(
       console.error('Fetch error', e);
     });
 
-  console.log('fetch', { method, url, body, result });
+  activeFetches.push(activeFetchKey);
 
+  console.time('fetch');
+  const result: FetchResponse<T> = await promise;
+
+  activeFetches.splice(activeFetches.indexOf(activeFetchKey), 1);
+
+  console.log('fetch', {
+    method,
+    url,
+    body,
+    result,
+    bustCache: !!options?.bustCache,
+  });
+  console.timeEnd('fetch');
+
+  let finalResult: FetchResponse<T>;
   if (!ok || !result) {
     removeFromCache(method, url);
-    return {
+    finalResult = {
       error: true,
       status: statusNum,
       message: result?.message ?? 'Error',
@@ -73,8 +105,22 @@ export async function fetchAsync<T>(
     if (method === 'get') {
       updateCache(method, url, ret);
     }
-    return ret;
+    finalResult = ret;
   }
+
+  activeFetchAwaits
+    .filter(af => af.cacheKey === activeFetchKey)
+    .forEach(af => {
+      // resolve next tick
+      setTimeout(() => {
+        af.resolve(finalResult);
+      }, 1);
+    });
+  activeFetchAwaits = activeFetchAwaits.filter(
+    af => af.cacheKey !== activeFetchKey
+  );
+
+  return finalResult;
 }
 
 type LocalActionFunction<T> = (

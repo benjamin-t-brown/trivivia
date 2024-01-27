@@ -9,6 +9,10 @@ const CardTitle = styled.div<Object>(() => {
     textTransform: 'uppercase',
     '-webkit-text-stroke': '1px',
     '-webkit-text-stroke-color': 'black',
+    '@media (max-width: 500px) ': {
+      fontSize: '1.25rem',
+      '-webkit-text-stroke-color': 'rgba(0, 0, 0, 0.5)',
+    },
   };
 });
 export default CardTitle;

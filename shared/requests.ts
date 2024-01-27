@@ -3,6 +3,7 @@ import { AnswerBoxType, AnswerStateGraded } from './responses';
 export interface QuizTemplateRequest {
   name: string;
   numRounds: number;
+  isJoker?: boolean;
   notes?: string;
 }
 

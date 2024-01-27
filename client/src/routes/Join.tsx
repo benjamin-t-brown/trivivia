@@ -245,7 +245,17 @@ const JoinQuiz = (props: { error?: boolean }) => {
             window.location.href = '/login';
           }}
         >
-          Trivivia
+          {' '}
+          <>
+            Trivivia
+            <IconLeft
+              verticalAdjust={-2}
+              style={{
+                verticalAlign: 'middle',
+              }}
+              src="/res/secret-book.svg"
+            />
+          </>
         </CardTitle>
         <CardTitleZone align="right">
           <Button

@@ -197,7 +197,7 @@ const EditQuizTemplate = (props: EditQuizProps) => {
     navigate(`/quiz-template/${params.quizTemplateId}/delete`);
   };
 
-  console.log('Quiz template response', quizTemplateResponse);
+  // console.log('Quiz template response', quizTemplateResponse);
 
   return (
     <>

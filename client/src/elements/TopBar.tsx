@@ -5,7 +5,9 @@ import styled from 'styled-components';
 const Root = styled.div<Object>(() => {
   return {
     width: '100%',
-    background: colorsDark.PRIMARY,
+    // background: colorsDark.PRIMARY,
+    // background: 'rgb(11,11,11)',
+    background: getColors().TOP_BAR_BACKGROUND,
     color: colorsDark.TEXT_DEFAULT,
     boxSizing: 'border-box',
     display: 'flex',

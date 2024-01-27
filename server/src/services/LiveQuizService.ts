@@ -714,6 +714,12 @@ export class LiveQuizService {
       return undefined;
     }
 
+    for (const answerState of Object.values(args.submittedAnswers)) {
+      for (const [k, v] of Object.entries(answerState)) {
+        answerState[k] = v.trim();
+      }
+    }
+
     liveQuizRoundAnswers.answers = JSON.stringify(args.submittedAnswers);
 
     const hasAlreadyUsedJoker = Boolean(
@@ -903,9 +909,6 @@ export class LiveQuizService {
     const modelsToSave: Model[] = [];
 
     const stats: QuizStats = {};
-    const quizTemplate: QuizTemplateResponse = JSON.parse(
-      liveQuiz.quizTemplateJson
-    );
 
     for (const teamId in gradeState) {
       const team = liveQuiz.liveQuizTeams.find(t => t.id === teamId);
@@ -940,14 +943,6 @@ export class LiveQuizService {
           }
 
           const questionGradeState = roundGradeState[questionNumber];
-
-          const roundTemplate = quizTemplate.rounds?.find(
-            r => r.id === roundId
-          );
-          const questionTemplate = roundTemplate?.questions?.find(
-            q =>
-              q.id === roundTemplate.questionOrder[Number(questionNumber) - 1]
-          );
 
           let numberOfCorrectAnswers = 0;
           for (const answerKey in questionGradeState) {

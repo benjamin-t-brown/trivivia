@@ -65,7 +65,7 @@ const ListQuizTemplates = () => {
     navigate('/quiz-template/' + id + '/round-templates');
   };
 
-  console.log('quiz templates', quizTemplates);
+  // console.log('quiz templates', quizTemplates);
 
   return (
     <>

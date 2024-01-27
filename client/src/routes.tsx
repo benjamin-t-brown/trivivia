@@ -122,7 +122,7 @@ export const init = () => {
   div.id = 'app';
   document.body.innerHTML = '';
   document.body.appendChild(div);
-  document.body.style.background = getColors().BACKGROUND;
+  document.body.style.background = getColors().BODY_BACKGROUND;
 
   const root = createRoot(div);
   root.render(<App />);

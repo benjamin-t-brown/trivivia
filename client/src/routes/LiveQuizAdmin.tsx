@@ -67,6 +67,10 @@ const ContentSpacer = () => {
   return <div style={{ height: '16px' }}></div>;
 };
 
+const HSpace = () => {
+  return <div style={{ width: '16px' }}></div>;
+};
+
 const Loading = styled.div<{ visible: boolean }>(props => {
   return {
     display: props.visible ? 'flex' : 'none',
@@ -110,13 +114,16 @@ const QuestionSection = (props: {
   liveQuiz: LiveQuizResponse;
   currentRound: RoundTemplateResponse;
   showAnswers: boolean;
+  teams: LiveQuizResponse['liveQuizTeams'];
   i: number;
   q: QuestionTemplateResponse;
   updateAction: string;
+  answersVisible: boolean;
 }) => {
   const { liveQuiz, currentRound, i, q, updateAction } = props;
   const fetcher = useFetcher();
   const [selectedPublicTeamId, setSelectedPublicTeamId] = React.useState('');
+  const [submittedAnswers, setSubmittedAnswers] = React.useState<unknown>({});
   const stats = props.liveQuiz.stats?.[currentRound.id]?.[i + 1] ?? {};
   const bonusCorrectPublicTeamIds =
     (stats?.publicTeamIdsCorrect as string[]) ?? [];
@@ -155,6 +162,24 @@ const QuestionSection = (props: {
       ] ?? ''
     );
   };
+
+  const teamAnswers = props.liveQuiz.liveQuizTeams
+    .map(team => {
+      const currentRoundAnswers = team.liveQuizRoundAnswers?.find(
+        r => r.roundId === currentRound?.id
+      );
+      const thisAnswer = currentRoundAnswers?.answers?.[i + 1];
+      if (thisAnswer) {
+        return {
+          teamName: team.teamName,
+          answer: Object.values(thisAnswer).join(','),
+          publicTeamId: team.publicId,
+        };
+      } else {
+        return undefined;
+      }
+    })
+    .filter(obj => obj !== undefined);
 
   return (
     <Question key={q.id} selected={i === liveQuiz.currentQuestionNumber}>
@@ -271,27 +296,29 @@ const QuestionSection = (props: {
               </Button>
             ) : null}
             {i < liveQuiz.currentQuestionNumber ? (
-              <div
-                style={{
-                  color: getColors().SUCCESS_TEXT,
-                  marginBottom: '8px',
-                }}
-              >
-                <Button
-                  color="cancel"
-                  onClick={handleHideQuestionClick}
-                  disabled={
-                    i < liveQuiz.currentQuestionNumber - 1 ||
-                    isRoundLocked(liveQuiz)
-                  }
+              <>
+                <div
                   style={{
-                    marginRight: '16px',
+                    color: getColors().SUCCESS_TEXT,
+                    marginBottom: '8px',
                   }}
                 >
-                  Hide Question
-                </Button>
-                <div>Question is Visible!</div>
-              </div>
+                  <Button
+                    color="cancel"
+                    onClick={handleHideQuestionClick}
+                    disabled={
+                      i < liveQuiz.currentQuestionNumber - 1 ||
+                      isRoundLocked(liveQuiz)
+                    }
+                    style={{
+                      marginRight: '8px',
+                    }}
+                  >
+                    Hide Question
+                  </Button>
+                  <div>Question is Visible!</div>
+                </div>
+              </>
             ) : null}
             {i > liveQuiz.currentQuestionNumber ? (
               <div
@@ -325,6 +352,26 @@ const QuestionSection = (props: {
               />
             )
           ) : null}
+          {props.answersVisible
+            ? teamAnswers.map(teamAnswer => {
+                return (
+                  <div
+                    key={teamAnswer?.publicTeamId}
+                    style={{
+                      marginTop: '8px',
+                    }}
+                  >
+                    <span
+                      style={{
+                        color: getColors().TEXT_DESCRIPTION,
+                      }}
+                    >
+                      {teamAnswer?.teamName}: {teamAnswer?.answer}
+                    </span>
+                  </div>
+                );
+              })
+            : null}
         </>
       )}
     </Question>
@@ -430,6 +477,9 @@ const loader = async ({ params }) => {
     '/api/live-quiz-admin/quiz/' + params.liveQuizId,
     undefined,
     {
+      // since this page shows current active information that can change frequently,
+      // don't use cache.  Also helps the revalidator/refresh button work without
+      // extra logic.
       bustCache: true,
     }
   );
@@ -452,9 +502,11 @@ const AdminQuestionList = (props: {
   liveQuiz: LiveQuizResponse;
   updateAction: string;
   showAnswers: boolean;
+  revalidator: ReturnType<typeof useRevalidator>;
 }) => {
   const { liveQuiz, updateAction } = props;
   const fetcher = useFetcher();
+  const [answersVisible, setAnswersVisible] = useState(false);
 
   const handleShowAllClick = (ev: React.MouseEvent) => {
     ev.preventDefault();
@@ -495,10 +547,10 @@ const AdminQuestionList = (props: {
           <>{"You can read out and show this round's answers from here."}</>
         ) : (
           <>
-            Players are able to see what is in the highlighted box below: <br />
+            Control quiz visibility in the highlighted box below. <br />
             <br />
-            They can see the round description and each question as you show
-            them.
+            Players can see the round title, description, and each question as
+            you show them.
           </>
         )}
       </div>
@@ -510,6 +562,8 @@ const AdminQuestionList = (props: {
             (props.showAnswers &&
             liveQuiz.quizState === LiveQuizState.SHOWING_ANSWERS_ANSWERS_HIDDEN
               ? getColors().PRIMARY_TEXT
+              : isRoundLocked(liveQuiz)
+              ? getColors().ERROR_TEXT
               : getColors().SUCCESS_TEXT),
           padding: '8px',
         }}
@@ -519,9 +573,25 @@ const AdminQuestionList = (props: {
             color: getColors().TEXT_DEFAULT,
           }}
         >
+          <span
+            style={{
+              color: getColors().TEXT_DESCRIPTION,
+            }}
+          >
+            {' '}
+            Round Title:{' '}
+          </span>
           {currentRound?.title}
           <br />
           <br />
+          <span
+            style={{
+              color: getColors().TEXT_DESCRIPTION,
+            }}
+          >
+            {' '}
+            Round Description:
+          </span>{' '}
           {currentRound?.description}
           <div
             style={{
@@ -534,12 +604,37 @@ const AdminQuestionList = (props: {
               onClick={handleShowAllClick}
               style={{
                 marginRight: '8px',
+                textDecoration: 'underline',
               }}
             >
               Show All
             </Button>
-            <Button color="secondary" onClick={handleHideAllClick}>
+            <Button
+              style={{
+                marginRight: '8px',
+                textDecoration: 'underline',
+              }}
+              color="secondary"
+              onClick={handleHideAllClick}
+            >
               Hide All
+            </Button>
+            <Button
+              color="secondary"
+              onClick={() => {
+                const nextAnswersVisible = !answersVisible;
+                setAnswersVisible(nextAnswersVisible);
+                if (nextAnswersVisible) {
+                  props.revalidator.revalidate();
+                }
+              }}
+              // disabled={isRoundLocked(liveQuiz)}
+              style={{
+                filter: 'grayscale(1)',
+                textDecoration: 'underline',
+              }}
+            >
+              {answersVisible ? 'Hide' : 'View'} Submissions
             </Button>
           </div>
         </div>
@@ -556,9 +651,11 @@ const AdminQuestionList = (props: {
               liveQuiz={props.liveQuiz}
               q={q}
               i={i}
+              teams={props.liveQuiz.liveQuizTeams}
               currentRound={currentRound}
               showAnswers={props.showAnswers}
               updateAction={updateAction}
+              answersVisible={answersVisible}
             />
           );
         })}
@@ -615,7 +712,7 @@ const AdminRoundList = (props: {
                   i >= props.liveQuiz.currentRoundNumber
                 }
               >
-                Go To Show Answers
+                ⥥ Go To Show Answers
               </Button>
             </div>
           </Round>
@@ -628,6 +725,7 @@ const AdminRoundList = (props: {
 const AdminRoundSubmissionControlsButtons = (props: {
   liveQuiz: LiveQuizResponse;
   updateAction: string;
+  style?: React.CSSProperties;
 }) => {
   const fetcher = useFetcher();
   const { liveQuiz, updateAction } = props;
@@ -651,7 +749,7 @@ const AdminRoundSubmissionControlsButtons = (props: {
   const lockRoundDisabled = false;
 
   return (
-    <div>
+    <div style={props.style}>
       <Button
         flex
         color="primary"
@@ -988,6 +1086,28 @@ const LiveQuizAdmin = (props: EditLiveQuizProps) => {
     });
   };
 
+  const handleRoundAnswersShowClick =
+    (round: RoundTemplateResponse) => (ev: React.MouseEvent) => {
+      ev.preventDefault();
+      if (!liveQuiz) {
+        return;
+      }
+      const formData = new FormData();
+      formData.set('quizState', LiveQuizState.SHOWING_ANSWERS_ANSWERS_HIDDEN);
+      formData.set(
+        'roundAnswerNumber',
+        String(
+          liveQuiz.quizTemplateJson.roundOrder.findIndex(
+            id => round.id === id
+          ) + 1
+        )
+      );
+      fetcher.submit(formData, {
+        method: 'post',
+        action: updateAction,
+      });
+    };
+
   const liveQuiz = liveQuizResponse?.data;
   const isLoading = fetcher.state === 'submitting';
 
@@ -1034,7 +1154,7 @@ const LiveQuizAdmin = (props: EditLiveQuizProps) => {
                   cursor: 'pointer',
                 }}
               >
-                <Link to={'/qr/' + liveQuiz.userFriendlyId}>QR Code</Link>
+                <Link to={'/qr/' + liveQuiz.userFriendlyId}>Link/QR Code</Link>
               </span>
               <br />
               Quiz Template:{' '}
@@ -1054,7 +1174,7 @@ const LiveQuizAdmin = (props: EditLiveQuizProps) => {
               <span
                 style={{
                   color: isRoundCompleted(liveQuiz)
-                    ? getColors().SUCCESS_TEXT
+                    ? getColors().ERROR_TEXT
                     : getColors().TEXT_DEFAULT,
                 }}
               >
@@ -1069,16 +1189,13 @@ const LiveQuizAdmin = (props: EditLiveQuizProps) => {
                   </span>
                 </>
               ) : null}
-              {isRoundInProgressButNotVisible(liveQuiz) ||
-              isRoundInProgressAndVisible(liveQuiz) ? (
-                <>
-                  Current Round:{' '}
-                  <span style={{ color: getColors().TEXT_DEFAULT }}>
-                    {liveQuiz.currentRoundNumber} (
-                    {getCurrentRound(liveQuiz)?.title})
-                  </span>
-                </>
-              ) : null}
+              <>
+                Current Round:{' '}
+                <span style={{ color: getColors().TEXT_DEFAULT }}>
+                  {liveQuiz.currentRoundNumber} (
+                  {getCurrentRound(liveQuiz)?.title})
+                </span>
+              </>
               <>
                 <br />
                 <a href={`/api/live-quiz-admin/quiz/${liveQuiz?.id}/export`}>
@@ -1114,7 +1231,7 @@ const LiveQuizAdmin = (props: EditLiveQuizProps) => {
               >
                 ↑ Go To Previous Round
                 {!isRoundCompleted(liveQuiz) && liveQuiz.currentRoundNumber > 0
-                  ? ' (Ensure current round is locked.)'
+                  ? ' (Ensure round is locked.)'
                   : ''}
               </Button>
             ) : null}
@@ -1127,15 +1244,16 @@ const LiveQuizAdmin = (props: EditLiveQuizProps) => {
                   }}
                   onClick={handleResumeRoundClick}
                 >
-                  Resume Showing Round
+                  ⥥ View Current Round
                 </Button>
                 <ContentSpacer />
                 <Button
-                  disabled={!isRoundLocked(liveQuiz)}
+                  // disabled={!isRoundLocked(liveQuiz)}
                   color="primary"
                   onClick={handleGradeClick}
                 >
-                  Grade Answers
+                  Grade Answers{' '}
+                  {/* {!isRoundLocked(liveQuiz) ? '(Lock round.)' : ''} */}
                 </Button>
               </>
             ) : null}
@@ -1157,7 +1275,7 @@ const LiveQuizAdmin = (props: EditLiveQuizProps) => {
                   ↓ Begin Next Round{' '}
                   {!isRoundCompleted(liveQuiz) &&
                   liveQuiz.currentRoundNumber > 0
-                    ? '(Ensure current round is locked.)'
+                    ? '(Ensure round is locked.)'
                     : ''}
                 </Button>
               </>
@@ -1182,25 +1300,68 @@ const LiveQuizAdmin = (props: EditLiveQuizProps) => {
                   }}
                   onClick={handleStopRoundClick}
                 >
-                  ✔ Complete Round
+                  ← View Rounds
                 </Button>
-                <ContentSpacer />
-                <AdminRoundSubmissionControlsButtons
-                  liveQuiz={liveQuiz}
-                  updateAction={updateAction}
-                />
-                <Button
-                  disabled={!isRoundLocked(liveQuiz)}
-                  color="primary"
-                  onClick={handleGradeClick}
+                <HSpace />
+                <div
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                  }}
                 >
-                  Grade Answers{' '}
-                  {!isRoundLocked(liveQuiz) ? '(Ensure round is locked.)' : ''}
+                  <AdminRoundSubmissionControlsButtons
+                    liveQuiz={liveQuiz}
+                    updateAction={updateAction}
+                    style={{
+                      width: '50%',
+                    }}
+                  />
+                  <Button
+                    // disabled={!isRoundLocked(liveQuiz)}
+                    color="primary"
+                    onClick={handleGradeClick}
+                    style={{
+                      width: '50%',
+                    }}
+                  >
+                    Grade Answers{' '}
+                    {/* {!isRoundLocked(liveQuiz) ? '(Lock round.)' : ''} */}
+                  </Button>
+                </div>
+                <ContentSpacer />
+                <Button
+                  color="secondary"
+                  style={{
+                    width: '100%',
+                  }}
+                  disabled={!isRoundLocked(liveQuiz)}
+                  onClick={
+                    liveQuiz &&
+                    getCurrentRound(liveQuiz) &&
+                    handleRoundAnswersShowClick(
+                      getCurrentRound(liveQuiz) as RoundTemplateResponse
+                    )
+                  }
+                >
+                  ⥥ Go To Show Answers{' '}
+                  {!isRoundLocked(liveQuiz) ? '(Lock round.)' : ''}
+                </Button>
+                <HSpace />
+                <ContentSpacer />
+                <Button
+                  color="primary"
+                  onClick={() => {
+                    revalidator.revalidate();
+                  }}
+                >
+                  <IconLeft verticalAdjust={-3} src="/res/recycle.svg" />
+                  Refresh Submissions
                 </Button>
                 <AdminQuestionList
                   liveQuiz={liveQuiz}
                   updateAction={updateAction}
                   showAnswers={false}
+                  revalidator={revalidator}
                 />
               </>
             ) : null}
@@ -1222,7 +1383,16 @@ const LiveQuizAdmin = (props: EditLiveQuizProps) => {
                   }}
                   onClick={handleStopRoundClick}
                 >
-                  Go Back To Rounds
+                  ← View Rounds
+                </Button>
+                <Button
+                  color="secondary"
+                  style={{
+                    width: '100%',
+                  }}
+                  onClick={handleResumeRoundClick}
+                >
+                  ⥥ View Current Round
                 </Button>
                 <Button
                   color="primary"
@@ -1251,6 +1421,7 @@ const LiveQuizAdmin = (props: EditLiveQuizProps) => {
                   liveQuiz={liveQuiz}
                   updateAction={updateAction}
                   showAnswers={true}
+                  revalidator={revalidator}
                 />
               </>
             ) : null}
@@ -1261,7 +1432,8 @@ const LiveQuizAdmin = (props: EditLiveQuizProps) => {
                 revalidator.revalidate();
               }}
             >
-              Refresh
+              <IconLeft verticalAdjust={-3} src="/res/recycle.svg" />
+              Refresh Submissions
             </Button>
             <ContentSpacer />
             <AdminQuizTeamsList liveQuiz={liveQuiz} />
