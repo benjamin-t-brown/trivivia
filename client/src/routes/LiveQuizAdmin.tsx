@@ -339,6 +339,17 @@ const QuestionSection = (props: {
               </React.Fragment>
             );
           })}
+          {q.notes ? (
+            <React.Fragment>
+              <p
+                style={{
+                  margin: '0',
+                }}
+              >
+                {formatTextWithUrls(q.notes)}
+              </p>
+            </React.Fragment>
+          ) : null}
           {q.imageLink ? (
             q.imageLink.includes('<iframe ') ? (
               <div dangerouslySetInnerHTML={{ __html: q.imageLink }}></div>
