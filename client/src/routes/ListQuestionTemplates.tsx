@@ -281,6 +281,9 @@ const ListQuestionTemplates = () => {
                       width: isDraggingThis ? 'calc(100% - 50px)' : '100%',
                       maxWidth: '800px',
                       position: isDraggingThis ? 'absolute' : 'unset',
+                      border: t.isBonus
+                        ? '1px solid ' + getColors().SUCCESS_BACKGROUND
+                        : 'unset',
                     }}
                     onClick={
                       dragState.dragging
@@ -378,7 +381,16 @@ const ListQuestionTemplates = () => {
           </Form>
           {loaderResponse?.data.questionTemplates.length === 0 ? (
             <TextCenter>(none)</TextCenter>
-          ) : null}
+          ) : (
+            <a
+              href={
+                '/api/template/export/round/' +
+                loaderResponse?.data?.roundTemplate?.id
+              }
+            >
+              Download as JSON
+            </a>
+          )}
         </InnerRoot>
       </MobileLayout>
       {confirmDialog}

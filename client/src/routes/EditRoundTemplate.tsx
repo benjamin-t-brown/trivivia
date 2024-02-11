@@ -23,12 +23,16 @@ import {
 } from 'hooks';
 import DefaultTopBar from 'components/DefaultTopBar';
 import { updateCacheRoundTemplate } from 'cache';
-import { RoundTemplateResponse } from 'shared/responses';
+import {
+  QuestionTemplateResponse,
+  RoundTemplateResponse,
+} from 'shared/responses';
 import TextCenter from 'elements/TextCenter';
 import InputLabel from 'elements/InputLabel';
 import FormErrorText, { FormError } from 'components/FormErrorText';
 import IconLeft from 'elements/IconLeft';
 import TextArea from 'elements/TextArea';
+import HiddenTextField from 'components/HiddenTextField';
 
 const InnerRoot = styled.div<Object>(() => {
   return {
@@ -43,6 +47,8 @@ interface EditRoundValues {
   title: string;
   description: string;
   notes: string;
+  importedRoundTemplate?: string;
+  'import-round'?: string;
 }
 const action = createAction(async (values: EditRoundValues, params) => {
   if (!values.title) {
@@ -51,6 +57,14 @@ const action = createAction(async (values: EditRoundValues, params) => {
       values,
     } as FormError;
   }
+
+  let roundTemplate: RoundTemplateResponse | undefined = undefined;
+  if (values.importedRoundTemplate) {
+    roundTemplate = JSON.parse(values.importedRoundTemplate);
+  }
+
+  delete values['importedRoundTemplate'];
+  delete values['import-round'];
 
   let result: FetchResponse<RoundTemplateResponse>;
   if (values.isNew) {
@@ -65,6 +79,34 @@ const action = createAction(async (values: EditRoundValues, params) => {
       '/api/template/round/' + params.roundTemplateId,
       { ...values, quizTemplateId: params.quizTemplateId }
     );
+  }
+
+  if (roundTemplate) {
+    const importedRoundTemplate = roundTemplate as RoundTemplateResponse;
+    const questions = importedRoundTemplate.questions ?? [];
+    for (const questionId of importedRoundTemplate.questionOrder) {
+      const question: Partial<QuestionTemplateResponse> | undefined =
+        questions.find(q => q.id === questionId);
+      if (question) {
+        delete question.id;
+        delete question.roundTemplateId;
+        const response = await fetchAsync<RoundTemplateResponse>(
+          'post',
+          '/api/template/question',
+          {
+            ...question,
+            answers: JSON.stringify(question.answers),
+            roundTemplateId: result.data.id,
+          }
+        );
+        if (response.error) {
+          throw {
+            message: response.message,
+            values,
+          } as FormError;
+        }
+      }
+    }
   }
 
   if (result.error) {
@@ -188,7 +230,41 @@ const EditRoundTemplate = (props: EditRoundProps) => {
   };
   const formIsPristine = useFormPristine('edit-round-form', initialValues);
   const confirmDialog = useConfirmNav(!formIsPristine);
+  const fileInputRef = React.useRef<HTMLInputElement>(null);
+  const [roundTemplateImport, setRoundTemplateImport] = React.useState<
+    RoundTemplateResponse | undefined
+  >();
   useFormResetValues('edit-round-form');
+
+  const handleImportClick = (ev: React.ChangeEvent<HTMLInputElement>) => {
+    ev.preventDefault();
+    const file = fileInputRef?.current?.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = async function (e: any) {
+        let parsedData: RoundTemplateResponse | undefined = undefined;
+        if (e?.target?.result) {
+          try {
+            parsedData = JSON.parse(e.target.result);
+          } catch (e) {
+            throw new Error('Invalid JSON');
+          }
+        }
+        if (parsedData) {
+          const form = document.getElementById(
+            'edit-round-form'
+          ) as HTMLFormElement | null;
+          if (form) {
+            form.elements['title'].value = parsedData.title;
+            form.elements['description'].value = parsedData.description;
+            form.elements['notes'].value = parsedData.notes;
+          }
+          setRoundTemplateImport(parsedData);
+        }
+      };
+      reader.readAsText(file);
+    }
+  };
 
   const handleCancelClick = (ev: React.MouseEvent) => {
     ev.preventDefault();
@@ -215,6 +291,41 @@ const EditRoundTemplate = (props: EditRoundProps) => {
       <MobileLayout topBar>
         <Form method="post" id="edit-round-form">
           <InnerRoot>
+            <p>
+              <Button
+                type="submit"
+                color="primary"
+                style={{
+                  width: '100%',
+                  display: 'flex',
+                }}
+              >
+                <div
+                  style={{
+                    position: 'relative',
+                    width: '100%',
+                  }}
+                >
+                  Import Round
+                  <label htmlFor="import-round">
+                    <input
+                      onChange={handleImportClick}
+                      ref={fileInputRef}
+                      name="import-round"
+                      id="import-round"
+                      type="file"
+                      style={{
+                        cursor: 'pointer',
+                        opacity: 0,
+                        left: 0,
+                        width: '100%',
+                        position: 'absolute',
+                      }}
+                    />
+                  </label>
+                </div>
+              </Button>
+            </p>
             <p
               style={{
                 color: getColors().TEXT_DESCRIPTION,
@@ -223,6 +334,12 @@ const EditRoundTemplate = (props: EditRoundProps) => {
               Fill out information for this round template.
             </p>
             <HiddenBooleanField name="isNew" value={Boolean(props.isNew)} />
+            <HiddenTextField
+              name="importedRoundTemplate"
+              value={
+                roundTemplateImport ? JSON.stringify(roundTemplateImport) : ''
+              }
+            />
             <InputLabel htmlFor="title">Title</InputLabel>
             <Input
               fullWidth={true}
@@ -267,6 +384,15 @@ const EditRoundTemplate = (props: EditRoundProps) => {
                 render();
               }}
             />
+            <div
+              style={{
+                display: roundTemplateImport ? 'block' : 'none',
+              }}
+            >
+              <p>
+                Importing {roundTemplateImport?.questions?.length} questions.
+              </p>
+            </div>
             <FormErrorText />
             <div style={{ height: '16px' }}></div>
             <Button

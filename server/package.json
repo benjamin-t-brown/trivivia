@@ -5,7 +5,7 @@
   "main": "src/server.ts",
   "scripts": {
     "test": "vitest --coverage",
-    "test:prod": "vitest --run",
+    "test:prod": "tsc --project ./tsconfig.json && vitest --run",
     "start": "tsx watch --tsconfig ./tsconfig.json ./src/server.ts",
     "start:dev": "yarn start",
     "start:prod": "tsx --no-cache --tsconfig ./tsconfig.json ./src/server.ts",

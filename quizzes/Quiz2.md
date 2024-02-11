@@ -13,7 +13,11 @@ brunch
 5. What hybrid utensil was trademarked in 1970, some 60 years after the word for it was coined?
 spork
 6. In order to save money and/or travel time, you might opt to use your PTO for a luxurious stay in a hotel within an hour's trip from your house; a decision that is an example of what?
-staycation or holistay
-7. 
-8. Midichlorians controlling the Force is a notorious Star Wars 'retcon'; a word which is a portmanteau of what two words? 
+staycation/holistay
+7. When you go to a bar but don't want to imbibe, you might order one of these fancy Prohibition-friendly drinks.
+mocktail
+8. Pop-culture web site Buzzfeed is notorious for creating which lazy style of post, often ranking something like music, movies, or games in some arbitrary order?
+listicle
 Bonus. 
+9. Midichlorians controlling the Force is a notorious Star Wars 'retcon'; a word which is a portmanteau of what two words? 
+Retroactive Continuity

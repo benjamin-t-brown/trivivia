@@ -280,8 +280,6 @@ export class TemplateService {
   async deleteRoundTemplate(params: { roundId: string }) {
     const roundTemplate = await this.findRoundById(params.roundId);
 
-    logger.info('found round template', roundTemplate);
-
     if (!roundTemplate) {
       return;
     }

@@ -351,7 +351,7 @@ export const initTemplateControllers = (router: Router) => {
         isBonus,
         notes,
       } = body;
-      if (!validateString(text, 0, 500)) {
+      if (!validateString(text, 0, BIG_TEXT_MAX_LENGTH)) {
         throw new InvalidInputError('Not valid text.');
       }
       if (!validateString(answers, 0, BIG_TEXT_MAX_LENGTH)) {
@@ -429,12 +429,38 @@ export const initTemplateControllers = (router: Router) => {
         context.res.setHeader('Content-Type', 'text/plain');
         context.res.setHeader(
           'Content-Disposition',
-          'attachment; filename=quiz.html'
+          `attachment; filename=quiz.html`
         );
       }
 
       return str;
     },
     true
+  );
+
+  registerRoute(
+    router,
+    'get',
+    '/api/template/export/round/:roundTemplateId',
+    async function exportRoundTemplate(params, _, context) {
+      const roundTemplate = await templateService.findRoundById(
+        params.roundTemplateId
+      );
+      const json = roundTemplate?.getResponseJson();
+      if (json) {
+        delete (json as any).quizTemplate;
+      }
+      if (context.res) {
+        context.res.setHeader('Content-Type', 'application/json');
+        context.res.setHeader(
+          'Content-Disposition',
+          `attachment; filename=round-${roundTemplate?.title
+            ?.replace(/\s/g, '-')
+            .toLowerCase()}.json`
+        );
+      }
+
+      return json;
+    }
   );
 };

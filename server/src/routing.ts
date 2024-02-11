@@ -60,7 +60,7 @@ export function registerRoute<T, R>(
         res.status(200).send(data);
       } else {
         logger.error(
-          'Not Found Error',
+          'Not Found Error (ensure route returns a value)',
           'req=' + req.requestId,
           method,
           route,
