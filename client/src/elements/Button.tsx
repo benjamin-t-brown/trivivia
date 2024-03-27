@@ -20,7 +20,7 @@ const Button = styled.button<IButtonProps>(props => {
     background: obj[props.color ?? 'primary'],
     color: colorsDark.TEXT_DEFAULT,
     fontFamily: 'monospace',
-    fontSize: '18px',
+    fontSize: '16px',
     cursor: 'pointer',
     border:
       props.color === 'plain' ? '0' : '1px solid ' + getColors().BACKGROUND2,

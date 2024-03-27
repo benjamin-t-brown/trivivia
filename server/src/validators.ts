@@ -56,7 +56,6 @@ export const validateAnswersSubmitted = (
   for (let i = 0; i < Object.keys(answersSubmitted).length; i++) {
     const answers = answersSubmitted[i];
     for (const key in answers) {
-      console.log('jeck key', key);
       if (!validKeys.includes(key)) {
         logger.error(
           `Invalid key found while validating answers submitted: ${key}`

@@ -1,5 +1,6 @@
 import React from 'react';
 import {
+  ANSWER_DELIMITER,
   AnswerState,
   LiveQuizResponse,
   LiveQuizState,
@@ -168,60 +169,6 @@ export const getSettingsFromLs = (): SettingsArgs => {
   } catch (e) {
     return defaultSettings;
   }
-};
-
-export const ANSWER_DELIMITER = ' | ';
-
-export const getRoundAnswersArrays = (
-  roundTemplate: RoundTemplateResponse,
-  team: LiveQuizTeamResponse
-) => {
-  const answersArr: string[] = [];
-  const teamAnswersArr: string[] = [];
-  const orderMattersArr: boolean[] = [];
-
-  const submittedAnswers =
-    team.liveQuizRoundAnswers.find(a => a.roundId === roundTemplate.id)
-      ?.answers ?? {};
-
-  for (let j = 0; j < roundTemplate.questionOrder.length; j++) {
-    const questionId = roundTemplate.questionOrder[j];
-    const questionTemplate = roundTemplate.questions?.find(
-      q => q.id === questionId
-    );
-    if (!questionTemplate) {
-      continue;
-    }
-
-    const numAnswers = getNumAnswers(questionTemplate.answerType);
-    const numCorrectAnswers = getNumCorrectAnswers(questionTemplate.answerType);
-
-    const qArr: string[] = [];
-    const qTeamArr: string[] = [];
-    if (numCorrectAnswers !== numAnswers) {
-      for (let k = 0; k < 8; k++) {
-        const key = 'answer' + (k + 1);
-        const answers = questionTemplate.answers[key];
-        if (answers) {
-          const teamAnswers = submittedAnswers[j + 1]?.[key];
-          qArr.push(answers);
-          qTeamArr.push(teamAnswers);
-        }
-      }
-    } else {
-      for (let k = 0; k < numAnswers; k++) {
-        const key = 'answer' + (k + 1);
-        const answers = questionTemplate.answers[key];
-        const teamAnswers = submittedAnswers[j + 1]?.[key];
-        qArr.push(answers);
-        qTeamArr.push(teamAnswers);
-      }
-    }
-    answersArr.push(qArr.join(ANSWER_DELIMITER));
-    teamAnswersArr.push(qTeamArr.join(ANSWER_DELIMITER));
-    orderMattersArr.push(questionTemplate.orderMatters);
-  }
-  return { answersArr, teamAnswersArr, orderMattersArr };
 };
 
 export const getQuestionAnswerString = (

@@ -203,6 +203,7 @@ const AdminEditLiveQuiz = (props: EditLiveQuizProps) => {
             <div
               style={{
                 margin: '16px 0px',
+                display: 'flex',
               }}
             >
               <input
@@ -210,7 +211,12 @@ const AdminEditLiveQuiz = (props: EditLiveQuizProps) => {
                 name="reImportQuizTemplate"
                 id="reImportQuizTemplate"
               ></input>
-              <label htmlFor="reImportQuizTemplate">
+              <label
+                htmlFor="reImportQuizTemplate"
+                style={{
+                  marginLeft: '8px',
+                }}
+              >
                 {' '}
                 Re-Import quiz template for this quiz.{' '}
               </label>
@@ -218,6 +224,7 @@ const AdminEditLiveQuiz = (props: EditLiveQuizProps) => {
             <div
               style={{
                 margin: '16px 0px',
+                display: 'flex',
               }}
             >
               <input
@@ -225,7 +232,12 @@ const AdminEditLiveQuiz = (props: EditLiveQuizProps) => {
                 name="forceReImport"
                 id="forceReImport"
               ></input>
-              <label htmlFor="forceReImport">
+              <label
+                htmlFor="forceReImport"
+                style={{
+                  marginLeft: '8px',
+                }}
+              >
                 {' '}
                 If importing, force the re-import (may reset the quiz and erase
                 all answers).{' '}

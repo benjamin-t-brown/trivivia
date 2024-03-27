@@ -652,6 +652,7 @@ export class LiveQuizService {
         answersGraded: includeAnswers
           ? liveQuizRoundAnswers?.answersGraded
           : undefined,
+        jokerDisabled: roundTemplate.jokerDisabled ?? false,
         didJoker: Boolean(liveQuizRoundAnswers?.didJoker),
         questions,
         stats: isRoundInAnswerShowState ? stats?.[roundTemplate.id] : undefined,
@@ -727,9 +728,9 @@ export class LiveQuizService {
     );
 
     if (args.didJoker) {
-      if (hasAlreadyUsedJoker) {
+      if (hasAlreadyUsedJoker || roundTemplate.jokerDisabled) {
         logger.error(
-          `Team id=${liveQuizTeam.id} has already used joker, ignoring this instance.`
+          `Team id=${liveQuizTeam.id} has already used joker or joker is disabled, ignoring this instance.`
         );
       } else {
         liveQuizRoundAnswers.didJoker = true;
@@ -739,7 +740,11 @@ export class LiveQuizService {
         currentRoundNumber >= quizTemplate.roundOrder.length;
 
       if (isThisTheFinalRound && !hasAlreadyUsedJoker) {
-        liveQuizRoundAnswers.didJoker = true;
+        if (!roundTemplate.jokerDisabled) {
+          liveQuizRoundAnswers.didJoker = true;
+        } else {
+          liveQuizRoundAnswers.didJoker = false;
+        }
       } else {
         liveQuizRoundAnswers.didJoker = false;
       }

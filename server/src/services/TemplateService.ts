@@ -12,7 +12,6 @@ import {
 } from 'shared/responses';
 import logger from '../logger';
 import { Includeable } from 'sequelize';
-import htmlPrettify from 'html-prettify';
 import fs from 'fs';
 import path from 'path';
 import { replaceInTemplate } from '../utils/templateUtils';
@@ -229,6 +228,7 @@ export class TemplateService {
     title: string;
     description?: string;
     notes?: string;
+    jokerDisabled?: boolean;
   }) {
     logger.info('create round', params);
 
@@ -248,6 +248,7 @@ export class TemplateService {
       description: params.description ?? '',
       questionOrder: '[]',
       notes: params.notes ?? '',
+      jokerDisabled: params.jokerDisabled ?? false,
     });
     await roundTemplate.save();
 
@@ -264,6 +265,7 @@ export class TemplateService {
     title: string;
     description?: string;
     notes?: string;
+    jokerDisabled?: boolean;
   }) {
     const roundTemplate = await this.findRoundById(params.roundTemplateId);
     if (!roundTemplate) {
@@ -273,6 +275,8 @@ export class TemplateService {
     roundTemplate.title = params.title;
     roundTemplate.description = params.description ?? roundTemplate.description;
     roundTemplate.notes = params.notes ?? roundTemplate.notes;
+    roundTemplate.jokerDisabled =
+      params.jokerDisabled ?? roundTemplate.jokerDisabled ?? false;
 
     return roundTemplate.save();
   }
@@ -478,7 +482,7 @@ export class TemplateService {
         questionHtml,
         'questionImage',
         questionTemplateResponse.imageLink
-          ? `<br /><img src="${questionTemplateResponse.imageLink}" alt="imageQuestion" style="max-width:400px" />`
+          ? `<br /><img src="${questionTemplateResponse.imageLink}" alt="imageQuestion" style="max-width:600px" />`
           : ''
       );
 

@@ -122,6 +122,7 @@ export const useFormPristine = (
     const form = document.getElementById(formId) as HTMLFormElement | null;
     if (form) {
       for (const i in initialValues) {
+        console.log('set elem value', i, initialValues[i]);
         form.elements[i].value = initialValues[i];
       }
     }

@@ -44,6 +44,9 @@ export class RoundTemplate extends Model {
   @Column(DataType.TEXT)
   notes: string;
 
+  @Column(DataType.BOOLEAN)
+  jokerDisabled: boolean;
+
   @CreatedAt
   creationDate: Date;
 

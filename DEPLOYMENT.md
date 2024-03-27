@@ -38,8 +38,11 @@ forever stop <number>
 ps aux | grep node
 
 # you're looking for:
-#   /home/admin/trivivia/server/node_modules/.bin/ts-node --project ./tsconfig.json src/server.ts /home/admin/trivivia/server/
+#   /home/admin/trivivia/server/node_modules/.bin/(ts-node OR tsx) --project ./tsconfig.json src/server.ts /home/admin/trivivia/server/
 kill -9 159706
+
+# before starting server again, source env
+source ~/trivivia_config_vars.sh
 
 # when the server is not running anymore you can re-start it with this
 forever start --uid "trivivia" --minUptime 1000 --spinSleepTime 1000 --append -c "yarn start:prod" ./

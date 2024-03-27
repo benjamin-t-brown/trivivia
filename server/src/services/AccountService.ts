@@ -61,7 +61,7 @@ export class AccountService {
       email,
       password: this.hashPassword(password),
     });
-    account.save();
+    await account.save();
     return account;
   }
 
@@ -76,7 +76,7 @@ export class AccountService {
     }
 
     account.password = this.hashPassword(newPassword);
-    account.save();
+    await account.save();
     return account;
   }
 }

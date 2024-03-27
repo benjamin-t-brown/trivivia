@@ -52,9 +52,6 @@ export class QuizTemplate extends Model {
   @Column(DataType.TEXT)
   notes: string;
 
-  @Column(DataType.BOOLEAN)
-  isJoker: string;
-
   @CreatedAt
   creationDate: Date;
 

@@ -508,7 +508,7 @@ const QuestionAnswer = (props: {
   dispatch: React.Dispatch<any>;
   answersSaved: AnswerState;
   answersQuestion?: AnswerState;
-  answersGraded?: AnswerStateGraded;
+  answersGraded?: Partial<AnswerStateGraded>;
   answersStats?: AnswerStateStats;
   numTeams: number;
 }) => {
@@ -882,7 +882,10 @@ const QuizInRound = (props: { quizState: LiveQuizPublicStateResponse }) => {
             <>
               <div
                 style={{
-                  display: isSpectating ? 'none' : 'flex',
+                  display:
+                    isSpectating || props.quizState.round?.jokerDisabled
+                      ? 'none'
+                      : 'flex',
                   alignItems: 'center',
                   minHeight: '42px',
                   marginTop: '16px',

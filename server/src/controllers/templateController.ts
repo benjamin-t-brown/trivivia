@@ -162,7 +162,7 @@ export const initTemplateControllers = (router: Router) => {
     router,
     '/api/template/round',
     async function createRoundTemplate(_, body: RoundTemplateRequest) {
-      const { title, description, quizTemplateId, notes } = body;
+      const { title, description, quizTemplateId, notes, jokerDisabled } = body;
       if (!validateString(quizTemplateId)) {
         throw new InvalidInputError('Not a valid quizTemplateId.');
       }
@@ -181,6 +181,7 @@ export const initTemplateControllers = (router: Router) => {
         title,
         description,
         notes,
+        jokerDisabled,
       });
       if (!roundTemplate) {
         return;
@@ -195,7 +196,6 @@ export const initTemplateControllers = (router: Router) => {
     '/api/template/round/:id',
     async function getRoundTemplate(params) {
       const roundTemplate = await templateService.findRoundById(params.id);
-      // console.log('GET ROUND TEMPLATE', roundTemplate);
       return roundTemplate?.getResponseJson();
     }
   );
@@ -209,9 +209,10 @@ export const initTemplateControllers = (router: Router) => {
         title: string;
         description: string;
         notes?: string;
+        jokerDisabled?: boolean;
       }
     ) {
-      const { title, description, notes } = body;
+      const { title, description, notes, jokerDisabled } = body;
       if (!validateString(title)) {
         throw new InvalidInputError('Not a valid title.');
       }
@@ -227,6 +228,7 @@ export const initTemplateControllers = (router: Router) => {
         title,
         description,
         notes,
+        jokerDisabled,
       });
       if (!roundTemplate) {
         return;
@@ -290,7 +292,7 @@ export const initTemplateControllers = (router: Router) => {
       if (!validateString(roundTemplateId)) {
         throw new InvalidInputError('Not valid roundTemplateId.');
       }
-      if (!validateString(text, 0, 500)) {
+      if (!validateString(text, 0, BIG_TEXT_MAX_LENGTH)) {
         throw new InvalidInputError('Not valid text.');
       }
       if (!validateString(answers, 0, BIG_TEXT_MAX_LENGTH)) {

@@ -47,6 +47,7 @@ interface EditRoundValues {
   title: string;
   description: string;
   notes: string;
+  jokerDisabled: boolean;
   importedRoundTemplate?: string;
   'import-round'?: string;
 }
@@ -57,6 +58,10 @@ const action = createAction(async (values: EditRoundValues, params) => {
       values,
     } as FormError;
   }
+
+  console.log('SAVE ROUND TEMPLATE', values);
+
+  values.jokerDisabled = (values.jokerDisabled as any) === 'true';
 
   let roundTemplate: RoundTemplateResponse | undefined = undefined;
   if (values.importedRoundTemplate) {
@@ -227,6 +232,7 @@ const EditRoundTemplate = (props: EditRoundProps) => {
     title: roundTemplateResponse?.data.title ?? '',
     description: roundTemplateResponse?.data?.description ?? '',
     notes: roundTemplateResponse?.data?.notes ?? '',
+    jokerDisabled: roundTemplateResponse?.data?.jokerDisabled ?? false,
   };
   const formIsPristine = useFormPristine('edit-round-form', initialValues);
   const confirmDialog = useConfirmNav(!formIsPristine);
@@ -235,6 +241,8 @@ const EditRoundTemplate = (props: EditRoundProps) => {
     RoundTemplateResponse | undefined
   >();
   useFormResetValues('edit-round-form');
+
+  console.log('render rount template', formIsPristine, initialValues);
 
   const handleImportClick = (ev: React.ChangeEvent<HTMLInputElement>) => {
     ev.preventDefault();
@@ -258,6 +266,7 @@ const EditRoundTemplate = (props: EditRoundProps) => {
             form.elements['title'].value = parsedData.title;
             form.elements['description'].value = parsedData.description;
             form.elements['notes'].value = parsedData.notes;
+            form.elements['jokerDisabled'].value = parsedData.jokerDisabled;
           }
           setRoundTemplateImport(parsedData);
         }
@@ -384,6 +393,34 @@ const EditRoundTemplate = (props: EditRoundProps) => {
                 render();
               }}
             />
+            <div
+              style={{
+                margin: '16px 0px',
+                display: 'flex',
+              }}
+            >
+              <input
+                type="checkbox"
+                name="jokerDisabled"
+                id="jokerDisabled"
+                defaultChecked={
+                  props.isNew
+                    ? false
+                    : roundTemplateResponse?.data.jokerDisabled
+                }
+                onChange={ev => {
+                  ev.target.value = String(ev.target.checked);
+                }}
+              ></input>
+              <label
+                htmlFor="jokerDisabled"
+                style={{
+                  marginLeft: '8px',
+                }}
+              >
+                Disable Joker
+              </label>
+            </div>
             <div
               style={{
                 display: roundTemplateImport ? 'block' : 'none',

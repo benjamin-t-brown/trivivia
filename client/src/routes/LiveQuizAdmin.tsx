@@ -68,7 +68,7 @@ const ContentSpacer = () => {
 };
 
 const HSpace = () => {
-  return <div style={{ width: '16px' }}></div>;
+  return <div style={{ width: '16px', display: 'inline-block' }}></div>;
 };
 
 const Loading = styled.div<{ visible: boolean }>(props => {
@@ -630,8 +630,9 @@ const AdminQuestionList = (props: {
             >
               Hide All
             </Button>
+            <HSpace />
             <Button
-              color="secondary"
+              color="plain"
               onClick={() => {
                 const nextAnswersVisible = !answersVisible;
                 setAnswersVisible(nextAnswersVisible);

@@ -28,12 +28,13 @@ export interface QuizTemplateResponse extends CreateUpdateDelete {
 export interface RoundTemplateResponse extends CreateUpdateDelete {
   id: string;
   quizTemplateId: string;
-  quizTemplate: QuizTemplateResponse;
+  quizTemplate?: QuizTemplateResponse;
   title: string;
   description: string;
   questionOrder: string[];
   questions?: QuestionTemplateResponse[];
   notes?: string;
+  jokerDisabled?: boolean;
 }
 
 export enum AnswerBoxType {
@@ -57,7 +58,7 @@ export enum AnswerBoxType {
 export interface QuestionTemplateResponse extends CreateUpdateDelete {
   id: string;
   roundTemplateId: string;
-  roundTemplate: RoundTemplateResponse;
+  roundTemplate?: RoundTemplateResponse;
   text: string;
   answers: AnswerState;
   answerType: AnswerBoxType;
@@ -96,7 +97,7 @@ export type AnswerState = {
 
 export type AnswerStateGraded = Record<
   Partial<keyof AnswerState>,
-  'true' | 'false'
+  'true' | 'false' | 'unknown'
 >;
 export type AnswerStateStats = Record<number | string, number | string[]>;
 
@@ -181,6 +182,64 @@ export const getNumCorrectAnswers = (answerType: AnswerBoxType) => {
   return 1;
 };
 
+export const ANSWER_DELIMITER = ' | ';
+
+// each entry except orderMattersArr is a list of strings delimited by ANSWER_DELIMITER
+// - answersArr is the list of answers for each question in a round
+// - teamAnswersArr is the list of answers for each question in a round submitted by a team
+// - orderMattersArr is the list of whether the order matters for each question
+export const getRoundAnswersArrays = (
+  roundTemplate: RoundTemplateResponse,
+  team: LiveQuizTeamResponse
+) => {
+  const answersArr: string[] = [];
+  const teamAnswersArr: string[] = [];
+  const orderMattersArr: boolean[] = [];
+
+  const submittedAnswers =
+    team.liveQuizRoundAnswers.find(a => a.roundId === roundTemplate.id)
+      ?.answers ?? {};
+
+  for (let j = 0; j < roundTemplate.questionOrder.length; j++) {
+    const questionId = roundTemplate.questionOrder[j];
+    const questionTemplate = roundTemplate.questions?.find(
+      q => q.id === questionId
+    );
+    if (!questionTemplate) {
+      continue;
+    }
+
+    const numAnswers = getNumAnswers(questionTemplate.answerType);
+    const numCorrectAnswers = getNumCorrectAnswers(questionTemplate.answerType);
+
+    const qArr: string[] = [];
+    const qTeamArr: string[] = [];
+    if (numCorrectAnswers !== numAnswers) {
+      for (let k = 0; k < 8; k++) {
+        const key = 'answer' + (k + 1);
+        const answers = questionTemplate.answers[key];
+        if (answers) {
+          const teamAnswers = submittedAnswers[j + 1]?.[key];
+          qArr.push(answers);
+          qTeamArr.push(teamAnswers);
+        }
+      }
+    } else {
+      for (let k = 0; k < numAnswers; k++) {
+        const key = 'answer' + (k + 1);
+        const answers = questionTemplate.answers[key];
+        const teamAnswers = submittedAnswers[j + 1]?.[key];
+        qArr.push(answers);
+        qTeamArr.push(teamAnswers);
+      }
+    }
+    answersArr.push(qArr.join(ANSWER_DELIMITER));
+    teamAnswersArr.push(qTeamArr.join(ANSWER_DELIMITER));
+    orderMattersArr.push(questionTemplate.orderMatters);
+  }
+  return { answersArr, teamAnswersArr, orderMattersArr };
+};
+
 export enum LiveQuizState {
   NOT_STARTED = 'not_started',
   STARTED_WAITING = 'started_waiting',
@@ -204,6 +263,7 @@ export type QuizStats = Record<string, Record<string, AnswerStateStats>>;
 
 export interface LiveQuizResponse extends CreateUpdateDelete {
   id: string;
+  accountId: string;
   userFriendlyId: string;
   quizTemplateId: string;
   quizTemplateJson: QuizTemplateResponse;
@@ -214,16 +274,17 @@ export interface LiveQuizResponse extends CreateUpdateDelete {
   currentRoundNumber: number;
   currentQuestionNumber: number;
   currentRoundAnswerNumber: number;
+  currentRoundScoresNumber: number;
   stats: QuizStats;
-  startedAt: string;
-  completedAt: string;
+  startedAt?: string;
+  completedAt?: string;
   isJoker?: boolean;
 }
 
 export interface LiveQuizTeamResponse extends CreateUpdateDelete {
   id: string;
   publicId: string;
-  liveQuiz: LiveQuizResponse;
+  liveQuizId?: string;
   liveQuizRoundAnswers: LiveQuizRoundAnswersResponse[];
   teamName: string;
   numberOfPlayers: number;
@@ -232,10 +293,10 @@ export interface LiveQuizTeamResponse extends CreateUpdateDelete {
 
 export interface LiveQuizRoundAnswersResponse extends CreateUpdateDelete {
   id: string;
-  quizTeam: LiveQuizResponse;
+  liveQuizTeamId?: string;
   roundId: string;
   answers: Record<string, AnswerState>;
-  answersGraded: Record<string, AnswerStateGraded>;
+  answersGraded: Record<string, Partial<AnswerStateGraded>>;
   didJoker: boolean;
 }
 
@@ -249,8 +310,8 @@ export interface LiveQuizPublicResponse extends CreateUpdateDelete {
   currentRoundNumber: number;
   currentQuestionNumber: number;
   currentRoundAnswerNumber: number;
-  startedAt: string;
-  completedAt: string;
+  startedAt?: string;
+  completedAt?: string;
 }
 
 export interface LiveQuizPublicQuestionResponse {
@@ -280,9 +341,10 @@ export interface LiveQuizPublicStateResponse {
     didJoker: boolean;
     description: string;
     answersSubmitted?: Record<string, AnswerState>;
-    answersGraded?: Record<string, AnswerStateGraded>;
+    answersGraded?: Record<string, Partial<AnswerStateGraded>>;
     questions: LiveQuizPublicQuestionResponse[];
     stats?: Record<string, AnswerStateStats>;
+    jokerDisabled: boolean;
   };
 }
 

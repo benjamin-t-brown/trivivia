@@ -12,6 +12,7 @@ export interface RoundTemplateRequest {
   title: string;
   description?: string;
   notes?: string;
+  jokerDisabled?: boolean;
 }
 
 export interface QuestionTemplateRequest {

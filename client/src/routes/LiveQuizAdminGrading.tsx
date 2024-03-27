@@ -21,12 +21,13 @@ import {
   QuestionTemplateResponse,
   RoundTemplateResponse,
   getNumAnswers,
+  AnswerStateGraded,
+  ANSWER_DELIMITER,
+  getRoundAnswersArrays,
 } from 'shared/responses';
 import FormErrorText from 'components/FormErrorText';
 import SectionTitle from 'elements/SectionTitle';
-import { ANSWER_DELIMITER, getRoundAnswersArrays } from 'utils';
 import Input from 'elements/Input';
-import { AnswerStateGraded } from 'shared/responses';
 import { GradeInputState } from 'shared/requests';
 import Accordion, { AccordionItem } from 'elements/Accordion';
 import Img from 'elements/Img';

@@ -30,6 +30,7 @@
     "cors": "^2.8.5",
     "email-validator": "^2.0.4",
     "express": "^4.18.2",
+    "fast-fuzzy": "^1.12.0",
     "html-prettify": "^1.0.7",
     "jsonwebtoken": "^9.0.0",
     "nanoid": "^3.3.6",
