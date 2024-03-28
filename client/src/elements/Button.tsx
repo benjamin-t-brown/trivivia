@@ -2,7 +2,7 @@ import { colorsDark, getColors } from 'style';
 import styled from 'styled-components';
 
 export interface IButtonProps {
-  color?: 'primary' | 'secondary' | 'plain' | 'cancel';
+  color?: 'primary' | 'secondary' | 'tertiary' | 'plain' | 'cancel';
   flex?: boolean;
   center?: boolean;
   disabled?: boolean;
@@ -11,6 +11,7 @@ const Button = styled.button<IButtonProps>(props => {
   const obj = {
     primary: getColors().PRIMARY,
     secondary: getColors().SECONDARY,
+    tertiary: getColors().TERTIARY,
     plain: 'transparent',
     cancel: getColors().CANCEL,
   };
@@ -19,7 +20,7 @@ const Button = styled.button<IButtonProps>(props => {
     padding: '8px',
     background: obj[props.color ?? 'primary'],
     color: colorsDark.TEXT_DEFAULT,
-    fontFamily: 'monospace',
+    // fontFamily: 'monospace',
     fontSize: '16px',
     cursor: 'pointer',
     border:

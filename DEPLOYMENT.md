@@ -35,7 +35,7 @@ forever stop <number>
 
 # forever doesn't actually kill the ts-node process so you have to find it
 # 'forever restart' also does not work correctly
-ps aux | grep node
+ps aux | grep /home/admin/trivivia/server/node_modules/.bin/
 
 # you're looking for:
 #   /home/admin/trivivia/server/node_modules/.bin/(ts-node OR tsx) --project ./tsconfig.json src/server.ts /home/admin/trivivia/server/
@@ -45,6 +45,7 @@ kill -9 159706
 source ~/trivivia_config_vars.sh
 
 # when the server is not running anymore you can re-start it with this
+cd server
 forever start --uid "trivivia" --minUptime 1000 --spinSleepTime 1000 --append -c "yarn start:prod" ./
 
 # to check if it's running correctly

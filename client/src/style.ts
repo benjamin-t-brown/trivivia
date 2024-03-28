@@ -3,6 +3,7 @@ import { getSettingsFromLs } from 'utils';
 export const colorsDark = {
   PRIMARY: '#005278',
   SECONDARY: '#303030',
+  TERTIARY: '#3F7E00',
   CANCEL: '#561616',
   BACKGROUND: '#111',
   BACKGROUND2: '#333',
@@ -23,6 +24,7 @@ export const colorsDark = {
 export const colorsLight = {
   PRIMARY: '#005278',
   SECONDARY: '#303030',
+  TERTIARY: '#3F7E00',
   CANCEL: '#561616',
   BACKGROUND: '#FFF',
   BACKGROUND2: '#ededed',

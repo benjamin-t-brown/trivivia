@@ -282,6 +282,17 @@ const SubmittedAnswersRound = (props: {
       }
     }
   }
+
+  // const submittedAnswers = Object.keys(aggAnswers).sort();
+  const numQuestions = props?.quizState?.round?.totalNumberOfQuestions ?? 0;
+  const answerList: string[] = [];
+  for (let i = 0; i < numQuestions; i++) {
+    if (aggAnswers[i + 1]) {
+      answerList.push(aggAnswers[i + 1]);
+    } else {
+      answerList.push('');
+    }
+  }
   return (
     <div
       style={{
@@ -293,24 +304,23 @@ const SubmittedAnswersRound = (props: {
         style={{
           color: getColors().TEXT_DESCRIPTION,
           marginBottom: '8px',
+          marginTop: '8px',
         }}
       >
         Submitted Answers:
       </div>
-      {Object.keys(aggAnswers)
-        .sort()
-        .map(i => {
-          return (
-            <div
-              key={i + 1}
-              style={{
-                width: '75%',
-              }}
-            >
-              {Number(i)}. {aggAnswers[i]}
-            </div>
-          );
-        })}
+      {answerList.map((answer, i) => {
+        return (
+          <div
+            key={i + 1}
+            style={{
+              width: '75%',
+            }}
+          >
+            {Number(i + 1)}. {answer}
+          </div>
+        );
+      })}
     </div>
   );
 };
@@ -370,7 +380,7 @@ export const CorrectAnswers = (props: {
       'orange',
       'yellow',
       'green',
-      'blue',
+      'lightblue',
       'indigo',
       'violet',
     ];
@@ -657,6 +667,7 @@ const QuestionAnswer = (props: {
         key={'radio' + i}
         style={{
           display: 'flex',
+          alignItems: 'center',
           margin: '9px 0px',
           padding: '8px',
           ...style,
@@ -946,12 +957,18 @@ const QuizInRound = (props: { quizState: LiveQuizPublicStateResponse }) => {
                 <Button
                   flex
                   center
-                  color="primary"
+                  color={
+                    !hasSubmitted || !props.quizState.round?.answersSubmitted
+                      ? 'tertiary'
+                      : 'primary'
+                  }
                   style={{
                     marginTop: '16px',
+                    // paddingRight: '27px',
                     width: '100%',
-                    textAlign: 'left',
-                    justifyContent: 'flex-start',
+                    // minWidth: '200px',
+                    textAlign: 'center',
+                    justifyContent: 'center',
                   }}
                   disabled={!isRoundAcceptingSubmissions}
                   type="submit"
@@ -960,11 +977,21 @@ const QuizInRound = (props: { quizState: LiveQuizPublicStateResponse }) => {
                   {isRoundAcceptingSubmissions ? (
                     <>
                       {hasSubmitted ? (
-                        <IconLeft src="/res/check-mark.svg" />
+                        <IconLeft
+                          style={{
+                            marginLeft: '0px',
+                          }}
+                          src="/res/check-mark.svg"
+                        />
                       ) : (
-                        <IconLeft src="/res/edit.svg" />
+                        <IconLeft
+                          style={{
+                            marginLeft: '0px',
+                          }}
+                          src="/res/edit.svg"
+                        />
                       )}
-                      <span>{isPristine ? 'Submit' : 'Submit (changed)'}</span>
+                      <span>{hasSubmitted ? 'Submit' : 'Submit*'}</span>
                     </>
                   ) : (
                     <>
@@ -981,7 +1008,7 @@ const QuizInRound = (props: { quizState: LiveQuizPublicStateResponse }) => {
               {hasSubmitted ? (
                 <div
                   style={{
-                    textAlign: 'center',
+                    textAlign: 'left',
                   }}
                 >
                   Submitted!
