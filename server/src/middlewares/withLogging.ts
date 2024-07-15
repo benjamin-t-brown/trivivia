@@ -13,6 +13,7 @@ export const withLogging =
   ({ logLevel }: LoggingParams) =>
   (req: ApiRequest, res: Response, next: NextFunction) => {
     req.requestId = String(requestId++);
+    req.timestampReceived = performance.now();
     if (logLevel === 'debug') {
       logger.debug('req=' + req.requestId, req.method, req.originalUrl);
     }

@@ -33,6 +33,7 @@ export async function fetchAsync<T>(
   const jsonBody = body ? JSON.stringify(body) : undefined;
 
   const cacheResult = getFromCache<T>(method, url);
+  // const cacheResult = undefined;
 
   if (cacheResult && !options?.bustCache) {
     console.log('using cache', {
@@ -41,6 +42,12 @@ export async function fetchAsync<T>(
       body: jsonBody,
       result: cacheResult,
     });
+    const ret = {
+      data: cacheResult.data as any,
+      status: statusNum,
+      message: '',
+    };
+    return ret;
   }
 
   // activeFetches combine requests to the same url+method if there is already one in progress
@@ -54,7 +61,7 @@ export async function fetchAsync<T>(
       });
     });
   }
-
+  // console.time('fetch2');
   const promise = fetch(url, {
     method,
     body: jsonBody,
@@ -64,6 +71,8 @@ export async function fetchAsync<T>(
     },
   })
     .then(r => {
+      // console.timeEnd('fetch2');
+      // console.log('got fetch');
       ok = r.ok;
       statusNum = r.status;
       return r.json();

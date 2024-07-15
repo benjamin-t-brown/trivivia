@@ -242,8 +242,6 @@ const EditRoundTemplate = (props: EditRoundProps) => {
   >();
   useFormResetValues('edit-round-form');
 
-  console.log('render rount template', formIsPristine, initialValues);
-
   const handleImportClick = (ev: React.ChangeEvent<HTMLInputElement>) => {
     ev.preventDefault();
     const file = fileInputRef?.current?.files?.[0];
@@ -334,6 +332,39 @@ const EditRoundTemplate = (props: EditRoundProps) => {
                   </label>
                 </div>
               </Button>
+              {/* <Button
+                type="submit"
+                color="primary"
+                style={{
+                  width: '100%',
+                  display: 'flex',
+                }}
+              >
+                <div
+                  style={{
+                    position: 'relative',
+                    width: '100%',
+                  }}
+                >
+                  Import Round
+                  <label htmlFor="import-round">
+                    <input
+                      onChange={handleImportClick}
+                      ref={fileInputRef}
+                      name="import-round"
+                      id="import-round"
+                      type="file"
+                      style={{
+                        cursor: 'pointer',
+                        opacity: 0,
+                        left: 0,
+                        width: '100%',
+                        position: 'absolute',
+                      }}
+                    />
+                  </label>
+                </div>
+              </Button> */}
             </p>
             <p
               style={{

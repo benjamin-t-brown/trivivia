@@ -144,6 +144,12 @@ const ListRoundTemplates = () => {
     navigate(`/quiz-template/${params.quizTemplateId}/round-template-new`);
   };
 
+  const handlePickExistingRoundTemplateClick = (ev: React.MouseEvent) => {
+    ev.preventDefault();
+    // /quiz-template/:quizTemplateId/round/all
+    navigate(`/quiz-template/${params.quizTemplateId}/round/all`);
+  };
+
   const handleEditRoundTemplateClick =
     (id: string) => (ev: React.MouseEvent) => {
       ev.preventDefault();
@@ -205,6 +211,19 @@ const ListRoundTemplates = () => {
           >
             + Create New Round Template
           </Button>
+          <Button
+            disabled={
+              (loaderResponse?.data.roundTemplates.length ?? 0) >=
+              (loaderResponse?.data.quizTemplate.numRounds ?? 0)
+            }
+            color="primary"
+            style={{
+              width: '100%',
+            }}
+            onClick={handlePickExistingRoundTemplateClick}
+          >
+            + Pick Existing Round Templates
+          </Button>
           <p>
             Round Templates ({loaderResponse?.data.roundTemplates?.length}/
             {loaderResponse?.data.quizTemplate.numRounds})
@@ -255,6 +274,7 @@ const ListRoundTemplates = () => {
                     <div
                       style={{
                         display: 'flex',
+                        alignItems: 'center',
                         width: '100%',
                       }}
                     >
@@ -270,12 +290,14 @@ const ListRoundTemplates = () => {
                       <span
                         style={{
                           marginRight: '16px',
+                          marginTop: '2px',
                         }}
                       >
                         {i + 1}.
                       </span>
                       <div
                         style={{
+                          marginTop: '2px',
                           width: 'calc(100% - 100px)',
                           overflow: 'hidden',
                           whiteSpace: 'pre',

@@ -191,6 +191,20 @@ export const initTemplateControllers = (router: Router) => {
     }
   );
 
+  registerRoute(
+    router,
+    'get',
+    '/api/template/round/all',
+    async function searchAllRoundTemplates(params, _, context) {
+      const templates = await templateService.findAllRoundTemplatesByAccountId(
+        context.userId
+      );
+
+      return templates?.map(t => t.getResponseJson());
+    },
+    true
+  );
+
   registerGet(
     router,
     '/api/template/round/:id',

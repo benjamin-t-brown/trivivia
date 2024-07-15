@@ -11,6 +11,7 @@ import TextCenter from 'elements/TextCenter';
 import { colorsDark, getColors } from 'style';
 import { quizTemplateIsReady } from 'validation';
 import Img from 'elements/Img';
+import PaginatedList from 'elements/PaginatedList';
 
 const InnerRoot = styled.div<Object>(() => {
   return {
@@ -38,6 +39,87 @@ const loader = async () => {
   }
 
   return json(quizTemplatesResponse);
+};
+
+const renderQuizTemplateButton = (
+  t: QuizTemplateResponse,
+  handleQuizTemplateClick,
+  handleEditQuizTemplateClick
+) => {
+  return (
+    <Button
+      key={t.id}
+      color="secondary"
+      style={{
+        width: '100%',
+      }}
+      onClick={handleQuizTemplateClick(t.id)}
+    >
+      <div
+        style={{
+          fontSize: '12px',
+          textAlign: 'left',
+          color: colorsDark.TEXT_DESCRIPTION,
+        }}
+      >
+        Updated: {new Date(t.updatedOn).toISOString()}
+      </div>
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          marginTop: '4px',
+        }}
+      >
+        <div
+          style={{
+            width: 'calc(100% - 22px)',
+            display: 'flex',
+            textAlign: 'left',
+            alignItems: 'flex-start',
+          }}
+        >
+          <span
+            style={{
+              width: 'calc(100% - 32px)',
+            }}
+          >
+            {t.name}
+          </span>
+        </div>
+        <div
+          style={{
+            width: '122px',
+            transform: 'translateY(-6px)',
+            marginRight: '23px',
+          }}
+        >
+          <span
+            style={{
+              color: quizTemplateIsReady(t)
+                ? colorsDark.SUCCESS_TEXT
+                : colorsDark.ERROR_TEXT,
+              width: '60px',
+              textAlign: 'center',
+            }}
+          >
+            {quizTemplateIsReady(t) ? 'Ready' : 'Not Ready'}
+          </span>
+        </div>
+        <div
+          style={{
+            width: '22px',
+            transform: 'translateY(-6px)',
+            flexShrink: 0,
+          }}
+          onClick={handleEditQuizTemplateClick(t.id)}
+        >
+          <Img alt="Edit" src="/res/edit.svg" />
+        </div>
+      </div>
+    </Button>
+  );
 };
 
 const ListQuizTemplates = () => {
@@ -83,81 +165,17 @@ const ListQuizTemplates = () => {
             + Create New Quiz Template
           </Button>
           <p>Quiz Templates</p>
-          {quizTemplates?.data.map(t => {
-            return (
-              <Button
-                key={t.id}
-                color="secondary"
-                style={{
-                  width: '100%',
-                }}
-                onClick={handleQuizTemplateClick(t.id)}
-              >
-                <div
-                  style={{
-                    fontSize: '12px',
-                    textAlign: 'left',
-                    color: colorsDark.TEXT_DESCRIPTION,
-                  }}
-                >
-                  Updated: {new Date(t.updatedOn).toISOString()}
-                </div>
-                <div
-                  style={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                  }}
-                >
-                  <div
-                    style={{
-                      width: 'calc(100% - 22px)',
-                      display: 'flex',
-                      textAlign: 'left',
-                      alignItems: 'flex-start',
-                    }}
-                  >
-                    <span
-                      style={{
-                        width: 'calc(100% - 32px)',
-                      }}
-                    >
-                      {t.name}
-                    </span>
-                  </div>
-                  <div
-                    style={{
-                      width: '122px',
-                      transform: 'translateY(-6px)',
-                      marginRight: '23px',
-                    }}
-                  >
-                    <span
-                      style={{
-                        color: quizTemplateIsReady(t)
-                          ? colorsDark.SUCCESS_TEXT
-                          : colorsDark.ERROR_TEXT,
-                        width: '60px',
-                        textAlign: 'center',
-                      }}
-                    >
-                      {quizTemplateIsReady(t) ? 'Ready' : 'Not Ready'}
-                    </span>
-                  </div>
-                  <div
-                    style={{
-                      width: '22px',
-                      transform: 'translateY(-6px)',
-                      flexShrink: 0,
-                    }}
-                    onClick={handleEditQuizTemplateClick(t.id)}
-                  >
-                    <Img alt="Edit" src="/res/edit.svg" />
-                  </div>
-                </div>
-              </Button>
-            );
-          })}
+          <PaginatedList
+            maxItemsPerPage={20}
+            items={quizTemplates?.data ?? []}
+            renderItem={t =>
+              renderQuizTemplateButton(
+                t,
+                handleQuizTemplateClick,
+                handleEditQuizTemplateClick
+              )
+            }
+          ></PaginatedList>
           {quizTemplates?.data?.length === 0 ? (
             <TextCenter>(none)</TextCenter>
           ) : null}

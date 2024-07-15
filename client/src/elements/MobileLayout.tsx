@@ -8,7 +8,7 @@ const Root = styled.div<Object>(() => {
     left: '0px',
     top: '0px',
     width: '100%',
-    height: 'calc(100% - 55px)',
+    height: 'calc(100% - 62px)',
     display: 'flex',
     justifyContent: 'center',
     overflow: 'auto',

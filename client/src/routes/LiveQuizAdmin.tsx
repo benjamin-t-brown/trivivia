@@ -54,6 +54,7 @@ import {
 } from 'quizUtils';
 import { CorrectAnswers } from './LiveQuiz';
 import Img from 'elements/Img';
+import LiveQuizAdminInfo from 'components/LiveQuizAdminInfo';
 
 const InnerRoot = styled.div<Object>(() => {
   return {
@@ -683,6 +684,26 @@ const AdminRoundList = (props: {
   const { liveQuiz } = props;
   const fetcher = useFetcher();
 
+  const handleRoundQuestionsShowClick =
+    (round: RoundTemplateResponse) => (ev: React.MouseEvent) => {
+      ev.preventDefault();
+      const formData = new FormData();
+      formData.set('quizState', LiveQuizState.STARTED_IN_ROUND);
+      formData.set(
+        'roundNumber',
+        String(
+          liveQuiz.quizTemplateJson.roundOrder.findIndex(
+            id => round.id === id
+          ) + 1
+        )
+      );
+      formData.set('questionNumber', String(0));
+      fetcher.submit(formData, {
+        method: 'post',
+        action: props.updateAction,
+      });
+    };
+
   const handleRoundAnswersShowClick =
     (round: RoundTemplateResponse) => (ev: React.MouseEvent) => {
       ev.preventDefault();
@@ -702,71 +723,29 @@ const AdminRoundList = (props: {
       });
     };
 
+  const handleLockUnlockSubmissions = ev => {
+    ev.preventDefault();
+    const isCurrentlyLocked = isRoundLocked(liveQuiz);
+    const formData = new FormData();
+    formData.set(
+      'roundState',
+      isCurrentlyLocked
+        ? LiveRoundState.STARTED_ACCEPTING_ANSWERS
+        : LiveRoundState.COMPLETED
+    );
+    fetcher.submit(formData, {
+      method: 'post',
+      action: props.updateAction,
+    });
+  };
+
   return (
     <div>
       <SectionTitle>Rounds Overview</SectionTitle>
-      {getRoundsFromLiveQuiz(liveQuiz).map((r, i) => {
-        return (
-          <Round key={r.id} isActive={i + 1 === liveQuiz.currentRoundNumber}>
-            <div>
-              {i + 1}. {r.title}
-            </div>
-            <div
-              style={{
-                marginTop: '8px',
-              }}
-            >
-              <Button
-                color="primary"
-                onClick={handleRoundAnswersShowClick(r)}
-                disabled={
-                  !isRoundCompleted(props.liveQuiz) ||
-                  i >= props.liveQuiz.currentRoundNumber
-                }
-              >
-                ⥥ Go To Show Answers
-              </Button>
-            </div>
-          </Round>
-        );
-      })}
-    </div>
-  );
-};
-
-const AdminRoundSubmissionControlsButtons = (props: {
-  liveQuiz: LiveQuizResponse;
-  updateAction: string;
-  style?: React.CSSProperties;
-}) => {
-  const fetcher = useFetcher();
-  const { liveQuiz, updateAction } = props;
-
-  const handleToggleLockRoundClick =
-    (isCurrentlyLocked: boolean) => (ev: React.MouseEvent) => {
-      ev.preventDefault();
-      const formData = new FormData();
-      formData.set(
-        'roundState',
-        isCurrentlyLocked
-          ? LiveRoundState.STARTED_ACCEPTING_ANSWERS
-          : LiveRoundState.COMPLETED
-      );
-      fetcher.submit(formData, {
-        method: 'post',
-        action: updateAction,
-      });
-    };
-
-  const lockRoundDisabled = false;
-
-  return (
-    <div style={props.style}>
       <Button
         flex
         color="primary"
-        onClick={handleToggleLockRoundClick(isRoundLocked(liveQuiz))}
-        disabled={lockRoundDisabled}
+        onClick={handleLockUnlockSubmissions}
         style={{
           width: '100%',
           display: 'flex',
@@ -782,7 +761,7 @@ const AdminRoundSubmissionControlsButtons = (props: {
                 marginLeft: '0px',
               }}
             />
-            Unlock Round
+            Unlock Submissions
           </>
         ) : (
           <>
@@ -793,13 +772,136 @@ const AdminRoundSubmissionControlsButtons = (props: {
                 marginLeft: '0px',
               }}
             />
-            Lock Round {lockRoundDisabled ? '(Show all questions to lock)' : ''}
+            Lock Submissions
           </>
         )}
       </Button>
+      {getRoundsFromLiveQuiz(liveQuiz).map((r, i) => {
+        return (
+          <Round key={r.id} isActive={i + 1 === liveQuiz.currentRoundNumber}>
+            <div>
+              {i + 1}. {r.title}
+            </div>
+            <div
+              style={{
+                marginTop: '8px',
+              }}
+            >
+              <Button
+                color="primary"
+                onClick={handleRoundQuestionsShowClick(r)}
+                disabled={i >= props.liveQuiz.currentRoundNumber}
+                style={{
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  width: '75%',
+                }}
+              >
+                <IconLeft
+                  src={'/res/notebook.svg'}
+                  style={{
+                    marginLeft: '0px',
+                  }}
+                />
+                Go To Questions
+              </Button>
+              <Button
+                color="primary"
+                onClick={handleRoundAnswersShowClick(r)}
+                disabled={
+                  !isRoundCompleted(props.liveQuiz) ||
+                  i >= props.liveQuiz.currentRoundNumber
+                }
+                style={{
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  width: '75%',
+                }}
+              >
+                <IconLeft
+                  src={'/res/secret-book.svg'}
+                  style={{
+                    marginLeft: '0px',
+                  }}
+                />
+                Go To Answers
+              </Button>
+            </div>
+          </Round>
+        );
+      })}
     </div>
   );
 };
+
+// const AdminRoundSubmissionControlsButtons = (props: {
+//   liveQuiz: LiveQuizResponse;
+//   updateAction: string;
+//   style?: React.CSSProperties;
+// }) => {
+//   const fetcher = useFetcher();
+//   const { liveQuiz, updateAction } = props;
+
+//   const handleToggleLockRoundClick =
+//     (isCurrentlyLocked: boolean) => (ev: React.MouseEvent) => {
+//       ev.preventDefault();
+//       const formData = new FormData();
+//       formData.set(
+//         'roundState',
+//         isCurrentlyLocked
+//           ? LiveRoundState.STARTED_ACCEPTING_ANSWERS
+//           : LiveRoundState.COMPLETED
+//       );
+//       fetcher.submit(formData, {
+//         method: 'post',
+//         action: updateAction,
+//       });
+//     };
+
+//   const lockRoundDisabled = false;
+
+//   return (
+//     <div style={props.style}>
+//       <Button
+//         flex
+//         color="primary"
+//         onClick={handleToggleLockRoundClick(isRoundLocked(liveQuiz))}
+//         disabled={lockRoundDisabled}
+//         style={{
+//           width: '100%',
+//           display: 'flex',
+//           justifyContent: 'center',
+//           alignItems: 'center',
+//         }}
+//       >
+//         {isRoundLocked(liveQuiz) ? (
+//           <>
+//             <IconLeft
+//               src={'/res/unlocking.svg'}
+//               style={{
+//                 marginLeft: '0px',
+//               }}
+//             />
+//             Unlock Round
+//           </>
+//         ) : (
+//           <>
+//             {' '}
+//             <IconLeft
+//               src={'/res/padlock.svg'}
+//               style={{
+//                 marginLeft: '0px',
+//               }}
+//             />
+//             Lock Round {lockRoundDisabled ? '(Show all questions to lock)' : ''}
+//           </>
+//         )}
+//       </Button>
+//     </div>
+//   );
+// };
 
 const AdminQuizTeamsList = (props: { liveQuiz: LiveQuizResponse }) => {
   const fetcher = useFetcher();
@@ -942,6 +1044,7 @@ const LiveQuizAdmin = (props: EditLiveQuizProps) => {
   const updateAction = '/live-quiz-admin/' + params.liveQuizId;
   const revalidator = useRevalidator();
 
+  const [adminInfoExpanded, setAdminInfoExpanded] = useState(false);
   // useEffect(() => {
   //   const interval = setInterval(() => {
   //     revalidator.revalidate();
@@ -1098,6 +1201,22 @@ const LiveQuizAdmin = (props: EditLiveQuizProps) => {
     });
   };
 
+  const handleLockUnlockSubmissions = ev => {
+    ev.preventDefault();
+    const isCurrentlyLocked = isRoundLocked(liveQuiz);
+    const formData = new FormData();
+    formData.set(
+      'roundState',
+      isCurrentlyLocked
+        ? LiveRoundState.STARTED_ACCEPTING_ANSWERS
+        : LiveRoundState.COMPLETED
+    );
+    fetcher.submit(formData, {
+      method: 'post',
+      action: updateAction,
+    });
+  };
+
   const handleRoundAnswersShowClick =
     (round: RoundTemplateResponse) => (ev: React.MouseEvent) => {
       ev.preventDefault();
@@ -1140,81 +1259,19 @@ const LiveQuizAdmin = (props: EditLiveQuizProps) => {
       <MobileLayout topBar>
         <fetcher.Form method="post" id={formId}>
           <InnerRoot>
-            <p
-              style={{
-                color: getColors().TEXT_DESCRIPTION,
-              }}
-            >
-              Live Quiz:{' '}
-              <span style={{ color: getColors().TEXT_DEFAULT }}>
-                {liveQuiz.name}{' '}
-                <span
-                  style={{
-                    userSelect: 'text',
-                    cursor: 'auto',
-                  }}
-                >
-                  ({liveQuiz.userFriendlyId})
-                </span>
-              </span>
-              <br />
-              Link:{' '}
-              <span
-                style={{
-                  color: getColors().TEXT_DEFAULT,
-                  userSelect: 'text',
-                  cursor: 'pointer',
+            <LiveQuizAdminInfo
+              liveQuiz={liveQuiz}
+              expanded={adminInfoExpanded}
+            />
+            <div>
+              <Button
+                onClick={() => {
+                  setAdminInfoExpanded(!adminInfoExpanded);
                 }}
               >
-                <Link to={'/qr/' + liveQuiz.userFriendlyId}>Link/QR Code</Link>
-              </span>
-              <br />
-              Quiz Template:{' '}
-              <Link
-                style={{ color: getColors().TEXT_DEFAULT }}
-                to={`/quiz-template/${liveQuiz.quizTemplateJson.id}/round-templates`}
-              >
-                {liveQuiz.quizTemplateJson.name}
-              </Link>
-              <br />
-              Status:{' '}
-              <span style={{ color: getColors().TEXT_DEFAULT }}>
-                {quizStateToLabel(liveQuiz.quizState ?? '')}
-              </span>
-              <br />
-              Round Status:{' '}
-              <span
-                style={{
-                  color: isRoundCompleted(liveQuiz)
-                    ? getColors().ERROR_TEXT
-                    : getColors().TEXT_DEFAULT,
-                }}
-              >
-                {roundStateToLabel(liveQuiz.roundState ?? '')}
-              </span>
-              <br />
-              {isWaitingForRoundToStart(liveQuiz) ? (
-                <>
-                  Next Round:{' '}
-                  <span style={{ color: getColors().TEXT_DEFAULT }}>
-                    {liveQuiz.currentRoundNumber + 1}
-                  </span>
-                </>
-              ) : null}
-              <>
-                Current Round:{' '}
-                <span style={{ color: getColors().TEXT_DEFAULT }}>
-                  {liveQuiz.currentRoundNumber} (
-                  {getCurrentRound(liveQuiz)?.title})
-                </span>
-              </>
-              <>
-                <br />
-                <a href={`/api/live-quiz-admin/quiz/${liveQuiz?.id}/export`}>
-                  Export JSON
-                </a>
-              </>
-            </p>
+                {adminInfoExpanded ? 'Hide' : 'View'} Info
+              </Button>
+            </div>
             <ContentSpacer />
             {isWaitingForQuizToStart(liveQuiz) ? (
               <Button
@@ -1243,13 +1300,13 @@ const LiveQuizAdmin = (props: EditLiveQuizProps) => {
               >
                 ↑ Go To Previous Round
                 {!isRoundCompleted(liveQuiz) && liveQuiz.currentRoundNumber > 0
-                  ? ' (Ensure round is locked.)'
+                  ? ' (Ensure submissions are locked.)'
                   : ''}
               </Button>
             ) : null}
             {isRoundInProgressButNotVisible(liveQuiz) ? (
               <>
-                <Button
+                {/* <Button
                   color="secondary"
                   style={{
                     width: '100%',
@@ -1258,14 +1315,13 @@ const LiveQuizAdmin = (props: EditLiveQuizProps) => {
                 >
                   ⥥ View Current Round
                 </Button>
-                <ContentSpacer />
+                <ContentSpacer /> */}
                 <Button
                   // disabled={!isRoundLocked(liveQuiz)}
                   color="primary"
                   onClick={handleGradeClick}
                 >
                   Grade Answers{' '}
-                  {/* {!isRoundLocked(liveQuiz) ? '(Lock round.)' : ''} */}
                 </Button>
               </>
             ) : null}
@@ -1321,27 +1377,52 @@ const LiveQuizAdmin = (props: EditLiveQuizProps) => {
                     justifyContent: 'space-between',
                   }}
                 >
-                  <AdminRoundSubmissionControlsButtons
-                    liveQuiz={liveQuiz}
-                    updateAction={updateAction}
-                    style={{
-                      width: '50%',
-                    }}
-                  />
                   <Button
-                    // disabled={!isRoundLocked(liveQuiz)}
                     color="primary"
                     onClick={handleGradeClick}
                     style={{
-                      width: '50%',
+                      width: '100%',
                     }}
                   >
                     Grade Answers{' '}
-                    {/* {!isRoundLocked(liveQuiz) ? '(Lock round.)' : ''} */}
                   </Button>
                 </div>
                 <ContentSpacer />
                 <Button
+                  flex
+                  color="primary"
+                  onClick={handleLockUnlockSubmissions}
+                  style={{
+                    width: '100%',
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }}
+                >
+                  {isRoundLocked(liveQuiz) ? (
+                    <>
+                      <IconLeft
+                        src={'/res/unlocking.svg'}
+                        style={{
+                          marginLeft: '0px',
+                        }}
+                      />
+                      Unlock Submissions
+                    </>
+                  ) : (
+                    <>
+                      {' '}
+                      <IconLeft
+                        src={'/res/padlock.svg'}
+                        style={{
+                          marginLeft: '0px',
+                        }}
+                      />
+                      Lock Submissions
+                    </>
+                  )}
+                </Button>
+                {/* <Button
                   color="secondary"
                   style={{
                     width: '100%',
@@ -1358,8 +1439,8 @@ const LiveQuizAdmin = (props: EditLiveQuizProps) => {
                   ⥥ Go To Show Answers{' '}
                   {!isRoundLocked(liveQuiz) ? '(Lock round.)' : ''}
                 </Button>
-                <HSpace />
-                <ContentSpacer />
+                <HSpace /> */}
+                {/* <ContentSpacer />
                 <Button
                   color="primary"
                   onClick={() => {
@@ -1368,7 +1449,7 @@ const LiveQuizAdmin = (props: EditLiveQuizProps) => {
                 >
                   <IconLeft verticalAdjust={-3} src="/res/recycle.svg" />
                   Refresh Submissions
-                </Button>
+                </Button> */}
                 <AdminQuestionList
                   liveQuiz={liveQuiz}
                   updateAction={updateAction}

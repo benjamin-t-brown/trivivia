@@ -541,7 +541,7 @@ const LiveQuizAdminGrading = (props: EditLiveQuizProps) => {
 
   const elems: any[] = [];
 
-  for (let i = 0; i < liveQuiz.quizTemplateJson.roundOrder.length; i++) {
+  for (let i = liveQuiz.quizTemplateJson.roundOrder.length - 1; i >= 0; i--) {
     const roundId = liveQuiz.quizTemplateJson.roundOrder[i];
     const roundTemplate = liveQuiz.quizTemplateJson.rounds?.find(
       t => t.id === roundId
@@ -723,7 +723,7 @@ const LiveQuizAdminGrading = (props: EditLiveQuizProps) => {
             >
               Go Back To Quiz
             </Button>
-            {/* <Button
+            <Button
               color="primary"
               style={{
                 width: '100%',
@@ -734,7 +734,7 @@ const LiveQuizAdminGrading = (props: EditLiveQuizProps) => {
             </Button>
             <div style={{ color: getColors().ERROR_TEXT }}>
               {validationError}
-            </div> */}
+            </div>
             {elems}
             <Button
               color="primary"

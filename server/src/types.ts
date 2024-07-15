@@ -9,4 +9,5 @@ export interface ApiRequest extends Request {
   liveSpectateId?: string;
   io: Server;
   ioSessions: IoSession[];
+  timestampReceived?: number;
 }

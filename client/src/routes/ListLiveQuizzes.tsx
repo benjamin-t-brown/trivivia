@@ -11,6 +11,7 @@ import TextCenter from 'elements/TextCenter';
 import { colorsDark, getColors } from 'style';
 import { LiveQuizStartRoute } from './LiveQuizStart';
 import Img from 'elements/Img';
+import PaginatedList from 'elements/PaginatedList';
 
 const InnerRoot = styled.div<Object>(() => {
   return {
@@ -38,6 +39,55 @@ const loader = async () => {
   }
 
   return json(liveQuizListResponse);
+};
+
+const renderLiveQuizButton = (
+  t: LiveQuizResponse,
+  handleQuizClick,
+  handleEditQuizClick
+) => {
+  return (
+    <Button
+      key={t.id}
+      color="secondary"
+      style={{
+        width: '100%',
+      }}
+      onClick={handleQuizClick(t.id)}
+    >
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+        }}
+      >
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'flex-start',
+          }}
+        >
+          <div>{t.name}</div>
+          <span
+            style={{ color: colorsDark.TEXT_DESCRIPTION, marginTop: '4px' }}
+          >
+            Current Round: {t.currentRoundNumber} /{' '}
+            {t.quizTemplateJson.numRounds}
+          </span>
+        </div>
+        <div
+          style={{
+            width: '22px',
+          }}
+          onClick={handleEditQuizClick(t.id)}
+        >
+          <Img alt="Edit" src="/res/edit.svg" />
+        </div>
+      </div>
+    </Button>
+  );
 };
 
 const ListLiveQuizzes = () => {
@@ -80,48 +130,13 @@ const ListLiveQuizzes = () => {
             + Start New Live Quiz
           </Button>
           <p>Live Quizzes</p>
-          {liveQuizListResponse?.data.map(t => {
-            return (
-              <Button
-                key={t.id}
-                color="secondary"
-                style={{
-                  width: '100%',
-                }}
-                onClick={handleQuizClick(t.id)}
-              >
-                <div
-                  style={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                  }}
-                >
-                  <div
-                    style={{
-                      display: 'flex',
-                      flexDirection: 'column',
-                      alignItems: 'flex-start',
-                    }}
-                  >
-                    <div>{t.name}</div>
-                    <span style={{ color: colorsDark.TEXT_DESCRIPTION }}>
-                      Current Round: {t.currentRoundNumber} /{' '}
-                      {t.quizTemplateJson.numRounds}
-                    </span>
-                  </div>
-                  <div
-                    style={{
-                      width: '22px',
-                    }}
-                    onClick={handleEditQuizClick(t.id)}
-                  >
-                    <Img alt="Edit" src="/res/edit.svg" />
-                  </div>
-                </div>
-              </Button>
-            );
-          })}
+          <PaginatedList
+            maxItemsPerPage={20}
+            items={liveQuizListResponse?.data ?? []}
+            renderItem={t =>
+              renderLiveQuizButton(t, handleQuizClick, handleEditQuizClick)
+            }
+          ></PaginatedList>
           {liveQuizListResponse?.data?.length === 0 ? (
             <TextCenter>(none)</TextCenter>
           ) : null}

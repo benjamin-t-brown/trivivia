@@ -295,6 +295,7 @@ const ListQuestionTemplates = () => {
                       style={{
                         display: 'flex',
                         justifyContent: 'space-between',
+                        alignItems: 'center',
                         width: '100%',
                       }}
                     >
@@ -310,6 +311,7 @@ const ListQuestionTemplates = () => {
                         ></InlineIconButton>
                         <span
                           style={{
+                            marginTop: '2px',
                             marginRight: '16px',
                           }}
                         >
@@ -317,6 +319,7 @@ const ListQuestionTemplates = () => {
                         </span>
                         <div
                           style={{
+                            marginTop: '2px',
                             width: 'calc(100% - 100px)',
                             overflow: 'hidden',
                             whiteSpace: 'pre',

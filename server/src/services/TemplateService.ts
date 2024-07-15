@@ -81,6 +81,34 @@ export class TemplateService {
     return ret;
   }
 
+  async findAllRoundTemplatesByAccountId(accountId: string) {
+    const account = await Account.findByPk(accountId, {
+      include: [
+        {
+          model: QuizTemplate,
+          as: 'quizTemplates',
+          include: [RoundTemplate],
+        },
+      ],
+    });
+
+    const ret: RoundTemplate[] = [];
+
+    if (!account) {
+      return undefined;
+    }
+
+    for (const quizTemplate of account.quizTemplates) {
+      for (const round of quizTemplate.rounds) {
+        ret.push(round);
+      }
+    }
+
+    return ret.sort((a, b) => {
+      return a.updatedAt < b.updatedAt ? -1 : 1;
+    });
+  }
+
   async findAllQuestionTemplatesByRoundTemplateId(roundTemplateId: string) {
     const roundTemplate = await RoundTemplate.findByPk(roundTemplateId, {
       include: [QuestionTemplate],

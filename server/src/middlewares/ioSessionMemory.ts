@@ -45,6 +45,13 @@ export const setupIo = (io: Server) => {
       }
     });
 
+    socket.on('ping-alive', () => {
+      const session = ioSessions.find(s => s.socket.id === socket.id);
+      if (session) {
+        socket.emit('ping-alive');
+      }
+    });
+
     socket.on('disconnect', () => {
       const session = ioSessions.find(s => s.socket.id === socket.id);
       if (session) {

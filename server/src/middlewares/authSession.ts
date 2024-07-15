@@ -22,7 +22,7 @@ export const authSession = (
   res: Response,
   next: NextFunction
 ) => {
-  logger.debug('auth path', req.path);
+  // logger.debug('auth path', req.path);
   const token = req.session.token;
 
   if (

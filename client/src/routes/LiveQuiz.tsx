@@ -1101,7 +1101,7 @@ const LiveQuiz = (props: { error?: boolean }) => {
   });
 
   useFormResetValues(formId);
-  const { joined } = useSocketIoRefreshState(fetcher);
+  const { joined, requireReconnected } = useSocketIoRefreshState(fetcher);
 
   if (fetcher.data) {
     liveQuizResponse = fetcher.data;
@@ -1113,12 +1113,35 @@ const LiveQuiz = (props: { error?: boolean }) => {
 
   const isSpectating = Boolean(getLiveQuizSpectateId());
 
-  console.log('render live quiz', liveQuizResponse, 'joined?', joined);
+  console.log(
+    'render live quiz',
+    liveQuizResponse,
+    'joined?',
+    joined,
+    'require reconnected',
+    requireReconnected
+  );
 
   return (
     <>
       <TopBar>
-        <CardTitleZone align="left"></CardTitleZone>
+        <CardTitleZone align="left">
+          <Button
+            color="plain"
+            onClick={() => {
+              (window as any).location = '/login';
+            }}
+          >
+            <Img
+              style={{
+                width: '22px',
+                background: 'unset',
+              }}
+              alt="login"
+              src="/res/person.svg"
+            />
+          </Button>
+        </CardTitleZone>
         <CardTitle>
           {' '}
           <>
@@ -1174,6 +1197,15 @@ const LiveQuiz = (props: { error?: boolean }) => {
                 textAlign: 'center',
               }}
             >
+              {requireReconnected ? (
+                <div
+                  style={{
+                    color: getColors().ERROR_TEXT,
+                  }}
+                >
+                  Disconnected! Please refresh...
+                </div>
+              ) : null}
               <span
                 style={{
                   color: getColors().TEXT_DESCRIPTION,

@@ -3,3 +3,4 @@ node_modules/
 coverage/
 database.json
 client/dist
+creds.txt

@@ -16,7 +16,7 @@
    staycation/holistay
 7. When you go to a bar but don't want to imbibe, you might order one of these fancy Prohibition-friendly drinks?
    mocktail
-8. Pop-culture web site Buzzfeed is notorious for creating which lazy style of post, often ranking music, movies, or games in some arbitrary order to get quick clicks?
+8. Pop-culture web site Buzzfeed is notorious for creating this kind of low-effort content, often ranking music, movies, or games in some arbitrary order to get quick clicks?
    listicle
 9. Bonus. "Midichlorians controlling the Force" is a notorious Star Wars 'retcon'; a word which is a portmanteau of what two words?
    Retroactive Continuity
@@ -108,4 +108,13 @@ The Shawshank Redemption - 1994 - https://static.boredpanda.com/blog/wp-content/
 ## Round 6: 
 
 ## Round 7
+
+Sailors in the Southern Hemisphere use what feature in the night sky to aid in navigation?
+   A: Carpenter's Square
+   B: Southern Cross
+   C: Southern lights
+   D: Betelgeuse
+
+   Southern Cross
+
 

@@ -48,6 +48,7 @@ import {
   SettingsRoute,
   UpdatePasswordRoute,
 } from 'routes/Settings';
+import { ListAllRoundTemplatesRoute } from 'routes/ListAllRoundTemplates';
 
 export const init = () => {
   const router = createBrowserRouter([
@@ -61,6 +62,7 @@ export const init = () => {
         SignupRoute,
         AccountCreatedRoute,
         LogoutRoute,
+        ListAllRoundTemplatesRoute,
         ListQuizTemplatesRoute,
         ListRoundTemplatesRoute,
         ListQuestionTemplatesRoute,

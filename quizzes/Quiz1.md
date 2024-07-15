@@ -118,7 +118,6 @@ When a contestant gets to the Bonus Round at the end of an episode of Wheel of F
 RSTLNE
 
 
-
 ## Randumb Knowledge
 
 1. A violinist, not an archer, Giuseppe Tartini helped establish the modern style of using what instrument component? 

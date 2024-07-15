@@ -122,7 +122,6 @@ export const useFormPristine = (
     const form = document.getElementById(formId) as HTMLFormElement | null;
     if (form) {
       for (const i in initialValues) {
-        console.log('set elem value', i, initialValues[i]);
         form.elements[i].value = initialValues[i];
       }
     }
@@ -338,11 +337,15 @@ export const useDnDListHandlers = (args: {
 };
 
 let socket;
+let pingInterval;
+let pingSent = false;
+
 export const useSocketIoRefreshState = (
   fetcher: FetcherWithComponents<any>
 ) => {
   const [connected, setConnected] = React.useState(false);
   const [joined, setJoined] = React.useState(false);
+  const [requireReconnected, setRequireReconnected] = React.useState(false);
   const params = useParams();
   const sendJoinRequest = (args: {
     teamId: string;
@@ -353,6 +356,31 @@ export const useSocketIoRefreshState = (
     socket.emit('join', JSON.stringify(args));
   };
 
+  function emitPing() {
+    if (!socket) {
+      if (pingInterval !== undefined) {
+        clearInterval(pingInterval);
+        pingInterval = undefined;
+      }
+      return;
+    }
+
+    if (pingSent) {
+      console.log('DISCONNECTED!');
+      socket.disconnect();
+      setConnected(false);
+      setJoined(false);
+      clearInterval(pingInterval);
+      setRequireReconnected(true);
+      pingInterval = undefined;
+      return;
+    }
+
+    // console.log('send ping');
+    socket.emit('ping-alive');
+    pingSent = true;
+  }
+
   React.useEffect(() => {
     if (!socket) {
       const io = (window as any).io;
@@ -361,11 +389,16 @@ export const useSocketIoRefreshState = (
         console.log('server says hello');
         setConnected(true);
         setJoined(false);
+        if (pingInterval !== undefined) {
+          clearInterval(pingInterval);
+        }
+        pingInterval = setInterval(emitPing, 5000);
       });
       socket.on('disconnect', () => {
         socket = undefined;
         setJoined(false);
         setConnected(false);
+        setRequireReconnected(true);
       });
       socket.on('state', () => {
         console.log('received refresh request from server');
@@ -383,6 +416,10 @@ export const useSocketIoRefreshState = (
       socket.on('connect_error', () => {
         setConnected(false);
         setJoined(false);
+      });
+      socket.on('ping-alive', () => {
+        // console.log('got ping');
+        pingSent = false;
       });
     }
   }, []);
@@ -408,5 +445,6 @@ export const useSocketIoRefreshState = (
   return {
     connected,
     joined,
+    requireReconnected,
   };
 };

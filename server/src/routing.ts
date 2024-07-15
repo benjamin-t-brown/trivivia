@@ -53,6 +53,9 @@ export function registerRoute<T, R>(
         }
         logger.debug(
           'response=' + req.requestId,
+          'latency=' +
+            Math.round(performance.now() - (req.timestampReceived ?? 0)) +
+            'ms',
           method,
           route,
           data.slice(0, 50) + '...'

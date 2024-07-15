@@ -7,6 +7,7 @@ const Root = styled.div<Object>(() => {
     width: '100%',
     // background: colorsDark.PRIMARY,
     // background: 'rgb(11,11,11)',
+    height: '54px',
     background: getColors().TOP_BAR_BACKGROUND,
     color: colorsDark.TEXT_DEFAULT,
     boxSizing: 'border-box',
