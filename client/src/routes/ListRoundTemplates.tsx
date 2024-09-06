@@ -172,6 +172,10 @@ const ListRoundTemplates = () => {
     navigate('/quiz-template/' + params.quizTemplateId + '/edit');
   };
 
+  const numRoundsCreated =
+    loaderResponse?.data.quizTemplate.rounds?.length ?? 0;
+  const numRoundsTotal = loaderResponse?.data.quizTemplate.numRounds ?? 0;
+
   return (
     <>
       <DefaultTopBar upTo="/quiz-templates" />
@@ -193,9 +197,25 @@ const ListRoundTemplates = () => {
                 color: getColors().TEXT_DESCRIPTION,
               }}
             >
-              Now editing quiz:
+              Quiz:
             </span>{' '}
             {loaderResponse?.data.quizTemplate.name}
+            <br />
+            <br />
+            <span>
+              Rounds Created:{' '}
+              <span
+                style={{
+                  color:
+                    numRoundsCreated < numRoundsTotal
+                      ? getColors().ERROR_TEXT
+                      : getColors().SUCCESS_TEXT,
+                }}
+              >
+                {numRoundsCreated}
+              </span>{' '}
+              / {numRoundsTotal}
+            </span>
           </p>
 
           <Button
@@ -224,10 +244,7 @@ const ListRoundTemplates = () => {
           >
             + Pick Existing Round Templates
           </Button>
-          <p>
-            Round Templates ({loaderResponse?.data.roundTemplates?.length}/
-            {loaderResponse?.data.quizTemplate.numRounds})
-          </p>
+          <p>Round Templates</p>
           {orderedRoundTemplates?.map((templateId, i) => {
             const t = loaderResponse?.data.roundTemplates.find(
               t => t.id === templateId
@@ -364,10 +381,21 @@ const ListRoundTemplates = () => {
           <a
             href={
               '/api/template/export/quiz/' +
-              loaderResponse?.data?.quizTemplate.id
+              loaderResponse?.data?.quizTemplate.id +
+              '/html'
             }
           >
             Download as HTML
+          </a>
+          <br />
+          <a
+            href={
+              '/api/template/export/quiz/' +
+              loaderResponse?.data?.quizTemplate.id +
+              '/json'
+            }
+          >
+            Download as JSON
           </a>
         </InnerRoot>
       </MobileLayout>

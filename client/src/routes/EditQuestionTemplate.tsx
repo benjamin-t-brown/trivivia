@@ -65,9 +65,6 @@ const action = createAction(async (values: EditQuestionValues, params) => {
       values,
     } as FormError;
   }
-  if (!values.text && !values.imageLink) {
-    values.text = '(empty)';
-  }
 
   const valuesCopy = { ...values };
 

@@ -79,7 +79,7 @@ const Login = (props: { error?: boolean }) => {
       <MobileLayout topBar>
         <Form method="post" id="login-form">
           <InnerRoot>
-            <p>Login to a Trivivia quizmaster account.</p>
+            <p>Login to a Trivivia quiz admin account.</p>
             <Input
               placeholder="Email"
               aria-label="Email"

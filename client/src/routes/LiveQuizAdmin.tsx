@@ -1334,13 +1334,13 @@ const LiveQuizAdmin = (props: EditLiveQuizProps) => {
                     !isRoundCompleted(liveQuiz) &&
                     liveQuiz.currentRoundNumber > 0
                   }
-                  color="primary"
+                  color="tertiary"
                   style={{
                     width: '100%',
                   }}
                   onClick={handleStartRoundClick}
                 >
-                  ↓ Begin Next Round{' '}
+                  ↓ Start Next Round{' '}
                   {!isRoundCompleted(liveQuiz) &&
                   liveQuiz.currentRoundNumber > 0
                     ? '(Ensure round is locked.)'
@@ -1478,7 +1478,7 @@ const LiveQuizAdmin = (props: EditLiveQuizProps) => {
                 >
                   ← View Rounds
                 </Button>
-                <Button
+                {/* <Button
                   color="secondary"
                   style={{
                     width: '100%',
@@ -1486,7 +1486,7 @@ const LiveQuizAdmin = (props: EditLiveQuizProps) => {
                   onClick={handleResumeRoundClick}
                 >
                   ⥥ View Current Round
-                </Button>
+                </Button> */}
                 <Button
                   color="primary"
                   style={{

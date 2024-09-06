@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import DialogBox from 'elements/DialogBox';
 import {
-  unstable_useBlocker,
+  useBlocker,
   useLoaderData,
   useRouteError,
   useNavigate,
@@ -116,7 +116,8 @@ export const useFormResetValues = (formId: string) => {
 // returns true if the form with the given id is pristine (hasn't been edited)
 export const useFormPristine = (
   formId: string,
-  initialValues: Record<string, any>
+  initialValues: Record<string, any>,
+  ignoreKeys?: string[]
 ) => {
   useEffect(() => {
     const form = document.getElementById(formId) as HTMLFormElement | null;
@@ -130,7 +131,32 @@ export const useFormPristine = (
   const form = document.getElementById(formId) as HTMLFormElement | null;
   if (form) {
     for (const [key, value] of (new FormData(form) as any).entries()) {
-      if (value !== initialValues[key]) {
+      if (ignoreKeys && ignoreKeys.includes(key)) {
+        continue;
+      }
+      let v1 = value;
+      let v2 = initialValues[key];
+      if (v1 === 'true') {
+        v1 = true;
+      }
+      if (v1 === 'false') {
+        v1 = false;
+      }
+      if (v2 === 'true') {
+        v2 = true;
+      }
+      if (v2 === 'false') {
+        v2 = false;
+      }
+      const v1Num = parseFloat(v1);
+      if (!isNaN(v1Num)) {
+        v1 = v1Num;
+      }
+      const v2Num = parseFloat(v2);
+      if (!isNaN(v2Num)) {
+        v2 = v2Num;
+      }
+      if (v1 !== v2) {
         return false;
       }
     }
@@ -160,7 +186,7 @@ export const useConfirmNav = (enabled: boolean) => {
     },
   });
 
-  unstable_useBlocker(({ nextLocation, historyAction }) => {
+  useBlocker(({ nextLocation, historyAction }) => {
     if (historyAction === 'REPLACE') {
       return false;
     }

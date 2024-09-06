@@ -200,7 +200,7 @@ export const initTemplateControllers = (router: Router) => {
         context.userId
       );
 
-      return templates?.map(t => t.getResponseJson());
+      return templates;
     },
     true
   );
@@ -318,8 +318,8 @@ export const initTemplateControllers = (router: Router) => {
       if (notes && !validateString(notes, 0, BIG_TEXT_MAX_LENGTH)) {
         throw new InvalidInputError('Not valid notes.');
       }
-      if (imageLink && !validateString(imageLink, 0, BIG_TEXT_MAX_LENGTH)) {
-        throw new InvalidInputError('Not valid imageLink.');
+      if (imageLink && !validateString(imageLink, 0, 5e6)) {
+        throw new InvalidInputError('Not valid imageLink. ' + imageLink.length);
       }
 
       const questionTemplate = await templateService.createQuestionTemplate({
@@ -379,7 +379,7 @@ export const initTemplateControllers = (router: Router) => {
       if (notes && !validateString(notes, 0, BIG_TEXT_MAX_LENGTH)) {
         throw new InvalidInputError('Not valid notes.');
       }
-      if (imageLink && !validateString(imageLink, 0, BIG_TEXT_MAX_LENGTH)) {
+      if (imageLink && !validateString(imageLink, 0, 5e6)) {
         throw new InvalidInputError('Not valid imageLink.');
       }
 
@@ -434,19 +434,28 @@ export const initTemplateControllers = (router: Router) => {
   registerRoute(
     router,
     'get',
-    '/api/template/export/quiz/:quizTemplateId',
+    '/api/template/export/quiz/:quizTemplateId/:format',
     async function exportQuizTemplate(params, _, context) {
+      const format = (params.format as 'html' | 'json') || 'html';
       const str = await templateService.exportQuizTemplate({
         quizTemplateId: params.quizTemplateId,
-        format: 'html',
+        format,
       });
 
       if (context.res) {
-        context.res.setHeader('Content-Type', 'text/plain');
-        context.res.setHeader(
-          'Content-Disposition',
-          `attachment; filename=quiz.html`
-        );
+        if (format === 'html') {
+          context.res.setHeader('Content-Type', 'text/plain');
+          context.res.setHeader(
+            'Content-Disposition',
+            `attachment; filename=quiz.html`
+          );
+        } else if (format === 'json') {
+          context.res.setHeader('Content-Type', 'application/json');
+          context.res.setHeader(
+            'Content-Disposition',
+            `attachment; filename=quiz.json`
+          );
+        }
       }
 
       return str;

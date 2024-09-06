@@ -32,13 +32,14 @@ const DefaultTopBar = (props: {
         {props.title ?? (
           <>
             Trivivia
-            <IconLeft
+            {/* <IconLeft
               style={{
                 verticalAlign: 'middle',
+                visibility: 'hidden',
               }}
               verticalAdjust={-2}
-              src="/res/secret-book.svg"
-            />
+              src="/res/favicon_c2.svg"
+            /> */}
           </>
         )}
       </CardTitle>

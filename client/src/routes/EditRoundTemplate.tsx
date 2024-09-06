@@ -6,8 +6,10 @@ import {
   Form,
   json,
   redirect,
+  useActionData,
   useLocation,
   useNavigate,
+  useNavigation,
   useParams,
 } from 'react-router-dom';
 import styled from 'styled-components';
@@ -33,6 +35,8 @@ import FormErrorText, { FormError } from 'components/FormErrorText';
 import IconLeft from 'elements/IconLeft';
 import TextArea from 'elements/TextArea';
 import HiddenTextField from 'components/HiddenTextField';
+import { fetchImportRoundTemplate } from 'fetches';
+import { LoadingPage } from 'components/LoadingPage';
 
 const InnerRoot = styled.div<Object>(() => {
   return {
@@ -42,7 +46,7 @@ const InnerRoot = styled.div<Object>(() => {
   };
 });
 
-interface EditRoundValues {
+export interface EditRoundValues {
   isNew: boolean;
   title: string;
   description: string;
@@ -59,8 +63,6 @@ const action = createAction(async (values: EditRoundValues, params) => {
     } as FormError;
   }
 
-  console.log('SAVE ROUND TEMPLATE', values);
-
   values.jokerDisabled = (values.jokerDisabled as any) === 'true';
 
   let roundTemplate: RoundTemplateResponse | undefined = undefined;
@@ -72,7 +74,12 @@ const action = createAction(async (values: EditRoundValues, params) => {
   delete values['import-round'];
 
   let result: FetchResponse<RoundTemplateResponse>;
-  if (values.isNew) {
+  if (roundTemplate) {
+    result = await fetchImportRoundTemplate(
+      { ...roundTemplate, ...values },
+      params.quizTemplateId
+    );
+  } else if (values.isNew) {
     result = await fetchAsync<RoundTemplateResponse>(
       'post',
       '/api/template/round',
@@ -86,34 +93,6 @@ const action = createAction(async (values: EditRoundValues, params) => {
     );
   }
 
-  if (roundTemplate) {
-    const importedRoundTemplate = roundTemplate as RoundTemplateResponse;
-    const questions = importedRoundTemplate.questions ?? [];
-    for (const questionId of importedRoundTemplate.questionOrder) {
-      const question: Partial<QuestionTemplateResponse> | undefined =
-        questions.find(q => q.id === questionId);
-      if (question) {
-        delete question.id;
-        delete question.roundTemplateId;
-        const response = await fetchAsync<RoundTemplateResponse>(
-          'post',
-          '/api/template/question',
-          {
-            ...question,
-            answers: JSON.stringify(question.answers),
-            roundTemplateId: result.data.id,
-          }
-        );
-        if (response.error) {
-          throw {
-            message: response.message,
-            values,
-          } as FormError;
-        }
-      }
-    }
-  }
-
   if (result.error) {
     throw {
       message: result.message,
@@ -121,7 +100,9 @@ const action = createAction(async (values: EditRoundValues, params) => {
     } as FormError;
   }
 
-  updateCacheRoundTemplate(params.quizTemplateId, result.data.id, result);
+  if (!roundTemplate) {
+    updateCacheRoundTemplate(params.quizTemplateId, result.data.id, result);
+  }
 
   return redirect(
     '/quiz-template/' + params.quizTemplateId + '/round-templates'
@@ -234,7 +215,10 @@ const EditRoundTemplate = (props: EditRoundProps) => {
     notes: roundTemplateResponse?.data?.notes ?? '',
     jokerDisabled: roundTemplateResponse?.data?.jokerDisabled ?? false,
   };
-  const formIsPristine = useFormPristine('edit-round-form', initialValues);
+  const formIsPristine = useFormPristine('edit-round-form', initialValues, [
+    'import-round',
+    'importedRoundTemplate',
+  ]);
   const confirmDialog = useConfirmNav(!formIsPristine);
   const fileInputRef = React.useRef<HTMLInputElement>(null);
   const [roundTemplateImport, setRoundTemplateImport] = React.useState<
@@ -289,6 +273,11 @@ const EditRoundTemplate = (props: EditRoundProps) => {
     );
   };
 
+  const navigation = useNavigation();
+  if (navigation.state === 'submitting') {
+    return <LoadingPage />;
+  }
+
   return (
     <>
       <DefaultTopBar
@@ -298,74 +287,6 @@ const EditRoundTemplate = (props: EditRoundProps) => {
       <MobileLayout topBar>
         <Form method="post" id="edit-round-form">
           <InnerRoot>
-            <p>
-              <Button
-                type="submit"
-                color="primary"
-                style={{
-                  width: '100%',
-                  display: 'flex',
-                }}
-              >
-                <div
-                  style={{
-                    position: 'relative',
-                    width: '100%',
-                  }}
-                >
-                  Import Round
-                  <label htmlFor="import-round">
-                    <input
-                      onChange={handleImportClick}
-                      ref={fileInputRef}
-                      name="import-round"
-                      id="import-round"
-                      type="file"
-                      style={{
-                        cursor: 'pointer',
-                        opacity: 0,
-                        left: 0,
-                        width: '100%',
-                        position: 'absolute',
-                      }}
-                    />
-                  </label>
-                </div>
-              </Button>
-              {/* <Button
-                type="submit"
-                color="primary"
-                style={{
-                  width: '100%',
-                  display: 'flex',
-                }}
-              >
-                <div
-                  style={{
-                    position: 'relative',
-                    width: '100%',
-                  }}
-                >
-                  Import Round
-                  <label htmlFor="import-round">
-                    <input
-                      onChange={handleImportClick}
-                      ref={fileInputRef}
-                      name="import-round"
-                      id="import-round"
-                      type="file"
-                      style={{
-                        cursor: 'pointer',
-                        opacity: 0,
-                        left: 0,
-                        width: '100%',
-                        position: 'absolute',
-                      }}
-                    />
-                  </label>
-                </div>
-              </Button> */}
-            </p>
             <p
               style={{
                 color: getColors().TEXT_DESCRIPTION,
@@ -452,13 +373,53 @@ const EditRoundTemplate = (props: EditRoundProps) => {
                 Disable Joker
               </label>
             </div>
+            <p>
+              <Button
+                flex
+                type="submit"
+                color="secondary"
+                style={{
+                  width: '100%',
+                }}
+              >
+                <div
+                  style={{
+                    position: 'relative',
+                    width: '100%',
+                    textAlign: 'left',
+                  }}
+                >
+                  <IconLeft src="/res/clone.svg" />
+                  Upload Round
+                  <label htmlFor="import-round">
+                    <input
+                      onChange={handleImportClick}
+                      ref={fileInputRef}
+                      name="import-round"
+                      id="import-round"
+                      type="file"
+                      style={{
+                        transform: 'translateY(-6px) scaleY(1.5)',
+                        cursor: 'pointer',
+                        opacity: 0,
+                        left: 0,
+                        width: '100%',
+                        position: 'absolute',
+                      }}
+                    />
+                  </label>
+                </div>
+              </Button>
+            </p>
             <div
               style={{
                 display: roundTemplateImport ? 'block' : 'none',
+                color: getColors().SUCCESS_TEXT,
               }}
             >
               <p>
-                Importing {roundTemplateImport?.questions?.length} questions.
+                Importing {roundTemplateImport?.questionOrder?.length}{' '}
+                questions.
               </p>
             </div>
             <FormErrorText />

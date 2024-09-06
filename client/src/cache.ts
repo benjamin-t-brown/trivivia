@@ -27,6 +27,7 @@ export const updateCache = (
 };
 
 export const removeFromCache = (method: string, url: string) => {
+  console.log('REMOVE FROM CACHE', method, url);
   delete cache[getCacheKey(method, url)];
 };
 

@@ -35,7 +35,7 @@ import FormErrorText from 'components/FormErrorText';
 import InputLabel from 'elements/InputLabel';
 import Input from 'elements/Input';
 import SectionTitle from 'elements/SectionTitle';
-import { getColors } from 'style';
+import { colorsDark, getColors } from 'style';
 import { getFromCache, updateCacheLiveQuiz } from 'cache';
 import {
   getLiveQuizAnswersLs,
@@ -1146,13 +1146,13 @@ const LiveQuiz = (props: { error?: boolean }) => {
           {' '}
           <>
             Trivivia
-            <IconLeft
+            {/* <IconLeft
               verticalAdjust={-2}
               style={{
                 verticalAlign: 'middle',
               }}
-              src="/res/secret-book.svg"
-            />
+              src="/res/favicon_c2.svg"
+            /> */}
           </>
         </CardTitle>
         <CardTitleZone align="right">
@@ -1200,7 +1200,12 @@ const LiveQuiz = (props: { error?: boolean }) => {
               {requireReconnected ? (
                 <div
                   style={{
-                    color: getColors().ERROR_TEXT,
+                    color: colorsDark.ERROR_TEXT,
+                    position: 'fixed',
+                    left: 0,
+                    top: '54px',
+                    background: '#000',
+                    width: '100%',
                   }}
                 >
                   Disconnected! Please refresh...

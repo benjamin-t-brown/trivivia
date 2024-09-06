@@ -211,8 +211,10 @@ const renderRoundTemplateButton = (props: {
               }}
             >
               <span>
-                <b>{t.title}:</b>
+                <b>{t.quizTemplateName}:</b>
               </span>{' '}
+              <span>{t.title}</span>
+              <br />
               <span>{t.description}</span>
             </div>
           </div>
@@ -334,7 +336,13 @@ const ListAllRoundTemplates = (props: { error?: boolean }) => {
       <DefaultTopBar upTo={upToUrl} />
       <MobileLayout topBar>
         <InnerRoot>
-          <p>Choose Round Templates</p>
+          <p
+            style={{
+              textAlign: 'center',
+            }}
+          >
+            Choose Round Templates
+          </p>
           <FormErrorText />
 
           <Form method="post" id="choose-rounds-form">

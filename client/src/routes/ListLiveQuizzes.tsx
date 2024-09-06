@@ -12,6 +12,7 @@ import { colorsDark, getColors } from 'style';
 import { LiveQuizStartRoute } from './LiveQuizStart';
 import Img from 'elements/Img';
 import PaginatedList from 'elements/PaginatedList';
+import RelativeTime from 'react-relative-time';
 
 const InnerRoot = styled.div<Object>(() => {
   return {
@@ -69,13 +70,32 @@ const renderLiveQuizButton = (
             alignItems: 'flex-start',
           }}
         >
-          <div>{t.name}</div>
           <span
-            style={{ color: colorsDark.TEXT_DESCRIPTION, marginTop: '4px' }}
+            title={t.updatedOn}
+            style={{
+              color: colorsDark.TEXT_DESCRIPTION,
+              fontSize: '12px',
+            }}
           >
-            Current Round: {t.currentRoundNumber} /{' '}
-            {t.quizTemplateJson.numRounds}
+            <RelativeTime value={t.updatedOn} titleformat="iso8601" />
           </span>
+          <div
+            style={{
+              marginTop: '4px',
+            }}
+          >
+            {t.name}{' '}
+            <span
+              style={{
+                color: colorsDark.TEXT_DESCRIPTION,
+
+                marginLeft: '12px',
+              }}
+            >
+              Current Round: {t.currentRoundNumber} /{' '}
+              {t.quizTemplateJson.numRounds}
+            </span>
+          </div>
         </div>
         <div
           style={{

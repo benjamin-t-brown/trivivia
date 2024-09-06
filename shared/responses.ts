@@ -3,6 +3,7 @@
 
 interface CreateUpdateDelete {
   updatedOn: string;
+  updatedAt: string;
   creationDate: string;
   deletionDate?: string;
 }
@@ -28,6 +29,7 @@ export interface QuizTemplateResponse extends CreateUpdateDelete {
 export interface RoundTemplateResponse extends CreateUpdateDelete {
   id: string;
   quizTemplateId: string;
+  quizTemplateName: string;
   quizTemplate?: QuizTemplateResponse;
   title: string;
   description: string;

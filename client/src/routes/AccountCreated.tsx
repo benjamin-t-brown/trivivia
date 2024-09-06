@@ -31,13 +31,13 @@ const AccountCreated = () => {
           {' '}
           <>
             Trivivia
-            <IconLeft
+            {/* <IconLeft
               style={{
                 verticalAlign: 'middle',
               }}
               verticalAdjust={-2}
-              src="/res/secret-book.svg"
-            />
+              src="/res/favicon_c2.svg"
+            /> */}
           </>
         </CardTitle>
         <div />

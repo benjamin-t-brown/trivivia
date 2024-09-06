@@ -6,8 +6,10 @@ import {
   Form,
   json,
   redirect,
+  useActionData,
   useLocation,
   useNavigate,
+  useNavigation,
   useParams,
 } from 'react-router-dom';
 import styled from 'styled-components';
@@ -24,11 +26,19 @@ import {
 } from 'hooks';
 import DefaultTopBar from 'components/DefaultTopBar';
 import { updateCacheQuizTemplate } from 'cache';
-import { QuizTemplateResponse } from 'shared/responses';
+import {
+  QuestionTemplateResponse,
+  QuizTemplateResponse,
+  RoundTemplateResponse,
+} from 'shared/responses';
 import TextCenter from 'elements/TextCenter';
 import InputLabel from 'elements/InputLabel';
-import FormErrorText from 'components/FormErrorText';
+import FormErrorText, { FormError } from 'components/FormErrorText';
 import TextArea from 'elements/TextArea';
+import { fetchImportQuizTemplate } from 'fetches';
+import HiddenTextField from 'components/HiddenTextField';
+import { LoadingPage } from 'components/LoadingPage';
+import IconLeft from 'elements/IconLeft';
 
 const InnerRoot = styled.div<Object>(() => {
   return {
@@ -38,23 +48,38 @@ const InnerRoot = styled.div<Object>(() => {
   };
 });
 
-interface EditQuizValues {
+export interface EditQuizValues {
   isNew: boolean;
   name: string;
-  numRounds: number | string;
+  numRounds: number;
   notes: string;
+  importedQuizTemplate?: string;
+  'import-quiz'?: string;
 }
 const action = createAction(async (values: EditQuizValues, params) => {
   if (!values.name) {
     throwValidationError('Please fill out the form.', values);
   }
-  const numRounds = parseInt(values.numRounds as string);
+  const numRounds = Number(values.numRounds);
   if (isNaN(numRounds) || numRounds <= 0) {
     throwValidationError('Please specify a valid number of rounds.', values);
   }
 
+  let quizTemplate: QuizTemplateResponse | undefined = undefined;
+  if (values.importedQuizTemplate) {
+    quizTemplate = JSON.parse(values.importedQuizTemplate);
+  }
+  console.log('wat', values, quizTemplate);
+  delete values['importedQuizTemplate'];
+  delete values['import-quiz'];
+
   let result: FetchResponse<QuizTemplateResponse>;
-  if (values.isNew) {
+  if (quizTemplate) {
+    result = await fetchImportQuizTemplate({
+      ...quizTemplate,
+      ...values,
+    });
+  } else if (values.isNew) {
     result = await fetchAsync<QuizTemplateResponse>(
       'post',
       '/api/template/quiz',
@@ -72,7 +97,9 @@ const action = createAction(async (values: EditQuizValues, params) => {
     throwValidationError(result.message, values);
   }
 
-  updateCacheQuizTemplate(result.data.id, result);
+  if (!quizTemplate) {
+    updateCacheQuizTemplate(result.data.id, result);
+  }
 
   return redirect(`/quiz-templates`);
 });
@@ -179,9 +206,21 @@ const EditQuizTemplate = (props: EditQuizProps) => {
     numRounds: quizTemplateResponse?.data?.numRounds ?? 7,
     notes: quizTemplateResponse?.data?.notes ?? '',
   };
-  const formIsPristine = useFormPristine('edit-quiz-form', initialValues);
+  const formIsPristine = useFormPristine('edit-quiz-form', initialValues, [
+    'import-quiz',
+    'importedQuizTemplate',
+  ]);
   const confirmDialog = useConfirmNav(!formIsPristine);
+  const fileInputRef = React.useRef<HTMLInputElement>(null);
+  const [quizTemplateImport, setQuizTemplateImport] = React.useState<
+    QuizTemplateResponse | undefined
+  >();
   useFormResetValues('edit-quiz-form');
+
+  const navigation = useNavigation();
+  if (navigation.state === 'submitting') {
+    return <LoadingPage />;
+  }
 
   const handleCancelClick = (ev: React.MouseEvent) => {
     ev.preventDefault();
@@ -197,7 +236,52 @@ const EditQuizTemplate = (props: EditQuizProps) => {
     navigate(`/quiz-template/${params.quizTemplateId}/delete`);
   };
 
-  // console.log('Quiz template response', quizTemplateResponse);
+  const handleImportClick = (ev: React.ChangeEvent<HTMLInputElement>) => {
+    ev.preventDefault();
+    const file = fileInputRef?.current?.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = async function (e: any) {
+        let parsedData: QuizTemplateResponse | undefined = undefined;
+        if (e?.target?.result) {
+          try {
+            parsedData = JSON.parse(e.target.result);
+          } catch (e) {
+            throw new Error('Invalid JSON');
+          }
+        }
+        if (parsedData) {
+          const form = document.getElementById(
+            'edit-quiz-form'
+          ) as HTMLFormElement | null;
+          if (form) {
+            form.elements['name'].value = parsedData.name;
+            form.elements['numRounds'].value = parsedData.numRounds;
+            form.elements['notes'].value = parsedData.notes;
+          }
+          setQuizTemplateImport(parsedData);
+        }
+      };
+      reader.readAsText(file);
+    }
+  };
+
+  let numQuestionsToImport = 0;
+  if (quizTemplateImport) {
+    for (const roundId of quizTemplateImport.roundOrder) {
+      const round = quizTemplateImport.rounds?.find(r => r.id === roundId);
+      if (round) {
+        for (const questionId of round.questionOrder) {
+          const question = round.questions?.find(q => q.id === questionId);
+          if (question) {
+            numQuestionsToImport++;
+          }
+        }
+      }
+    }
+  }
+
+  console.log('render form?', quizTemplateImport);
 
   return (
     <>
@@ -213,6 +297,12 @@ const EditQuizTemplate = (props: EditQuizProps) => {
               Fill out information for this quiz template.
             </p>
             <HiddenBooleanField name="isNew" value={Boolean(props.isNew)} />
+            <HiddenTextField
+              name="importedQuizTemplate"
+              value={
+                quizTemplateImport ? JSON.stringify(quizTemplateImport) : ''
+              }
+            />
             <InputLabel htmlFor="name">Quiz Name</InputLabel>
             <Input
               placeholder="Quiz Name"
@@ -248,39 +338,98 @@ const EditQuizTemplate = (props: EditQuizProps) => {
               placeholder="Notes"
               aria-label="Notes"
               name="notes"
-              maxLength={512}
+              maxLength={1024}
               onChange={() => {
                 render();
               }}
             />
+            <p
+              style={{
+                display: props.isNew ? 'block' : 'none',
+              }}
+            >
+              <Button
+                type="submit"
+                color="secondary"
+                style={{
+                  width: '100%',
+                  display: 'flex',
+                }}
+              >
+                <div
+                  style={{
+                    position: 'relative',
+                    width: '100%',
+                    textAlign: 'left',
+                  }}
+                >
+                  <IconLeft src="/res/clone.svg" />
+                  Upload Quiz
+                  <label htmlFor="import-quiz">
+                    <input
+                      onChange={handleImportClick}
+                      ref={fileInputRef}
+                      name="import-quiz"
+                      id="import-quiz"
+                      type="file"
+                      style={{
+                        transform: 'translateY(-6px) scaleY(1.5)',
+                        cursor: 'pointer',
+                        opacity: 0,
+                        left: 0,
+                        width: '100%',
+                        position: 'absolute',
+                      }}
+                    />
+                  </label>
+                </div>
+              </Button>
+            </p>
+            <div
+              style={{
+                display: quizTemplateImport ? 'block' : 'none',
+                color: getColors().SUCCESS_TEXT,
+              }}
+            >
+              <p>
+                Importing {quizTemplateImport?.roundOrder?.length} rounds with{' '}
+                {numQuestionsToImport} questions.
+              </p>
+            </div>
             <FormErrorText />
             <div style={{ height: '16px' }}></div>
             <Button
+              flex
               color="primary"
               style={{
                 width: '100%',
               }}
               type="submit"
             >
+              <IconLeft src="/res/check-mark.svg" />
               Save
             </Button>
             <Button
+              flex
               color="secondary"
               style={{
                 width: '100%',
               }}
               onClick={handleCancelClick}
             >
+              <IconLeft src="/res/cancel.svg" />
               Cancel
             </Button>
             {props.isNew ? null : (
               <Button
+                flex
                 color="cancel"
                 style={{
                   width: '100%',
                 }}
                 onClick={handleDeleteClick}
               >
+                <IconLeft src="/res/trash-can.svg" />
                 Delete
               </Button>
             )}

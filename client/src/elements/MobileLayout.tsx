@@ -1,5 +1,5 @@
 import React from 'react';
-import { useNavigation } from 'react-router-dom';
+import { useActionData, useNavigation } from 'react-router-dom';
 import styled from 'styled-components';
 
 const Root = styled.div<Object>(() => {
@@ -27,7 +27,11 @@ const InnerRoot = styled.div<{ useBoxShadow?: boolean }>(props => {
 });
 
 const MobileLayout = (
-  props: React.PropsWithChildren & { topBar?: boolean; useBoxShadow?: boolean }
+  props: React.PropsWithChildren & {
+    topBar?: boolean;
+    useBoxShadow?: boolean;
+    renderWhileLoading?: boolean;
+  }
 ) => {
   const navigation = useNavigation();
 
@@ -39,7 +43,11 @@ const MobileLayout = (
       }}
     >
       <InnerRoot useBoxShadow={props.useBoxShadow}>
-        {navigation.state === 'idle' ? props.children : <div></div>}
+        {props.renderWhileLoading || navigation.state === 'idle' ? (
+          props.children
+        ) : (
+          <div></div>
+        )}
         {/* A little space on the bottom */}
         <div
           style={{

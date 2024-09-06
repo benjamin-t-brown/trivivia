@@ -7,6 +7,7 @@ import { Account } from '../models/Account';
 import {
   AnswerBoxType,
   QuestionTemplateResponse,
+  RoundTemplateResponse,
   getNumAnswers,
   getNumRadioBoxes,
 } from 'shared/responses';
@@ -92,7 +93,7 @@ export class TemplateService {
       ],
     });
 
-    const ret: RoundTemplate[] = [];
+    const ret: RoundTemplateResponse[] = [];
 
     if (!account) {
       return undefined;
@@ -100,7 +101,11 @@ export class TemplateService {
 
     for (const quizTemplate of account.quizTemplates) {
       for (const round of quizTemplate.rounds) {
-        ret.push(round);
+        // round.quizTemplateName = quizTemplate.name;
+        ret.push({
+          ...round.getResponseJson(),
+          quizTemplateName: quizTemplate.name,
+        });
       }
     }
 
@@ -618,6 +623,19 @@ export class TemplateService {
       const html = `<html><head></head><body><h1>Quiz: ${quizTemplate.name}</h1><br />${htmlInner}${this.htmlExportFooter}</body></html>`;
 
       return html;
+    } else if (params.format === 'json') {
+      const quizJson = quizTemplate.getResponseJson();
+      quizJson.rounds = [];
+
+      for (const roundId of JSON.parse(quizTemplate.roundOrder)) {
+        const roundTemplate = await this.findRoundById(roundId);
+        const json = roundTemplate?.getResponseJson();
+        if (json) {
+          delete (json as any).quizTemplate;
+          quizJson.rounds.push(json);
+        }
+      }
+      return JSON.stringify(quizJson);
     } else {
       throw new Error('Not implemented');
     }

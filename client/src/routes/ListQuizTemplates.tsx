@@ -8,10 +8,11 @@ import { useTypedLoaderData } from 'hooks';
 import DefaultTopBar from 'components/DefaultTopBar';
 import { QuizTemplateResponse } from 'shared/responses';
 import TextCenter from 'elements/TextCenter';
-import { colorsDark, getColors } from 'style';
+import { colorsDark } from 'style';
 import { quizTemplateIsReady } from 'validation';
 import Img from 'elements/Img';
 import PaginatedList from 'elements/PaginatedList';
+import RelativeTime from 'react-relative-time';
 
 const InnerRoot = styled.div<Object>(() => {
   return {
@@ -62,7 +63,9 @@ const renderQuizTemplateButton = (
           color: colorsDark.TEXT_DESCRIPTION,
         }}
       >
-        Updated: {new Date(t.updatedOn).toISOString()}
+        <span>
+          <RelativeTime value={t.updatedOn} titleformat="iso8601" />
+        </span>
       </div>
       <div
         style={{

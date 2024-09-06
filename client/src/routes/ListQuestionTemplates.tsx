@@ -220,7 +220,7 @@ const ListQuestionTemplates = () => {
               imgSrc="/res/edit.svg"
               onClick={handleEditRoundTemplateClick}
             ></InlineIconButton>
-            Now editing round: {loaderResponse?.data.roundTemplate.title}
+            Round: {loaderResponse?.data.roundTemplate.title}
           </p>
           {loaderResponse?.data.roundTemplate.description ? (
             <p
@@ -337,7 +337,7 @@ const ListQuestionTemplates = () => {
                           </span>
                         </div>
                         <InlineIconButton
-                          imgSrc="/res/trade.svg"
+                          imgSrc="/res/clone.svg"
                           onClick={handleDuplicateQuestionTemplateClick(t.id)}
                         ></InlineIconButton>
                       </InnerButton>

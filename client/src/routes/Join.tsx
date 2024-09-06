@@ -248,13 +248,13 @@ const JoinQuiz = (props: { error?: boolean }) => {
           {' '}
           <>
             Trivivia
-            <IconLeft
+            {/* <IconLeft
               verticalAdjust={-2}
               style={{
                 verticalAlign: 'middle',
               }}
-              src="/res/secret-book.svg"
-            />
+              src="/res/favicon_c2.svg"
+            /> */}
           </>
         </CardTitle>
         <CardTitleZone align="right">
