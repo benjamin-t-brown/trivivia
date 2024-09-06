@@ -3,6 +3,7 @@ import { LiveQuizResponse } from 'shared/responses';
 export const BASIC_ONE_ROUND_QUIZ: LiveQuizResponse = {
   id: '1484013b-e778-45b4-909d-6da54b8c5759',
   userFriendlyId: 'b1xbbx',
+  updatedAt: '2024-01-20T08:21:26.579Z',
   quizTemplateJson: {
     id: '30756392-a0ca-4faa-9d5b-b085bd4580ee',
     numRounds: 1,
@@ -12,6 +13,7 @@ export const BASIC_ONE_ROUND_QUIZ: LiveQuizResponse = {
     isJoker: false,
     creationDate: '2024-01-20T08:20:45.010Z',
     updatedOn: '2024-01-20T08:21:26.579Z',
+    updatedAt: '2024-01-20T08:21:26.579Z',
     deletionDate: undefined,
     accountId: 'aa4de4c5-fb0a-4ce1-acb2-76d2c8530aeb',
     rounds: [
@@ -19,6 +21,8 @@ export const BASIC_ONE_ROUND_QUIZ: LiveQuizResponse = {
         id: '603c01b2-5b60-47cc-aa61-e417613100ee',
         title: 'asdf',
         description: 'asdf2',
+        updatedAt: '2024-03-19T19:00:03.343Z',
+        quizTemplateName: 'Quiz Test 1',
         questionOrder: [
           'b98505e1-407d-4810-a0af-77017b80f18b',
           'f052772d-8f66-4070-be48-b3ce38200ee1',
@@ -48,6 +52,7 @@ export const BASIC_ONE_ROUND_QUIZ: LiveQuizResponse = {
             notes: '',
             creationDate: '2024-03-19T18:59:17.000Z',
             updatedOn: '2024-03-19T19:00:03.343Z',
+            updatedAt: '2024-03-19T19:00:03.343Z',
             deletionDate: undefined,
             roundTemplateId: '603c01b2-5b60-47cc-aa61-e417613100ee',
           },
@@ -64,6 +69,7 @@ export const BASIC_ONE_ROUND_QUIZ: LiveQuizResponse = {
             notes: '',
             creationDate: '2024-01-21T17:27:08.088Z',
             updatedOn: '2024-01-21T17:30:20.597Z',
+            updatedAt: '2024-03-19T19:00:03.343Z',
             deletionDate: undefined,
             roundTemplateId: '603c01b2-5b60-47cc-aa61-e417613100ee',
           },
@@ -80,6 +86,7 @@ export const BASIC_ONE_ROUND_QUIZ: LiveQuizResponse = {
             notes: '',
             creationDate: '2024-01-20T08:20:59.140Z',
             updatedOn: '2024-03-19T18:59:36.968Z',
+            updatedAt: '2024-03-19T19:00:03.343Z',
             deletionDate: undefined,
             roundTemplateId: '603c01b2-5b60-47cc-aa61-e417613100ee',
           },
@@ -100,6 +107,7 @@ export const BASIC_ONE_ROUND_QUIZ: LiveQuizResponse = {
             notes: '',
             creationDate: '2024-03-19T18:30:49.189Z',
             updatedOn: '2024-03-19T18:59:58.332Z',
+            updatedAt: '2024-03-19T19:00:03.343Z',
             deletionDate: undefined,
             roundTemplateId: '603c01b2-5b60-47cc-aa61-e417613100ee',
           },
@@ -118,6 +126,7 @@ export const BASIC_ONE_ROUND_QUIZ: LiveQuizResponse = {
             notes: '',
             creationDate: '2024-01-20T08:21:04.544Z',
             updatedOn: '2024-03-19T19:00:07.982Z',
+            updatedAt: '2024-03-19T19:00:03.343Z',
             deletionDate: undefined,
             roundTemplateId: '603c01b2-5b60-47cc-aa61-e417613100ee',
           },
@@ -125,6 +134,7 @@ export const BASIC_ONE_ROUND_QUIZ: LiveQuizResponse = {
       },
     ],
     account: {
+      updatedAt: '2024-03-19T19:00:03.343Z',
       id: 'aa4de4c5-fb0a-4ce1-acb2-76d2c8530aeb',
       email: 'bourne2win@hotmail.com',
       creationDate: '2024-01-20T08:18:45.283Z',
@@ -179,12 +189,14 @@ export const BASIC_ONE_ROUND_QUIZ: LiveQuizResponse = {
       currentScore: 0,
       creationDate: '2024-03-19T17:50:40.599Z',
       updatedOn: '2024-03-19T17:50:40.599Z',
+      updatedAt: '2024-03-19T19:00:03.343Z',
       deletionDate: undefined,
       liveQuizId: '1484013b-e778-45b4-909d-6da54b8c5759',
       liveQuizRoundAnswers: [
         {
           id: '29583d12-a8fd-499a-b8d7-bf7a59d8d195',
           roundId: '603c01b2-5b60-47cc-aa61-e417613100ee',
+          updatedAt: '2024-03-19T19:00:03.343Z',
           answers: {
             '1': {
               answer1: '1234',
