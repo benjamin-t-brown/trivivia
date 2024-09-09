@@ -11,6 +11,58 @@ const HSpace = styled.div<Object>(() => {
   };
 });
 
+const NextPrevArea = (props: {
+  setPage: (page: number) => void;
+  page: number;
+  items: any[];
+  maxItemsPerPage: number;
+}) => {
+  return (
+    <div
+      style={{
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+      }}
+    >
+      <Button
+        color="plain"
+        onClick={ev => {
+          ev.preventDefault();
+          props.setPage(props.page - 1);
+        }}
+        disabled={props.page === 0}
+        style={{
+          marginLeft: '8px',
+        }}
+      >
+        Prev
+      </Button>
+      <HSpace />
+      <div>
+        Page {props.page + 1} of{' '}
+        {Math.ceil(props.items.length / props.maxItemsPerPage)}
+      </div>
+      <HSpace />
+      <Button
+        color="plain"
+        onClick={ev => {
+          ev.preventDefault();
+          props.setPage(props.page + 1);
+        }}
+        disabled={
+          (props.page + 1) * props.maxItemsPerPage >= props.items.length
+        }
+        style={{
+          marginRight: '16px',
+        }}
+      >
+        Next
+      </Button>
+    </div>
+  );
+};
+
 function PaginatedList<T>(props: {
   items: T[];
   renderItem: (item: T) => React.ReactNode;
@@ -36,40 +88,12 @@ function PaginatedList<T>(props: {
         padding: '4px',
       }}
     >
-      <div
-        style={{
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-        }}
-      >
-        <Button
-          color="plain"
-          onClick={() => setPage(page - 1)}
-          disabled={page === 0}
-          style={{
-            marginLeft: '8px',
-          }}
-        >
-          Prev
-        </Button>
-        <HSpace />
-        <div>
-          Page {page + 1} of{' '}
-          {Math.ceil(props.items.length / props.maxItemsPerPage)}
-        </div>
-        <HSpace />
-        <Button
-          color="plain"
-          onClick={() => setPage(page + 1)}
-          disabled={(page + 1) * props.maxItemsPerPage >= props.items.length}
-          style={{
-            marginRight: '16px',
-          }}
-        >
-          Next
-        </Button>
-      </div>
+      <NextPrevArea
+        setPage={setPage}
+        page={page}
+        items={props.items}
+        maxItemsPerPage={props.maxItemsPerPage}
+      />
       <div
         style={
           {
@@ -82,6 +106,12 @@ function PaginatedList<T>(props: {
       >
         {items.map(props.renderItem)}
       </div>
+      <NextPrevArea
+        setPage={setPage}
+        page={page}
+        items={props.items}
+        maxItemsPerPage={props.maxItemsPerPage}
+      />
     </div>
   );
 }

@@ -3,7 +3,7 @@ import React from 'react';
 const AnimatedEllipsis = () => {
   return (
     <span className="animated-ellipsis">
-      Loading<span>.</span>
+      <span>.</span>
       <span>.</span>
       <span>.</span>
     </span>

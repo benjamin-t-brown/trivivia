@@ -38,6 +38,7 @@ import Img from 'elements/Img';
 import PaginatedList from 'elements/PaginatedList';
 import FormErrorText, { FormError } from 'components/FormErrorText';
 import AnimatedEllipsis from 'elements/AnimatedEllipsis';
+import { LoadingPage } from 'components/LoadingPage';
 
 const InnerRoot = styled.div<Object>(() => {
   return {
@@ -290,18 +291,7 @@ const ListAllRoundTemplates = (props: { error?: boolean }) => {
   const upToUrl = `/quiz-template/${params.quizTemplateId}/round-templates`;
 
   if (isLoading) {
-    return (
-      <>
-        <DefaultTopBar upTo={upToUrl} />
-        <MobileLayout topBar>
-          <InnerRoot>
-            <p>
-              <AnimatedEllipsis />
-            </p>
-          </InnerRoot>
-        </MobileLayout>
-      </>
-    );
+    return <LoadingPage />;
   }
 
   if (!roundTemplateListResponse) {

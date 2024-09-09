@@ -1,7 +1,7 @@
 import React from 'react';
 import DefaultTopBar from './DefaultTopBar';
 import MobileLayout from 'elements/MobileLayout';
-import ReactAnimatedEllipsis from 'react-animated-ellipsis';
+import AnimatedEllipsis from 'elements/AnimatedEllipsis';
 
 export const LoadingPage = () => {
   return (
@@ -15,7 +15,7 @@ export const LoadingPage = () => {
           }}
         >
           Loading
-          <ReactAnimatedEllipsis />
+          <AnimatedEllipsis />
         </div>
       </MobileLayout>
     </>
