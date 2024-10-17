@@ -98,12 +98,13 @@ const action = createAction(async (values: EditQuestionValues, params) => {
     }
   }
 
-  if (Object.keys(newAnswerState).length === 0) {
-    throw {
-      message: 'Please fill out answers in the form.',
-      values,
-    } as FormError;
-  }
+  // No need to assert this, it's valid to save an empty question
+  // if (Object.keys(newAnswerState).length === 0) {
+  //   throw {
+  //     message: 'Please fill out answers in the form.',
+  //     values,
+  //   } as FormError;
+  // }
 
   values.answers = answerStateToString(newAnswerState);
 
@@ -262,6 +263,9 @@ const EditQuestionTemplate = (props: EditQuestionProps) => {
   const formIsPristine = useFormPristine('edit-question-form', initialValues);
   const confirmDialog = useConfirmNav(!formIsPristine);
   useFormResetValues('edit-question-form');
+  const [answerType, setAnswerType] = React.useState(
+    initialValues.answerType ?? AnswerBoxType.INPUT1
+  );
 
   const handleCancelClick = (ev: React.MouseEvent) => {
     ev.preventDefault();
@@ -281,6 +285,30 @@ const EditQuestionTemplate = (props: EditQuestionProps) => {
     );
   };
 
+  const handleAutofillClick =
+    (type: 'audio' | 'visual') => (ev: React.MouseEvent) => {
+      ev.preventDefault();
+      const form = document.getElementById(
+        'edit-question-form'
+      ) as HTMLFormElement | null;
+      if (form) {
+        const text = form.elements['text'] as HTMLTextAreaElement;
+        const notes = form.elements['notes'] as HTMLTextAreaElement;
+        const answerType = form.elements['answerType'] as HTMLInputElement;
+        if (type === 'audio') {
+          text.value = '(audio)';
+          notes.value = 'This is an audio question.';
+          answerType.value = AnswerBoxType.INPUT2;
+        } else {
+          text.value = '(visual)';
+          notes.value = 'This is a visual question.';
+          answerType.value = AnswerBoxType.INPUT1;
+        }
+        setAnswerType(answerType.value as AnswerBoxType);
+        render();
+      }
+    };
+
   return (
     <>
       <DefaultTopBar
@@ -298,6 +326,37 @@ const EditQuestionTemplate = (props: EditQuestionProps) => {
               Fill out information for this question template.
             </p>
             <HiddenBooleanField name="isNew" value={Boolean(props.isNew)} />
+            <p
+              style={{
+                color: getColors().TEXT_DESCRIPTION,
+              }}
+            >
+              Autofill
+            </p>
+            <div
+              style={{
+                display: 'flex',
+                marginBottom: '16px',
+              }}
+            >
+              <Button
+                flex
+                color="secondary"
+                onClick={handleAutofillClick('audio')}
+              >
+                {/* <IconLeft src="/res/check-mark.svg" /> */}
+                Audio Question
+              </Button>
+              <p>&nbsp;</p>
+              <Button
+                flex
+                color="secondary"
+                onClick={handleAutofillClick('visual')}
+              >
+                {/* <IconLeft src="/res/check-mark.svg" /> */}
+                Visual Question
+              </Button>
+            </div>
             <InputLabel htmlFor="text">Question Text</InputLabel>
             <TextArea
               fullWidth={true}
@@ -317,13 +376,15 @@ const EditQuestionTemplate = (props: EditQuestionProps) => {
                   render();
                 }, 1);
               }}
+              answerType={answerType}
+              setAnswerType={setAnswerType}
               formId="edit-question-form"
               isNew={props.isNew}
             />
             <InputLabel
               htmlFor="notes"
               style={{
-                marginTop: '32px',
+                marginTop: '16px',
               }}
             >
               Notes

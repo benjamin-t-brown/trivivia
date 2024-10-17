@@ -17,15 +17,15 @@ import Img from 'elements/Img';
 
 interface EditAnswersProps {
   questionTemplate?: QuestionTemplateResponse;
+  answerType: AnswerBoxType;
+  setAnswerType: (answerType: AnswerBoxType) => void;
   formEdited: () => void;
   formId: string;
   isNew?: boolean;
 }
 
 const EditAnswers = (props: EditAnswersProps) => {
-  const [answerType, setAnswerType] = React.useState(
-    props.questionTemplate?.answerType ?? AnswerBoxType.INPUT1
-  );
+  const { answerType, setAnswerType } = props;
   const [state, dispatch]: [AnswerState, any] = React.useReducer<any>(
     (
       state: AnswerState,
@@ -191,8 +191,38 @@ const EditAnswers = (props: EditAnswersProps) => {
         <option value={AnswerBoxType.INPUT4_LIST}>Input 4 List</option>
       </select>
       <div
+        id="radio boxes"
         style={{
-          margin: '16px 0px',
+          border: '1px solid ' + getColors().TEXT_DESCRIPTION,
+          padding: '8px',
+          display: radioBoxes.length <= 0 ? 'none' : 'block',
+          marginTop: '12px',
+        }}
+      >
+        {radioBoxes}
+      </div>
+      {radioBoxes.length > 0 ? (
+        <div
+          style={{
+            height: '16px',
+            borderBottom: '1px solid ' + getColors().TEXT_DESCRIPTION,
+            marginBottom: '16px',
+          }}
+        ></div>
+      ) : null}
+      <div
+        id="answer-boxes"
+        style={{
+          border: '1px solid ' + getColors().PRIMARY_TEXT,
+          padding: '8px',
+          marginTop: '12px',
+        }}
+      >
+        {answerBoxes}
+      </div>
+      <div
+        style={{
+          margin: '16px 10px',
         }}
       >
         <input
@@ -237,34 +267,6 @@ const EditAnswers = (props: EditAnswersProps) => {
           />
           <label htmlFor="isBonus"> This is a bonus question.</label>
         </div>
-      </div>
-      <div
-        id="radio boxes"
-        style={{
-          border: '1px solid ' + getColors().TEXT_DESCRIPTION,
-          padding: '8px',
-          display: radioBoxes.length <= 0 ? 'none' : 'block',
-        }}
-      >
-        {radioBoxes}
-      </div>
-      {radioBoxes.length > 0 ? (
-        <div
-          style={{
-            height: '16px',
-            borderBottom: '1px solid ' + getColors().TEXT_DESCRIPTION,
-            marginBottom: '16px',
-          }}
-        ></div>
-      ) : null}
-      <div
-        id="answer-boxes"
-        style={{
-          border: '1px solid ' + getColors().PRIMARY_TEXT,
-          padding: '8px',
-        }}
-      >
-        {answerBoxes}
       </div>
     </>
   );

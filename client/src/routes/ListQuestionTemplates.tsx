@@ -97,6 +97,30 @@ const duplicateAction = createAction(
   }
 );
 
+const getQuestionButtonText = (t: QuestionTemplateResponse) => {
+  const ret = (t.text ?? '').replace(/\n/g, '');
+  // HACK the stupid way:
+  if (ret.toLowerCase() === '(audio)') {
+    const answers = Object.values(t.answers).join(', ');
+    // return 'Notes: ' + t.notes || 'Audio Question';
+    return 'Audio: ' + answers || 'Question';
+  }
+  if (ret.toLowerCase() === '(video)') {
+    const answers = Object.values(t.answers).join(', ');
+    // return 'Notes: ' + t.notes || 'Video Question';
+    return 'Video: ' + answers || 'Question';
+  }
+  if (ret.toLowerCase() === '(visual)') {
+    const answers = Object.values(t.answers).join(', ');
+    // return 'Notes: ' + t.notes || 'Visual Question';
+    return 'Visual: ' + answers || 'Question';
+  }
+  if (ret.length < 2) {
+    return 'Notes: ' + t.notes || 'Image question';
+  }
+  return ret;
+};
+
 interface ListQuestionTemplatesLoaderResponse {
   questionTemplates: QuestionTemplateResponse[];
   roundTemplate: RoundTemplateResponse;
@@ -328,13 +352,7 @@ const ListQuestionTemplates = () => {
                             lineHeight: '22px',
                           }}
                         >
-                          <span key={i}>
-                            {(
-                              t.text ||
-                              'Notes: ' + t.notes ||
-                              'Image question'
-                            ).replace(/\n/g, '')}
-                          </span>
+                          <span key={i}>{getQuestionButtonText(t)}</span>
                         </div>
                         <InlineIconButton
                           imgSrc="/res/clone.svg"

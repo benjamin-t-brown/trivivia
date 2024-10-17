@@ -17,6 +17,14 @@ import fs from 'fs';
 import path from 'path';
 import { replaceInTemplate } from '../utils/templateUtils';
 
+function linkify(text) {
+  const urlRegex =
+    /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#/%?=~_|!:,.;]*[-A-Z0-9+&@#/%=~_|])/gi;
+  return text.replace(urlRegex, function (url) {
+    return '<a href="' + url + '">' + url + '</a>';
+  });
+}
+
 export class TemplateService {
   htmlExportFooter = '';
   htmlExportQuestion = '';
@@ -509,7 +517,7 @@ export class TemplateService {
       questionHtml = replaceInTemplate(
         questionHtml,
         'questionText',
-        questionTemplateResponse.text
+        linkify(questionTemplateResponse.text)
       );
       questionHtml = replaceInTemplate(
         questionHtml,
@@ -523,7 +531,7 @@ export class TemplateService {
         questionHtml,
         'questionNotes',
         questionTemplateResponse.notes
-          ? `<br /><br />Notes: ${questionTemplateResponse.notes}`
+          ? `<br /><br />Notes: ${linkify(questionTemplateResponse.notes)}`
           : ''
       );
       questionHtml = replaceInTemplate(
@@ -573,12 +581,12 @@ export class TemplateService {
       roundHtml = replaceInTemplate(
         roundHtml,
         'roundDescription',
-        roundTemplate.description
+        linkify(roundTemplate.description)
       );
       roundHtml = replaceInTemplate(
         roundHtml,
         'roundNotes',
-        roundTemplate.notes ?? ''
+        linkify(roundTemplate.notes ?? '')
       );
 
       const questionOrder = JSON.parse(roundTemplate.questionOrder);

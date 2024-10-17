@@ -5,11 +5,11 @@ yarn 1.22.11^
 
 ## Deployment on ec2
 
-This application is deployed at [https://trivivia.twilightparadox.com](https://trivivia.twilightparadox.com/login)
+This application is deployed at [https://trivivia.net](https://trivivia.net/login)
 
 ```
 # ssh into ecs instance
-ssh admin@52.91.8.165
+ssh admin@3.84.126.152
 
 # pull changes
 cd trivivia
