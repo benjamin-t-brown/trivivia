@@ -39,6 +39,7 @@ import PaginatedList from 'elements/PaginatedList';
 import FormErrorText, { FormError } from 'components/FormErrorText';
 import AnimatedEllipsis from 'elements/AnimatedEllipsis';
 import { LoadingPage } from 'components/LoadingPage';
+import PaginatedListFiltered from 'elements/PagindatedListFiltered';
 
 const InnerRoot = styled.div<Object>(() => {
   return {
@@ -336,7 +337,7 @@ const ListAllRoundTemplates = (props: { error?: boolean }) => {
           <FormErrorText />
 
           <Form method="post" id="choose-rounds-form">
-            <PaginatedList
+            <PaginatedListFiltered
               maxItemsPerPage={20}
               items={filteredItems ?? []}
               renderItem={t =>
@@ -346,7 +347,19 @@ const ListAllRoundTemplates = (props: { error?: boolean }) => {
                   isSelected: selectedTemplateIds.includes(t.id),
                 })
               }
-            ></PaginatedList>
+              isFiltered={(t, filter) =>
+                Boolean(
+                  t.title
+                    .toLocaleLowerCase()
+                    .includes(filter.toLocaleLowerCase()) ||
+                    t.quizTemplateName
+                      .toLocaleLowerCase()
+                      .includes(filter.toLocaleLowerCase())
+                )
+              }
+              filterLabel="Search"
+              id="filter"
+            ></PaginatedListFiltered>
             <p>
               <HiddenTextField name="selectedTemplatesJson" value={''} />
               <Button

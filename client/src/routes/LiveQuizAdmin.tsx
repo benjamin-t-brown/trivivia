@@ -16,6 +16,7 @@ import { getColors } from 'style';
 import {
   throwValidationError,
   useConfirmDialog,
+  useInfoDialog,
   useReRender,
   useTypedLoaderData,
 } from 'hooks';
@@ -1054,6 +1055,25 @@ const LiveQuizAdmin = (props: EditLiveQuizProps) => {
   //   };
   // }, []);
 
+  const { setOpen: setAdminInfoOpen, infoDialog: adminInfoDialog } =
+    useInfoDialog({
+      title: 'Quiz Info',
+      body: () => {
+        return (
+          <div>
+            {liveQuiz ? (
+              <LiveQuizAdminInfo liveQuiz={liveQuiz} expanded={true} />
+            ) : (
+              <div>Error... live quiz not set</div>
+            )}
+          </div>
+        );
+      },
+      onConfirm: () => {
+        setAdminInfoOpen(false);
+      },
+    });
+
   const { setOpen: setResetConfirmOpen, confirmDialog: resetConfirmDialog } =
     useConfirmDialog({
       title: 'Confirm Reset',
@@ -1259,18 +1279,40 @@ const LiveQuizAdmin = (props: EditLiveQuizProps) => {
       <MobileLayout topBar>
         <fetcher.Form method="post" id={formId}>
           <InnerRoot>
-            <LiveQuizAdminInfo
-              liveQuiz={liveQuiz}
-              expanded={adminInfoExpanded}
-            />
+            <div
+              style={{
+                fontSize: '1.5em',
+                textAlign: 'center',
+                margin: '16px 0px',
+              }}
+            >
+              Live Quiz:{' '}
+              <span style={{ color: getColors().TEXT_DEFAULT }}>
+                {liveQuiz.name}{' '}
+                <span
+                  style={{
+                    userSelect: 'text',
+                    cursor: 'auto',
+                  }}
+                >
+                  ({liveQuiz.userFriendlyId})
+                </span>
+              </span>
+            </div>
             <div>
-              <Button
-                onClick={() => {
-                  setAdminInfoExpanded(!adminInfoExpanded);
-                }}
-              >
-                {adminInfoExpanded ? 'Hide' : 'View'} Info
-              </Button>
+              <div>
+                <Button
+                  onClick={() => {
+                    // setAdminInfoExpanded(!adminInfoExpanded);
+                    setAdminInfoOpen(true);
+                  }}
+                  style={{
+                    width: '100%',
+                  }}
+                >
+                  View Info and Link
+                </Button>
+              </div>
             </div>
             <ContentSpacer />
             {isWaitingForQuizToStart(liveQuiz) ? (
@@ -1561,6 +1603,7 @@ const LiveQuizAdmin = (props: EditLiveQuizProps) => {
       <Loading visible={isLoading}>Loading...</Loading>
       {resetConfirmDialog}
       {haltConfirmDialog}
+      {adminInfoDialog}
     </>
   );
 };

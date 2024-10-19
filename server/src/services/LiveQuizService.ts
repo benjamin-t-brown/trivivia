@@ -721,6 +721,7 @@ export class LiveQuizService {
       }
     }
 
+    console.log('NEXT ANSWER STATE', args.submittedAnswers);
     liveQuizRoundAnswers.answers = JSON.stringify(args.submittedAnswers);
 
     const hasAlreadyUsedJoker = Boolean(

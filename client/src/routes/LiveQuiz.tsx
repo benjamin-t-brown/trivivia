@@ -268,13 +268,20 @@ const SubmittedAnswersRound = (props: {
   quizState: LiveQuizPublicStateResponse;
 }) => {
   const aggAnswers: Record<string, string> = {};
-  for (let questionI = 1; questionI <= 16; questionI++) {
+  const maxAnswers = Object.keys(props.submittedAnswersRound).reduce(
+    (prev, curr) => {
+      const n = Number(curr);
+      return Math.max(n, prev);
+    },
+    16
+  );
+  for (let questionI = 1; questionI <= maxAnswers; questionI++) {
     const answers = props.submittedAnswersRound[questionI];
     if (!answers) {
       continue;
     }
     aggAnswers[questionI] = '';
-    for (let answerI = 1; answerI <= 16; answerI++) {
+    for (let answerI = 1; answerI <= maxAnswers; answerI++) {
       const answerText = answers['answer' + answerI];
       if (answerText) {
         aggAnswers[questionI] +=
@@ -283,8 +290,9 @@ const SubmittedAnswersRound = (props: {
     }
   }
 
-  // const submittedAnswers = Object.keys(aggAnswers).sort();
   const numQuestions = props?.quizState?.round?.totalNumberOfQuestions ?? 0;
+  // const submittedAnswers = Object.keys(aggAnswers).sort();
+
   const answerList: string[] = [];
   for (let i = 0; i < numQuestions; i++) {
     if (aggAnswers[i + 1]) {

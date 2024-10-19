@@ -13,6 +13,7 @@ import { LiveQuizStartRoute } from './LiveQuizStart';
 import Img from 'elements/Img';
 import PaginatedList from 'elements/PaginatedList';
 import RelativeTime from 'react-relative-time';
+import PaginatedListFiltered from 'elements/PagindatedListFiltered';
 
 const InnerRoot = styled.div<Object>(() => {
   return {
@@ -150,13 +151,18 @@ const ListLiveQuizzes = () => {
             + Start New Live Quiz
           </Button>
           <p>Live Quizzes</p>
-          <PaginatedList
+          <PaginatedListFiltered
             maxItemsPerPage={20}
             items={liveQuizListResponse?.data ?? []}
             renderItem={t =>
               renderLiveQuizButton(t, handleQuizClick, handleEditQuizClick)
             }
-          ></PaginatedList>
+            isFiltered={(t, filter) =>
+              t.name.toLocaleLowerCase().includes(filter.toLocaleLowerCase())
+            }
+            filterLabel="Search"
+            id="filter"
+          ></PaginatedListFiltered>
           {liveQuizListResponse?.data?.length === 0 ? (
             <TextCenter>(none)</TextCenter>
           ) : null}

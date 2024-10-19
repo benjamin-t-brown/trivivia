@@ -1,8 +1,6 @@
 import React, { useEffect } from 'react';
 import Button from './Button';
 import styled from 'styled-components';
-// import HSpace from './HSpace';
-// import { getColors } from 'style';
 
 const HSpace = styled.div<Object>(() => {
   return {
@@ -63,11 +61,13 @@ const NextPrevArea = (props: {
   );
 };
 
-function PaginatedList<T>(props: {
+export interface PaginatedListProps<T> {
   items: T[];
   renderItem: (item: T) => React.ReactNode;
   maxItemsPerPage: number;
-}) {
+}
+
+function PaginatedList<T>(props: PaginatedListProps<T>) {
   const [page, setPage] = React.useState(0);
   const items = props.items.slice(
     page * props.maxItemsPerPage,
@@ -83,8 +83,6 @@ function PaginatedList<T>(props: {
   return (
     <div
       style={{
-        // background: getColors().BACKGROUND2,
-        // border: '1px solid ' + getColors().TEXT_DESCRIPTION,
         padding: '4px',
       }}
     >
@@ -94,18 +92,7 @@ function PaginatedList<T>(props: {
         items={props.items}
         maxItemsPerPage={props.maxItemsPerPage}
       />
-      <div
-        style={
-          {
-            // display: 'flex',
-            // flexWrap: window.innerWidth < 600 ? 'nowrap' : 'wrap',
-            // flexDirection: window.innerWidth < 600 ? 'column' : 'row',
-            // alignItems: window.innerWidth < 600 ? 'center' : 'unset',
-          }
-        }
-      >
-        {items.map(props.renderItem)}
-      </div>
+      <div>{items.map(props.renderItem)}</div>
       <NextPrevArea
         setPage={setPage}
         page={page}

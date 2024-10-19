@@ -13,6 +13,7 @@ import { quizTemplateIsReady } from 'validation';
 import Img from 'elements/Img';
 import PaginatedList from 'elements/PaginatedList';
 import RelativeTime from 'react-relative-time';
+import PaginatedListFiltered from 'elements/PagindatedListFiltered';
 
 const InnerRoot = styled.div<Object>(() => {
   return {
@@ -168,7 +169,7 @@ const ListQuizTemplates = () => {
             + Create New Quiz Template
           </Button>
           <p>Quiz Templates</p>
-          <PaginatedList
+          <PaginatedListFiltered
             maxItemsPerPage={20}
             items={quizTemplates?.data ?? []}
             renderItem={t =>
@@ -178,7 +179,12 @@ const ListQuizTemplates = () => {
                 handleEditQuizTemplateClick
               )
             }
-          ></PaginatedList>
+            isFiltered={(t, filter) =>
+              t.name.toLocaleLowerCase().includes(filter.toLocaleLowerCase())
+            }
+            filterLabel="Search"
+            id="filter"
+          ></PaginatedListFiltered>
           {quizTemplates?.data?.length === 0 ? (
             <TextCenter>(none)</TextCenter>
           ) : null}

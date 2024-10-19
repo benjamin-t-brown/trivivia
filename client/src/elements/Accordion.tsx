@@ -102,7 +102,7 @@ const Accordion = (props: AccordionProps) => {
             </AccordionHeader>
             <div
               style={{
-                maxHeight: isOpen ? '2000px' : '0',
+                maxHeight: isOpen ? 'unset' : '0',
                 transition: 'max-height 0.1s linear',
                 padding: '0 16px',
                 overflow: 'hidden',
