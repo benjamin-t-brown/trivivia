@@ -34,6 +34,10 @@ import { Model } from 'sequelize-typescript';
 
 export class LiveQuizService {
   nanoid = customAlphabet('1234567890abcdefghijklmnopqrstuvwxyz', 6);
+  private templateService = new TemplateService();
+  setTemplateService(templateService: TemplateService) {
+    this.templateService = templateService;
+  }
 
   async assertQuiz(liveQuizId: string) {
     const liveQuiz = await this.findLiveQuizById(liveQuizId);
@@ -138,7 +142,7 @@ export class LiveQuizService {
   }
 
   async createLiveQuiz(quizTemplateId: string, args: { name: string }) {
-    const templateService = new TemplateService();
+    const templateService = this.templateService;
 
     const quizTemplate = await templateService.findQuizById(quizTemplateId, {
       includeAll: true,
@@ -170,11 +174,12 @@ export class LiveQuizService {
       currentQuestionNumber: 0,
       currentRoundAnswerNumber: 0,
       currentRoundScoresNumber: 0,
+      liveQuizTeams: [],
     });
 
     await liveQuiz.save();
 
-    return this.findLiveQuizById(liveQuiz.id);
+    return liveQuiz;
   }
 
   async reImportQuizTemplateForLiveQuiz(
@@ -198,7 +203,7 @@ export class LiveQuizService {
       return undefined;
     }
 
-    const templateService = new TemplateService();
+    const templateService = this.templateService;
     const quizTemplate = await templateService.findQuizById(
       liveQuiz.quizTemplate.id,
       {
@@ -721,7 +726,6 @@ export class LiveQuizService {
       }
     }
 
-    console.log('NEXT ANSWER STATE', args.submittedAnswers);
     liveQuizRoundAnswers.answers = JSON.stringify(args.submittedAnswers);
 
     const hasAlreadyUsedJoker = Boolean(
@@ -772,8 +776,6 @@ export class LiveQuizService {
     const rounds: StructuredQuizRound[] = [];
     const questions: StructuredQuizQuestion[] = [];
     const teams: StructuredQuizTeam[] = [];
-
-    // const roundQuestionIdMap: Record<string, string[]> = {};
 
     const roundOrder = quizTemplate.roundOrder;
     for (let i = 0; i < roundOrder.length; i++) {

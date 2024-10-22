@@ -2,8 +2,8 @@
 // is included on the client as well
 
 interface CreateUpdateDelete {
-  updatedOn: string;
-  updatedAt: string;
+  updatedOn?: string;
+  updatedAt?: string;
   creationDate: string;
   deletionDate?: string;
 }
