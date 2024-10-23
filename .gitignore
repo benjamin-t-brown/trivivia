@@ -7,3 +7,4 @@ creds.txt
 test-results/
 test-results-output/
 playwright-report/
+.DS_Store
