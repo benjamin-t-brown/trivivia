@@ -3,7 +3,7 @@ import fs from 'fs';
 import path from 'path';
 
 const SCRATCH = path.resolve(__dirname, '../', 'test-results-output');
-const PLAYER_CODE = '123456';
+const PLAYER_CODE = '008421';
 
 // npx playwright install
 // npx playwright test test-browser/gwd.test.js --reporter=list
@@ -27,8 +27,16 @@ test('GWD Join Quiz', async ({ page }) => {
     }),
     page.locator('[type=submit]').click(),
   ],);
-  await page.locator('[type=submit]').click();
   await takeScreenshot(prefix, page);
+
+  await new Promise(resolve => setTimeout(resolve, 1000));
+
+  await page.getByText('Just Watch').click();
+
+  // await new Promise(resolve => setTimeout(resolve, 1000));
+
+  await takeScreenshot(prefix, page);
+
   const html = await page.content();
   fs.writeFileSync(`${SCRATCH}/${prefix}.html`, html);
 });

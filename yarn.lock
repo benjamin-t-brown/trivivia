@@ -1098,11 +1098,6 @@ ajv@^6.10.0, ajv@^6.12.4:
     json-schema-traverse "^0.4.1"
     uri-js "^4.2.2"
 
-animated-ellipsis@0.2.0:
-  version "0.2.0"
-  resolved "https://registry.yarnpkg.com/animated-ellipsis/-/animated-ellipsis-0.2.0.tgz#a3d790dc62e65b5de39ca8de9b7bbe5ca4c86dc8"
-  integrity sha512-hnFWhbJDsKSk3nWQKwPnxaCHM5Lgg0bpB51/Mgt63JgXUMjD4qsef7SypuSS+cdNP1PV67l67lognX23KrpHIQ==
-
 ansi-regex@^5.0.1:
   version "5.0.1"
   resolved "https://registry.yarnpkg.com/ansi-regex/-/ansi-regex-5.0.1.tgz#082cb2c89c9fe8659a311a53bd6a4dc5301db304"
@@ -3963,7 +3958,7 @@ promise-retry@^2.0.1:
     err-code "^2.0.2"
     retry "^0.12.0"
 
-prop-types@^15.6.2, prop-types@^15.7.2, prop-types@^15.8.1:
+prop-types@^15.8.1:
   version "15.8.1"
   resolved "https://registry.yarnpkg.com/prop-types/-/prop-types-15.8.1.tgz#67d87bf1a694f48435cf332c24af10214a3140b5"
   integrity sha512-oj87CgZICdulUohogVAR7AjlC0327U4el4L6eAvOqCeudMDVU0NThNaV+b9Df4dXgSP1gXMTnPdhfe/2qDH5cg==
@@ -4032,15 +4027,6 @@ raw-body@2.5.1:
     iconv-lite "0.4.24"
     unpipe "1.0.0"
 
-react-animated-ellipsis@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/react-animated-ellipsis/-/react-animated-ellipsis-1.0.0.tgz#3c81c290366dba96e887f37744532b0d65906c95"
-  integrity sha512-lrv1VzTMg+IP40ugyokG9b8xzK2S0S1HH+262/kzSrlY5teAKMYJBdKqVwOuhgi9qeULcQ5LRyYrl+uWAUlLWQ==
-  dependencies:
-    animated-ellipsis "0.2.0"
-    prop-types "^15.7.2"
-    react "^16.13.1"
-
 react-dom@^18.2.0:
   version "18.2.0"
   resolved "https://registry.yarnpkg.com/react-dom/-/react-dom-18.2.0.tgz#22aaf38708db2674ed9ada224ca4aa708d821e3d"
@@ -4083,15 +4069,6 @@ react-router@6.26.1:
   integrity sha512-kIwJveZNwp7teQRI5QmwWo39A5bXRyqpH0COKKmPnyD2vBvDwgFXSqDUYtt1h+FEyfnE8eXr7oe0MxRzVwCcvQ==
   dependencies:
     "@remix-run/router" "1.19.1"
-
-react@^16.13.1:
-  version "16.14.0"
-  resolved "https://registry.yarnpkg.com/react/-/react-16.14.0.tgz#94d776ddd0aaa37da3eda8fc5b6b18a4c9a3114d"
-  integrity sha512-0X2CImDkJGApiAlcf0ODKIneSwBPhqJawOa5wCtKbu7ZECrmS26NvtSILynQ66cgkT/RJ4LidJOc3bUESwmU8g==
-  dependencies:
-    loose-envify "^1.1.0"
-    object-assign "^4.1.1"
-    prop-types "^15.6.2"
 
 react@^18.2.0:
   version "18.2.0"
