@@ -31,6 +31,10 @@ import Input from 'elements/Input';
 import { GradeInputState } from 'shared/requests';
 import Accordion, { AccordionItem } from 'elements/Accordion';
 import Img from 'elements/Img';
+import { ButtonAction } from 'elements/ButtonAction';
+import { JustifyContentDiv } from 'elements/JustifyContentDiv';
+import { HSpace } from 'elements/HSpace';
+import { StickyContent } from 'elements/FixedContent';
 
 const InnerRoot = styled.div<Object>(() => {
   return {
@@ -161,9 +165,6 @@ const RoundAnswer = (props: {
     <div
       style={{
         margin: '4px 0px',
-        // display: 'flex',
-        // justifyContent: 'flex-start',
-        // borderTop: '1px solid ' + getColors().TEXT_DESCRIPTION,
         borderBottom: '1px solid ' + getColors().TEXT_DESCRIPTION,
         paddingBottom: '4px',
       }}
@@ -714,41 +715,21 @@ const LiveQuizAdminGrading = (props: EditLiveQuizProps) => {
         <fetcher.Form method="post" id={formId}>
           <InnerRoot>
             <SectionTitle>Grading</SectionTitle>
-            <Button
-              color="secondary"
-              style={{
-                width: '100%',
-              }}
-              onClick={handleGoBackClick}
-            >
-              Go Back To Quiz
-            </Button>
-            <Button
-              color="primary"
-              style={{
-                width: '100%',
-              }}
-              onClick={handleSubmitGradeClick}
-            >
-              Submit Grades
-            </Button>
-            <div style={{ color: getColors().ERROR_TEXT }}>
-              {validationError}
-            </div>
+            <StickyContent>
+              <div style={{ color: getColors().ERROR_TEXT }}>
+                {validationError}
+              </div>
+              <JustifyContentDiv justifyContent="left">
+                <ButtonAction color="secondary" onClick={handleGoBackClick}>
+                  Go Back To Quiz
+                </ButtonAction>
+                <HSpace />
+                <ButtonAction color="primary" onClick={handleSubmitGradeClick}>
+                  Submit Grades
+                </ButtonAction>
+              </JustifyContentDiv>
+            </StickyContent>
             {elems}
-            <Button
-              color="primary"
-              style={{
-                width: '100%',
-                marginTop: '32px',
-              }}
-              onClick={handleSubmitGradeClick}
-            >
-              Submit Grades
-            </Button>
-            <div style={{ color: getColors().ERROR_TEXT }}>
-              {validationError}
-            </div>
           </InnerRoot>
         </fetcher.Form>
       </MobileLayout>

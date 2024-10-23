@@ -39,6 +39,10 @@ import IconLeft from 'elements/IconLeft';
 import TextArea from 'elements/TextArea';
 import EditAnswers from 'components/EditAnswers';
 import EditImageLink from 'components/EditImageLink';
+import { ButtonAction } from 'elements/ButtonAction';
+import { HSpace } from 'elements/HSpace';
+import { IconButton } from 'elements/IconButton';
+import { JustifyContentDiv } from 'elements/JustifyContentDiv';
 
 const InnerRoot = styled.div<Object>(() => {
   return {
@@ -339,23 +343,19 @@ const EditQuestionTemplate = (props: EditQuestionProps) => {
                 marginBottom: '16px',
               }}
             >
-              <Button
-                flex
+              <ButtonAction
                 color="secondary"
                 onClick={handleAutofillClick('audio')}
               >
-                {/* <IconLeft src="/res/check-mark.svg" /> */}
                 Audio Question
-              </Button>
-              <p>&nbsp;</p>
-              <Button
-                flex
+              </ButtonAction>
+              <HSpace />
+              <ButtonAction
                 color="secondary"
                 onClick={handleAutofillClick('visual')}
               >
-                {/* <IconLeft src="/res/check-mark.svg" /> */}
                 Visual Question
-              </Button>
+              </ButtonAction>
             </div>
             <InputLabel htmlFor="text">Question Text</InputLabel>
             <TextArea
@@ -400,42 +400,25 @@ const EditQuestionTemplate = (props: EditQuestionProps) => {
               }}
             />
             <FormErrorText />
-            <div style={{ height: '16px' }}></div>
-            <Button
-              flex
-              color="primary"
-              style={{
-                width: '100%',
-              }}
-              type="submit"
-            >
-              <IconLeft src="/res/check-mark.svg" />
-              Save
-            </Button>
-            <Button
-              flex
-              color="secondary"
-              style={{
-                width: '100%',
-              }}
-              onClick={handleCancelClick}
-            >
-              <IconLeft src="/res/cancel.svg" />
-              Cancel
-            </Button>
-            {props.isNew ? null : (
-              <Button
-                flex
-                color="cancel"
-                style={{
-                  width: '100%',
-                }}
-                onClick={handleDeleteClick}
-              >
-                <IconLeft src="/res/trash-can.svg" />
-                Delete
-              </Button>
-            )}
+            <p></p>
+            <JustifyContentDiv justifyContent="left">
+              <ButtonAction color="primary" type="submit">
+                <IconButton src="/res/check-mark.svg" />
+                Save
+              </ButtonAction>
+              <HSpace />
+              <ButtonAction color="secondary" onClick={handleCancelClick}>
+                <IconButton src="/res/cancel.svg" />
+                Cancel
+              </ButtonAction>
+              <HSpace />
+              {props.isNew ? null : (
+                <ButtonAction color="cancel" onClick={handleDeleteClick}>
+                  <IconButton src="/res/trash-can.svg" verticalAdjust={3} />
+                  Delete
+                </ButtonAction>
+              )}
+            </JustifyContentDiv>
           </InnerRoot>
         </Form>
       </MobileLayout>

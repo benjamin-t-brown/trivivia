@@ -39,6 +39,11 @@ import { fetchImportQuizTemplate } from 'fetches';
 import HiddenTextField from 'components/HiddenTextField';
 import { LoadingPage } from 'components/LoadingPage';
 import IconLeft from 'elements/IconLeft';
+import NavButton from 'components/NavButton';
+import { ButtonAction } from 'elements/ButtonAction';
+import { IconButton } from 'elements/IconButton';
+import { JustifyContentDiv } from 'elements/JustifyContentDiv';
+import { HSpace } from 'elements/HSpace';
 
 const InnerRoot = styled.div<Object>(() => {
   return {
@@ -69,7 +74,7 @@ const action = createAction(async (values: EditQuizValues, params) => {
   if (values.importedQuizTemplate) {
     quizTemplate = JSON.parse(values.importedQuizTemplate);
   }
-  console.log('wat', values, quizTemplate);
+
   delete values['importedQuizTemplate'];
   delete values['import-quiz'];
 
@@ -281,8 +286,6 @@ const EditQuizTemplate = (props: EditQuizProps) => {
     }
   }
 
-  console.log('render form?', quizTemplateImport);
-
   return (
     <>
       <DefaultTopBar useBackConfirm={false} upTo={'/quiz-templates'} />
@@ -343,19 +346,13 @@ const EditQuizTemplate = (props: EditQuizProps) => {
                 render();
               }}
             />
-            <p
+            <p />
+            <div
               style={{
                 display: props.isNew ? 'block' : 'none',
               }}
             >
-              <Button
-                type="submit"
-                color="secondary"
-                style={{
-                  width: '100%',
-                  display: 'flex',
-                }}
-              >
+              <ButtonAction type="submit" color="secondary">
                 <div
                   style={{
                     position: 'relative',
@@ -363,7 +360,7 @@ const EditQuizTemplate = (props: EditQuizProps) => {
                     textAlign: 'left',
                   }}
                 >
-                  <IconLeft src="/res/clone.svg" />
+                  <IconButton src="/res/clone.svg" verticalAdjust={7} />
                   Upload Quiz
                   <label htmlFor="import-quiz">
                     <input
@@ -383,8 +380,8 @@ const EditQuizTemplate = (props: EditQuizProps) => {
                     />
                   </label>
                 </div>
-              </Button>
-            </p>
+              </ButtonAction>
+            </div>
             <div
               style={{
                 display: quizTemplateImport ? 'block' : 'none',
@@ -398,41 +395,24 @@ const EditQuizTemplate = (props: EditQuizProps) => {
             </div>
             <FormErrorText />
             <div style={{ height: '16px' }}></div>
-            <Button
-              flex
-              color="primary"
-              style={{
-                width: '100%',
-              }}
-              type="submit"
-            >
-              <IconLeft src="/res/check-mark.svg" />
-              Save
-            </Button>
-            <Button
-              flex
-              color="secondary"
-              style={{
-                width: '100%',
-              }}
-              onClick={handleCancelClick}
-            >
-              <IconLeft src="/res/cancel.svg" />
-              Cancel
-            </Button>
-            {props.isNew ? null : (
-              <Button
-                flex
-                color="cancel"
-                style={{
-                  width: '100%',
-                }}
-                onClick={handleDeleteClick}
-              >
-                <IconLeft src="/res/trash-can.svg" />
-                Delete
-              </Button>
-            )}
+            <JustifyContentDiv justifyContent="left">
+              <ButtonAction color="primary" type="submit">
+                <IconButton src="/res/check-mark.svg" />
+                Save
+              </ButtonAction>
+              <HSpace />
+              <ButtonAction color="secondary" onClick={handleCancelClick}>
+                <IconButton src="/res/cancel.svg" />
+                Cancel
+              </ButtonAction>
+              <HSpace />
+              {props.isNew ? null : (
+                <ButtonAction color="cancel" onClick={handleDeleteClick}>
+                  <IconButton src="/res/trash-can.svg" verticalAdjust={3} />
+                  Delete
+                </ButtonAction>
+              )}
+            </JustifyContentDiv>
           </InnerRoot>
         </Form>
       </MobileLayout>

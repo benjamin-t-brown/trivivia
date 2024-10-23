@@ -31,12 +31,12 @@ const Root = styled.div<{ visible: boolean }>(props => {
 
 const InnerRoot = styled.div<Object>(() => {
   return {
-    borderRadius: '8px',
     maxWidth: '800px',
     width: '100%',
     boxSizing: 'border-box',
     padding: '8px 16px',
     background: getColors().BACKGROUND2,
+    boxShadow: '0px 0px 16px 0px rgba(0,0,0,0.75)',
   };
 });
 

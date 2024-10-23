@@ -30,6 +30,7 @@ import InlineIconButton from 'elements/InlineIconButton';
 import IconLeft from 'elements/IconLeft';
 import HiddenTextField from 'components/HiddenTextField';
 import { updateCacheQuestionTemplate, updateCacheRoundTemplate } from 'cache';
+import { ButtonAction } from 'elements/ButtonAction';
 
 const InnerRoot = styled.div<Object>(() => {
   return {
@@ -256,15 +257,12 @@ const ListQuestionTemplates = () => {
               {loaderResponse?.data.roundTemplate.description}
             </p>
           ) : null}
-          <Button
+          <ButtonAction
             color="primary"
-            style={{
-              width: '100%',
-            }}
             onClick={handleCreateQuestionTemplateClick}
           >
             + Create New Question Template
-          </Button>
+          </ButtonAction>
           <p>
             Question Templates ({loaderResponse?.data.questionTemplates?.length}
             )

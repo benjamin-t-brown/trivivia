@@ -7,7 +7,6 @@ function CustomHmr() {
   return {
     name: 'custom-hmr',
     enforce: 'post',
-    // HMR
     handleHotUpdate({ file, server }) {
       if (file.endsWith('.json')) {
         console.log('reloading json file...');
@@ -21,9 +20,10 @@ function CustomHmr() {
   };
 }
 
-// @ts-ignore
-export default defineConfig((...args) => {
+export default defineConfig((({ command }) => {
   const rootPath = '../';
+
+  const isProd = command !== 'serve';
 
   const config = {
     plugins: [
@@ -41,10 +41,15 @@ export default defineConfig((...args) => {
       assetsDir: 'release',
       cssCodeSplit: false,
     },
+    esbuild: isProd
+      ? {
+          drop: ['console', 'debugger'],
+        }
+      : undefined,
     server: {
       port: '3005',
       host: '0.0.0.0',
-      // open: '/',
+      open: '/',
       proxy: {
         '^/api/.*': 'http://localhost:3006/',
         '^/res/.*': 'http://localhost:3006/',
@@ -58,4 +63,4 @@ export default defineConfig((...args) => {
     },
   };
   return config;
-});
+}) as any);

@@ -28,17 +28,6 @@ const LiveQuizAdminInfo = (props: {
           ({liveQuiz.userFriendlyId})
         </span>
       </span>
-      <br />
-      Link:{' '}
-      <span
-        style={{
-          color: getColors().TEXT_DEFAULT,
-          userSelect: 'text',
-          cursor: 'pointer',
-        }}
-      >
-        <Link to={'/qr/' + liveQuiz.userFriendlyId}>Link/QR Code</Link>
-      </span>
       <span
         style={{
           display: props.expanded ? 'block' : 'none',

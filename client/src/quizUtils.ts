@@ -36,7 +36,8 @@ export const isRoundInProgressAndVisible = (
   return (
     quiz?.quizState === LiveQuizState.STARTED_IN_ROUND &&
     (quiz?.roundState === LiveRoundState.STARTED_ACCEPTING_ANSWERS ||
-      quiz?.roundState === LiveRoundState.STARTED_NOT_ACCEPTING_ANSWERS)
+      quiz?.roundState === LiveRoundState.STARTED_NOT_ACCEPTING_ANSWERS ||
+      quiz?.roundState === LiveRoundState.NOT_STARTED)
   );
 };
 

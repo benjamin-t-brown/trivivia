@@ -1,0 +1,665 @@
+<html>
+  <head>
+    <script type="module">
+      import RefreshRuntime from '/@react-refresh';
+      RefreshRuntime.injectIntoGlobalHook(window);
+      window.$RefreshReg$ = () => {};
+      window.$RefreshSig$ = () => (type) => type;
+      window.__vite_plugin_react_preamble_installed__ = true;
+    </script>
+
+    <script type="module" src="/@vite/client"></script>
+
+    <link rel="icon" type="image/png" href="/res/favicon_c2.svg?v=7" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=3, user-scalable=yes"
+    />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Noto+Sans:ital,wght@0,100..900;1,100..900&family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        margin: 0;
+        /* overflow: hidden; */
+        background: rgb(11, 11, 11);
+        background: linear-gradient(
+          90deg,
+          rgba(11, 11, 11, 1) 0%,
+          rgba(31, 31, 31, 1) 3%,
+          rgba(31, 31, 31, 1) 97%,
+          rgba(11, 11, 11, 1) 100%
+        );
+        font-family: 'Noto Sans', sans-serif;
+        font-optical-sizing: auto;
+        font-style: normal;
+        font-variation-settings: 'wdth' 100;
+        color: #eee;
+        /* user-select: none; */
+        font-size: 16px;
+      }
+      a:link {
+        color: #a3a6ff;
+      }
+      a:visited {
+        color: #b6b7d1;
+      }
+      a:active {
+        color: #eee;
+      }
+      .animated-ellipsis {
+        font-size: 24px;
+        display: inline-block;
+      }
+
+      .animated-ellipsis span {
+        animation: blink 1.4s infinite both;
+      }
+
+      .animated-ellipsis span:nth-child(2) {
+        animation-delay: 0.2s;
+      }
+
+      .animated-ellipsis span:nth-child(3) {
+        animation-delay: 0.4s;
+      }
+
+      @keyframes blink {
+        0% {
+          opacity: 0;
+        }
+        50% {
+          opacity: 1;
+        }
+        100% {
+          opacity: 0;
+        }
+      }
+    </style>
+    <title>Trivivia</title>
+  </head>
+  <body>
+    <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+    <div id="app">
+      <div id="top-bar" class="sc-qRumB bttOJF">
+        <div class="sc-jsMahE eJjVgr">
+          <div class="sc-fsQiph fSVIlf">
+            <button color="plain" class="sc-beqWaB lpqQOe">
+              <img
+                alt="Home"
+                src="/res/plain-arrow.svg"
+                class="sc-kFuwaP"
+                style="width: 22px; transform: rotate(90deg); background: unset"
+              />
+            </button>
+            <div class="sc-gueYoa iCeui">
+              <div class="sc-dmqHEX kEnMBj">
+                <div class="sc-hLseeU hpYYZD">Back</div>
+                <div>
+                  <div>
+                    Are you sure you wish to go back? Changes on this page will
+                    be lost.
+                  </div>
+                </div>
+                <div class="sc-eDDNvR eEJfBf">
+                  <button
+                    color="primary"
+                    class="sc-beqWaB gTxObz"
+                    style="width: 100px"
+                  >
+                    Yes</button
+                  ><button
+                    color="cancel"
+                    class="sc-beqWaB dXKjUE"
+                    style="width: 100px; margin-left: 16px"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            </div>
+            <button color="plain" class="sc-beqWaB lpqQOe">
+              <img
+                alt="Home"
+                src="/res/plain-arrow.svg"
+                class="sc-kFuwaP"
+                style="
+                  width: 22px;
+                  transform: rotate(180deg);
+                  background: unset;
+                "
+              />
+            </button>
+            <div class="sc-gueYoa iCeui">
+              <div class="sc-dmqHEX kEnMBj">
+                <div class="sc-hLseeU hpYYZD">Up</div>
+                <div>
+                  <div>
+                    Are you sure you wish to go up? Changes on this page will be
+                    lost.
+                  </div>
+                </div>
+                <div class="sc-eDDNvR eEJfBf">
+                  <button
+                    color="primary"
+                    class="sc-beqWaB gTxObz"
+                    style="width: 100px"
+                  >
+                    Yes</button
+                  ><button
+                    color="cancel"
+                    class="sc-beqWaB dXKjUE"
+                    style="width: 100px; margin-left: 16px"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="sc-iAEyYk dneszM" style="cursor: pointer">Trivivia</div>
+          <div class="sc-fsQiph jGRxaE">
+            <button color="plain" class="sc-beqWaB lpqQOe">
+              <img
+                alt="Home"
+                src="/res/house.svg"
+                class="sc-kFuwaP"
+                style="width: 22px; background: unset"
+              />
+            </button>
+          </div>
+        </div>
+      </div>
+      <div id="content-root" class="sc-jTrPJq ixxuAC" style="top: 55px">
+        <div class="sc-gLDzan iafAIH">
+          <form
+            method="post"
+            action="/live-quiz-admin/59ca593e-94b7-428d-b072-5f093695d8b1"
+            id="edit-live-quiz-form"
+          >
+            <div class="sc-jItqcz jRORJZ">
+              <p></p>
+              <div>
+                Live Quiz:
+                <span style="color: white"
+                  >Quiz: 2024-10-23
+                  <span style="user-select: text; cursor: auto"
+                    >(9vyey4)</span
+                  ></span
+                >
+                <div class="sc-hIqOWS gkCrRg"></div>
+                <button
+                  color="plain"
+                  class="sc-beqWaB lpqQOe"
+                  style="text-decoration: underline"
+                >
+                  View Info
+                </button>
+              </div>
+              <p>
+                Link:
+                <span style="color: white; user-select: text; cursor: pointer"
+                  ><a href="/qr/9vyey4">Link/QR Code</a></span
+                >
+              </p>
+              <div class="sc-ktEKTO lgXLND">
+                <div class="sc-ktEKTO lgXLND">
+                  <button
+                    color="secondary"
+                    class="sc-beqWaB jovaoU"
+                    style="padding: 16px"
+                  >
+                    ← Stop Showing Answers
+                  </button>
+                </div>
+                <div class="sc-hIqOWS gkCrRg"></div>
+                <div class="sc-ktEKTO lgXLND">
+                  <button
+                    color="primary"
+                    class="sc-beqWaB eXHpWR"
+                    disabled=""
+                    style="padding: 16px"
+                  >
+                    Set Answers Visible
+                  </button>
+                </div>
+                <div class="sc-hIqOWS gkCrRg"></div>
+                <div class="sc-ktEKTO lgXLND">
+                  <button
+                    color="primary"
+                    class="sc-beqWaB gTxObz"
+                    style="padding: 16px"
+                  >
+                    Update Scores
+                  </button>
+                </div>
+              </div>
+              <div style="height: 16px"></div>
+              <div>
+                <p class="sc-eACynP cxoosk">Round Visibility</p>
+                <div style="color: rgb(187, 187, 187)">
+                  You can read out and show this round's answers from here.
+                </div>
+                <div class="sc-kMrHXl kRydlI"></div>
+                <div style="border: 1px solid rgb(255, 106, 106); padding: 8px">
+                  <div style="color: white">
+                    <span style="color: rgb(187, 187, 187)"> Round Title: </span
+                    >Please B Silent<br /><br /><span
+                      style="color: rgb(187, 187, 187)"
+                    >
+                      Round Description:</span
+                    >
+                    Every answer in this round includes a silent B.
+                    <div style="display: none">
+                      <br /><button
+                        color="secondary"
+                        class="sc-beqWaB jovaoU"
+                        style="margin-right: 8px; text-decoration: underline"
+                      >
+                        Show All</button
+                      ><button
+                        color="secondary"
+                        class="sc-beqWaB jovaoU"
+                        style="margin-right: 8px; text-decoration: underline"
+                      >
+                        Hide All
+                      </button>
+                      <div class="sc-hIqOWS gkCrRg"></div>
+                      <button
+                        color="plain"
+                        class="sc-beqWaB lpqQOe"
+                        style="filter: grayscale(1); text-decoration: underline"
+                      >
+                        View Submissions
+                      </button>
+                    </div>
+                  </div>
+                  <div class="sc-kMrHXl kRydlI"></div>
+                  <div class="sc-ilEZps kWmlhb">
+                    1.
+                    <span
+                      >In a never-used screenplay by Sir Anthony Hopkins
+                      himself, Clarice Starling kills Hannibal Lecter at the end
+                      of what film?</span
+                    ><br />
+                    <div style="margin-top: 8px">
+                      <div>
+                        <span
+                          style="color: rgb(187, 187, 187); margin: 9px 0px"
+                        >
+                          Answer: </span
+                        ><span style="color: rgb(140, 218, 255)"
+                          >Silence of the Lambs</span
+                        ><span style="color: white"> (0%)</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="sc-ilEZps kWmlhb">
+                    2.
+                    <span
+                      >Though she said the song makes her "throw up in my
+                      mouth," Gwen Stefani still sang "Ex-Girlfriend" at what
+                      band's 2024 Coachella reunion.</span
+                    ><br />
+                    <div style="margin-top: 8px">
+                      <div>
+                        <span
+                          style="color: rgb(187, 187, 187); margin: 9px 0px"
+                        >
+                          Answer: </span
+                        ><span style="color: rgb(140, 218, 255)">No Doubt</span
+                        ><span style="color: white"> (0%)</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="sc-ilEZps kWmlhb">
+                    3.
+                    <span
+                      >Your hallux is your big toe, so naturally "pollex" means
+                      what part of your hand?</span
+                    ><br />
+                    <div style="margin-top: 8px">
+                      <div>
+                        <span
+                          style="color: rgb(187, 187, 187); margin: 9px 0px"
+                        >
+                          Answer: </span
+                        ><span style="color: rgb(140, 218, 255)">Thumb</span
+                        ><span style="color: white"> (0%)</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="sc-ilEZps kWmlhb">
+                    4.
+                    <span
+                      >Jim Carrey made a cool $7 million to Jeff Daniels's 50
+                      grand, for what lowbrow '90s comedy?</span
+                    ><br />
+                    <div style="margin-top: 8px">
+                      <div>
+                        <span
+                          style="color: rgb(187, 187, 187); margin: 9px 0px"
+                        >
+                          Answer: </span
+                        ><span style="color: rgb(140, 218, 255)"
+                          >Dumb and Dumber</span
+                        ><span style="color: white"> (0%)</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="sc-ilEZps kWmlhb">
+                    5.
+                    <span
+                      >Miley Cyrus nearly reached the summit of the Billboard
+                      charts in 2009, with what aspirational hit from the
+                      "Hannah Montana" film?</span
+                    ><br />
+                    <div style="margin-top: 8px">
+                      <div>
+                        <span
+                          style="color: rgb(187, 187, 187); margin: 9px 0px"
+                        >
+                          Answer: </span
+                        ><span style="color: rgb(140, 218, 255)">The Climb</span
+                        ><span style="color: white"> (0%)</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="sc-ilEZps kWmlhb">
+                    6.
+                    <span
+                      >Lara Croft took her grave-defiling hobby to Japan,
+                      Siberia, and Peru, in the last three main installments of
+                      what video game franchise?</span
+                    ><br />
+                    <div style="margin-top: 8px">
+                      <div>
+                        <span
+                          style="color: rgb(187, 187, 187); margin: 9px 0px"
+                        >
+                          Answer: </span
+                        ><span style="color: rgb(140, 218, 255)"
+                          >Tomb Raider</span
+                        ><span style="color: white"> (0%)</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="sc-ilEZps kWmlhb">
+                    7.
+                    <span
+                      >Over 60% of amputees experience what haunting sensation
+                      that the missing body part is still attached?</span
+                    ><br />
+                    <div style="margin-top: 8px">
+                      <div>
+                        <span
+                          style="color: rgb(187, 187, 187); margin: 9px 0px"
+                        >
+                          Answer: </span
+                        ><span style="color: rgb(140, 218, 255)"
+                          >Phantom limb</span
+                        ><span style="color: white"> (100%)</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="sc-ilEZps kWmlhb">
+                    8.
+                    <span
+                      >Bernard, a human boy raised by a swarm of bees, was a
+                      late-aughts mascot for what hexagonal cereal that's not
+                      small, no, no, no?</span
+                    ><br />
+                    <div style="margin-top: 8px">
+                      <div>
+                        <span
+                          style="color: rgb(187, 187, 187); margin: 9px 0px"
+                        >
+                          Answer: </span
+                        ><span style="color: rgb(140, 218, 255)">Honeycomb</span
+                        ><span style="color: white"> (100%)</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="sc-ilEZps kWmlhb">
+                    9.
+                    <span
+                      >A blown-glass sink, an original Thomas Crapper water
+                      closet, and a replica of Marcel Duchamp's "Fountain" were
+                      highlights of a closed Massachusetts museum dedicated to
+                      what trade?</span
+                    ><br />
+                    <div style="margin-top: 8px">
+                      <div>
+                        <span
+                          style="color: rgb(187, 187, 187); margin: 9px 0px"
+                        >
+                          Answer: </span
+                        ><span style="color: rgb(140, 218, 255)">Plumbing</span
+                        ><span style="color: white"> (100%)</span>
+                      </div>
+                      <div
+                        style="
+                          margin: 8px 0px;
+                          padding: 0px 8px 8px;
+                          border: 1px solid rgb(187, 187, 187);
+                        "
+                      >
+                        <div
+                          style="color: rgb(187, 187, 187); margin-top: 16px"
+                        >
+                          Teams Who Got Bonus:<br /><br />
+                        </div>
+                        <div>
+                          <div style="color: white; text-decoration: none">
+                            asdf
+                          </div>
+                          <button
+                            color="primary"
+                            class="sc-beqWaB gTxObz"
+                            style="margin-top: 24px"
+                          >
+                            Pick Random
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div style="height: 16px"></div>
+              <button color="primary" class="sc-beqWaB gTxObz">
+                <img
+                  alt="icon"
+                  src="/res/recycle.svg"
+                  class="sc-kFuwaP"
+                  style="
+                    width: 20px;
+                    margin: -8px 16px;
+                    transform: translateY(-3px);
+                  "
+                />Refresh Submissions
+              </button>
+              <div style="height: 16px"></div>
+              <div>
+                <p class="sc-eACynP cxoosk">Teams</p>
+                <div
+                  style="
+                    background: rgb(51, 51, 51);
+                    padding: 16px;
+                    border-radius: 4px;
+                  "
+                >
+                  <div
+                    style="
+                      border-bottom: 1px solid rgb(187, 187, 187);
+                      border-radius: 4px;
+                      padding: 4px;
+                      display: flex;
+                      align-items: center;
+                      justify-content: space-between;
+                    "
+                  >
+                    <div>
+                      <span
+                        style="
+                          color: rgb(255, 106, 106);
+                          cursor: pointer;
+                          margin-right: 8px;
+                        "
+                        >X</span
+                      >
+                      <span style="margin-right: 8px">1. asdf</span>
+                    </div>
+                    <div style="width: 95px; flex-shrink: 0">Score: 4</div>
+                  </div>
+                </div>
+                <div class="sc-gueYoa iCeui">
+                  <div class="sc-dmqHEX kEnMBj">
+                    <div class="sc-hLseeU hpYYZD">Confirm Reset</div>
+                    <div>
+                      <div>
+                        Are you sure you wish to delete the team
+                        <span style="color: rgb(255, 106, 106)"></span>? The
+                        action cannot be undone.
+                      </div>
+                    </div>
+                    <div class="sc-eDDNvR eEJfBf">
+                      <button
+                        color="primary"
+                        class="sc-beqWaB gTxObz"
+                        style="width: 100px"
+                      >
+                        Yes</button
+                      ><button
+                        color="cancel"
+                        class="sc-beqWaB dXKjUE"
+                        style="width: 100px; margin-left: 16px"
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <p class="sc-eACynP cxoosk">The "Be Careful" Zone!</p>
+              <div style="display: flex">
+                <button
+                  color="cancel"
+                  class="sc-beqWaB dXKjUE"
+                  style="width: 50%"
+                >
+                  Reset Quiz</button
+                ><button
+                  color="cancel"
+                  class="sc-beqWaB dXKjUE"
+                  style="width: 50%"
+                >
+                  Stop Quiz
+                </button>
+              </div>
+            </div>
+          </form>
+          <div style="height: 32px"></div>
+        </div>
+      </div>
+      <div class="sc-hhGHuG dqlsAg">Loading...</div>
+      <div class="sc-gueYoa iCeui">
+        <div class="sc-dmqHEX kEnMBj">
+          <div class="sc-hLseeU hpYYZD">Confirm Reset</div>
+          <div>
+            <div>
+              Are you sure you wish to reset this quiz? All teams will be
+              deleted and their answers will be lost.
+            </div>
+          </div>
+          <div class="sc-eDDNvR eEJfBf">
+            <button
+              color="primary"
+              class="sc-beqWaB gTxObz"
+              style="width: 100px"
+            >
+              Yes</button
+            ><button
+              color="cancel"
+              class="sc-beqWaB dXKjUE"
+              style="width: 100px; margin-left: 16px"
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="sc-gueYoa iCeui">
+        <div class="sc-dmqHEX kEnMBj">
+          <div class="sc-hLseeU hpYYZD">Confirm Stop</div>
+          <div>
+            <div>
+              Are you sure you wish to stop this quiz? The quiz will immediately
+              end, and will not be able to be restarted.
+            </div>
+          </div>
+          <div class="sc-eDDNvR eEJfBf">
+            <button
+              color="primary"
+              class="sc-beqWaB gTxObz"
+              style="width: 100px"
+            >
+              Yes</button
+            ><button
+              color="cancel"
+              class="sc-beqWaB dXKjUE"
+              style="width: 100px; margin-left: 16px"
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="sc-gueYoa iCeui">
+        <div class="sc-dmqHEX kEnMBj">
+          <div class="sc-hLseeU hpYYZD">Quiz Info</div>
+          <div>
+            <div>
+              <p style="color: rgb(187, 187, 187)">
+                Live Quiz:
+                <span style="color: white"
+                  >Quiz: 2024-10-23
+                  <span style="user-select: text; cursor: auto"
+                    >(9vyey4)</span
+                  ></span
+                ><span style="display: block"
+                  >Quiz Template:
+                  <a
+                    href="/quiz-template/14da3192-bd46-4182-8758-67697fc9edae/round-templates"
+                    style="color: white"
+                    >Test Quiz 2</a
+                  ><br />Status:
+                  <span style="color: white">Answers Visible</span><br />Round
+                  Status: <span style="color: rgb(255, 106, 106)">Locked</span
+                  ><br />Current Round:
+                  <span style="color: white">1 (Please B Silent)</span><br /><a
+                    href="/api/live-quiz-admin/quiz/59ca593e-94b7-428d-b072-5f093695d8b1/export"
+                    >Export JSON</a
+                  ></span
+                >
+              </p>
+            </div>
+          </div>
+          <div class="sc-eDDNvR eEJfBf">
+            <button
+              color="primary"
+              class="sc-beqWaB gTxObz"
+              style="width: 100px"
+            >
+              Okay
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

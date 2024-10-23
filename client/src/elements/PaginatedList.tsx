@@ -20,7 +20,7 @@ const NextPrevArea = (props: {
       style={{
         display: 'flex',
         justifyContent: 'center',
-        alignItems: 'center',
+        alignItems: 'baseline',
       }}
     >
       <Button

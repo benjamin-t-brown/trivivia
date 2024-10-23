@@ -175,7 +175,10 @@ export const useConfirmNav = (enabled: boolean) => {
     title: 'Confirm Navigation',
     body: () => {
       return (
-        <div>Are you sure you wish to navigate away? Changes will be lost.</div>
+        <p>
+          Are you sure you wish to navigate away? <br /> <br /> Changes will be
+          lost.
+        </p>
       );
     },
     onConfirm: () => {

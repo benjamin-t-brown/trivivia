@@ -13,7 +13,8 @@ import { LiveQuizStartRoute } from './LiveQuizStart';
 import Img from 'elements/Img';
 import PaginatedList from 'elements/PaginatedList';
 import RelativeTime from 'react-relative-time';
-import PaginatedListFiltered from 'elements/PagindatedListFiltered';
+import PaginatedListFiltered from 'elements/PaginatedListFiltered';
+import { ButtonAction } from 'elements/ButtonAction';
 
 const InnerRoot = styled.div<Object>(() => {
   return {
@@ -141,15 +142,9 @@ const ListLiveQuizzes = () => {
       <MobileLayout topBar>
         <InnerRoot>
           <p></p>
-          <Button
-            color="primary"
-            style={{
-              width: '100%',
-            }}
-            onClick={handleCreateQuizClick}
-          >
+          <ButtonAction onClick={handleCreateQuizClick}>
             + Start New Live Quiz
-          </Button>
+          </ButtonAction>
           <p>Live Quizzes</p>
           <PaginatedListFiltered
             maxItemsPerPage={20}

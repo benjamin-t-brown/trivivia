@@ -55,6 +55,11 @@ import {
   isWaitingForRoundToStart,
 } from 'quizUtils';
 import Img from 'elements/Img';
+import { UpdateTeamNameForm } from 'components/UpdateTeamNameForm';
+import { SubmittedAnswersForRound } from 'components/SubmittedAnswersForRound';
+import { QuizTeamsList } from 'components/QuizTeamsList';
+import { QuestionCorrectAnswers } from 'components/QuestionCorrectAnswers';
+import { QuestionAnswerInputs } from 'components/QuestionAnswerInputs';
 
 const InnerRoot = styled.div<Object>(() => {
   return {
@@ -187,589 +192,6 @@ const loader = async ({ params }) => {
   return json(quizResponse);
 };
 
-const UpdateTeamNameForm = () => {
-  const fetcher = useFetcher();
-  const params = useParams();
-  const formId = 'update-team-name-form';
-  const [teamName, setTeamName] = React.useState('');
-
-  const handleSubmitClick = (ev: React.MouseEvent) => {
-    ev.preventDefault();
-
-    const formData = new FormData();
-    formData.set('teamName', teamName);
-    fetcher.submit(formData, {
-      method: 'post',
-      action: `/live/${params.userFriendlyQuizId}/update`,
-    });
-    setTeamName('');
-  };
-
-  const isLoading = fetcher.state === 'submitting';
-
-  return (
-    <fetcher.Form method="post" id={formId}>
-      <div
-        style={{
-          display: 'flex',
-          justifyContent: 'center',
-        }}
-      >
-        <div
-          style={{
-            width: '50%',
-            minWidth: '164px',
-          }}
-        >
-          <InputLabel htmlFor="code">Update Team Name</InputLabel>
-          {isLoading ? (
-            <div>Loading...</div>
-          ) : (
-            <Input
-              placeholder="Team Name"
-              aria-label="Team Name"
-              type="text"
-              name="teamName"
-              fullWidth
-              value={teamName}
-              onChange={ev => setTeamName(ev.target.value)}
-            />
-          )}
-        </div>
-      </div>
-      <div
-        style={{
-          textAlign: 'center',
-        }}
-      >
-        <FormErrorText />
-      </div>
-      <div style={{ height: '16px' }}></div>
-      <Button
-        flex
-        center
-        color="secondary"
-        style={{
-          width: '100%',
-        }}
-        disabled={teamName.length <= 0 || isLoading}
-        type="submit"
-        onClick={handleSubmitClick}
-      >
-        <IconLeft src="/res/edit.svg" />
-        Update Team Name
-      </Button>
-    </fetcher.Form>
-  );
-};
-
-const SubmittedAnswersRound = (props: {
-  submittedAnswersRound: Record<string, AnswerState>;
-  quizState: LiveQuizPublicStateResponse;
-}) => {
-  const aggAnswers: Record<string, string> = {};
-  const maxAnswers = Object.keys(props.submittedAnswersRound).reduce(
-    (prev, curr) => {
-      const n = Number(curr);
-      return Math.max(n, prev);
-    },
-    16
-  );
-  for (let questionI = 1; questionI <= maxAnswers; questionI++) {
-    const answers = props.submittedAnswersRound[questionI];
-    if (!answers) {
-      continue;
-    }
-    aggAnswers[questionI] = '';
-    for (let answerI = 1; answerI <= maxAnswers; answerI++) {
-      const answerText = answers['answer' + answerI];
-      if (answerText) {
-        aggAnswers[questionI] +=
-          (aggAnswers[questionI] === '' ? '' : ', ') + answerText;
-      }
-    }
-  }
-
-  const numQuestions = props?.quizState?.round?.totalNumberOfQuestions ?? 0;
-  // const submittedAnswers = Object.keys(aggAnswers).sort();
-
-  const answerList: string[] = [];
-  for (let i = 0; i < numQuestions; i++) {
-    if (aggAnswers[i + 1]) {
-      answerList.push(aggAnswers[i + 1]);
-    } else {
-      answerList.push('');
-    }
-  }
-  return (
-    <div
-      style={{
-        textAlign: 'left',
-        display: Object.keys(aggAnswers).length === 0 ? 'none' : 'block',
-      }}
-    >
-      <div
-        style={{
-          color: getColors().TEXT_DESCRIPTION,
-          marginBottom: '8px',
-          marginTop: '8px',
-        }}
-      >
-        Submitted Answers:
-      </div>
-      {answerList.map((answer, i) => {
-        return (
-          <div
-            key={i + 1}
-            style={{
-              width: '75%',
-            }}
-          >
-            {Number(i + 1)}. {answer}
-          </div>
-        );
-      })}
-    </div>
-  );
-};
-
-export const CorrectAnswers = (props: {
-  correctAnswers: string[];
-  numTeams: number;
-  answersStats?: AnswerStateStats;
-}) => {
-  if (props.correctAnswers.length === 1) {
-    // the percentage of teams who got 1 answer correct (since there's only one input, then this is
-    // all the data)
-    const pct = Math.round(
-      (100 * ((props.answersStats?.[1] as number | undefined) ?? 0)) /
-        props.numTeams
-    );
-
-    return (
-      <div>
-        <span
-          style={{
-            color: getColors().TEXT_DESCRIPTION,
-            margin: '9px 0',
-          }}
-        >
-          {' '}
-          Answer:{' '}
-        </span>
-        <span
-          style={{
-            color: getColors().PRIMARY_TEXT,
-          }}
-        >{`${props.correctAnswers[0]}`}</span>
-        <span
-          style={{
-            color: getColors().TEXT_DEFAULT,
-          }}
-        >
-          {' '}
-          ({pct}%)
-        </span>
-      </div>
-    );
-  } else {
-    const answersStats = props.answersStats ?? {};
-    const pctResult: number[] = [];
-    const pieFills: {
-      min: number;
-      max: number;
-      pct: number;
-      numCorrect: number;
-      color: string;
-    }[] = [];
-
-    const colors = [
-      'red',
-      'orange',
-      'yellow',
-      'green',
-      'lightblue',
-      'indigo',
-      'violet',
-    ];
-    let background = `conic-gradient(`;
-
-    let ctr = 0;
-    for (let i = 0; i <= props.correctAnswers.length; i++) {
-      const numCorrect = i;
-      const pct =
-        (100 * ((answersStats[numCorrect] as number) ?? 0)) / props.numTeams;
-      pctResult.push(pct);
-      if (pct) {
-        background += `${colors[ctr]} ${pctResult
-          .slice(0, -1)
-          .reduce((prev, curr) => prev + curr, 0)}% ${pctResult.reduce(
-          (prev, curr) => prev + curr,
-          0
-        )}%, `;
-
-        const min = Math.round(
-          pctResult.slice(0, -1).reduce((prev, curr) => prev + curr, 0)
-        );
-        const max = Math.round(
-          pctResult.reduce((prev, curr) => prev + curr, 0)
-        );
-
-        pieFills.push({
-          min,
-          max,
-          pct,
-          numCorrect,
-          color: colors[ctr],
-        });
-      }
-      ctr++;
-    }
-    background = background.slice(0, -2) + ')';
-
-    return (
-      <div>
-        <div
-          style={{
-            background: getColors().BACKGROUND2,
-            padding: '8px 16px 16px 10px',
-            border: '1px solid ' + getColors().TEXT_DESCRIPTION,
-          }}
-        >
-          <div
-            style={{
-              color: getColors().TEXT_DESCRIPTION,
-              margin: '9px 0',
-            }}
-          >
-            {' '}
-            Correct Answers:{' '}
-          </div>
-
-          {props.correctAnswers.map((answer, i) => {
-            return (
-              <div
-                key={i}
-                style={{
-                  marginLeft: '16px',
-                  color: getColors().PRIMARY_TEXT,
-                }}
-              >
-                - {answer}
-              </div>
-            );
-          })}
-          <div
-            style={{
-              position: 'relative',
-              display: 'flex',
-              justifyContent: 'center',
-              margin: '42px',
-            }}
-          >
-            <div style={{ position: 'relative' }}>
-              <div
-                style={{
-                  position: 'absolute',
-                  width: '100%',
-                  transform: 'translate(-0px, 39px)',
-                }}
-              >
-                {pieFills
-                  .filter(obj => Boolean(obj.pct))
-                  .map((obj, i) => {
-                    const r = 85;
-                    const pie2 = 2 * Math.PI;
-                    const piePct = (obj.min + (obj.max - obj.min) / 2) / 100;
-                    const translate = `translate(${
-                      Math.sin(pie2 * piePct) * r
-                    }px, ${-Math.cos(pie2 * piePct) * r}px)`;
-
-                    return (
-                      <div
-                        key={i}
-                        style={{
-                          color: obj.color,
-                          position: 'absolute',
-                          transform: translate,
-                          width: '100px',
-                          background: 'rgba(0, 0, 0, 0.5)',
-                          textAlign: 'center',
-                          fontSize: '12px',
-                        }}
-                      >
-                        {obj.numCorrect} correct: {Math.round(obj.pct)}%
-                      </div>
-                    );
-                  })}
-              </div>
-              <div
-                style={{
-                  background,
-                  borderRadius: '50px',
-                  width: '100px',
-                  height: '100px',
-                }}
-              ></div>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
-};
-
-const QuestionAnswer = (props: {
-  question: LiveQuizPublicQuestionResponse;
-  questionNumber: number;
-  disabled?: boolean;
-  dispatch: React.Dispatch<any>;
-  answersSaved: AnswerState;
-  answersQuestion?: AnswerState;
-  answersGraded?: Partial<AnswerStateGraded>;
-  answersStats?: AnswerStateStats;
-  numTeams: number;
-}) => {
-  const handleAnswerChange: (
-    answerNumber: number
-  ) => React.ChangeEventHandler<HTMLInputElement> = answerNumber => ev => {
-    props.dispatch({
-      questionNumber: props.questionNumber,
-      type: 'answer',
-      i: answerNumber,
-      value: ev.target.value,
-    });
-  };
-
-  const handleRadioChange: React.ChangeEventHandler<HTMLInputElement> = ev => {
-    props.dispatch({
-      questionNumber: props.questionNumber,
-      type: 'answer',
-      i: 1,
-      value: ev.target.value,
-    });
-  };
-
-  const numAnswers = getNumAnswers(props.question.answerType);
-  const numRadioBoxes = getNumRadioBoxes(props.question.answerType);
-
-  const answerBoxes: ReactNode[] = [];
-
-  for (let i = 0; i < numAnswers; i++) {
-    const answerKey = 'answer' + (i + 1);
-
-    const style: Record<string, string> = {
-      width: '75%',
-    };
-
-    let icon;
-    if (props.answersGraded || props.answersQuestion) {
-      const isCorrectAnswer = props.answersGraded?.[answerKey] === 'true';
-
-      icon = (
-        <Img
-          style={{
-            width: '22px',
-            marginRight: '16px',
-            background: isCorrectAnswer
-              ? getColors().SUCCESS_BACKGROUND
-              : getColors().ERROR_BACKGROUND,
-          }}
-          alt="Answer"
-          src={isCorrectAnswer ? '/res/check-mark.svg' : '/res/cancel.svg'}
-        />
-      );
-      style.border = isCorrectAnswer
-        ? '1px solid ' + getColors().SUCCESS_TEXT
-        : '1px solid ' + getColors().ERROR_TEXT;
-    }
-
-    answerBoxes.push(
-      <div
-        key={i}
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-        }}
-      >
-        {icon}
-        <Input
-          disabled={props.disabled}
-          aria-label="Answer"
-          type="text"
-          value={props.answersSaved[answerKey] ?? ''}
-          onChange={handleAnswerChange(i + 1)}
-          maxLength={255}
-          style={style}
-        />
-      </div>
-    );
-  }
-
-  if (answerBoxes.length && props.answersQuestion) {
-    answerBoxes.push(
-      <CorrectAnswers
-        key={'answer' + props.questionNumber}
-        correctAnswers={
-          Object.keys(props.question.answers ?? {})
-            .sort()
-            .map(i => props.question?.answers?.[i]) ?? []
-        }
-        answersStats={props.answersStats}
-        numTeams={props.numTeams}
-      />
-    );
-  }
-
-  const radioBoxes: ReactNode[] = [];
-  const radioName = 'radio' + props.questionNumber;
-  const radioAnswerKey = 'answer1';
-  for (let i = 0; i < numRadioBoxes; i++) {
-    const value = props.answersQuestion?.['radio' + (i + 1)] ?? '';
-    const id = props.questionNumber + '-' + i + '-' + value;
-
-    const style: Record<string, string> = {
-      width: '75%',
-    };
-    const checked = props.answersSaved?.[radioAnswerKey] === value;
-
-    let icon;
-    if (props.answersGraded || props.answersStats) {
-      const isCorrectAnswer = props.answersGraded?.[radioAnswerKey] === 'true';
-      if (props.answersGraded?.[radioAnswerKey] === 'true' && checked) {
-        style.border = '1px solid ' + getColors().SUCCESS_TEXT;
-        icon = (
-          <Img
-            style={{
-              width: '22px',
-              marginRight: '16px',
-              background: isCorrectAnswer
-                ? getColors().SUCCESS_BACKGROUND
-                : getColors().ERROR_BACKGROUND,
-            }}
-            alt="Answer"
-            src={isCorrectAnswer ? '/res/check-mark.svg' : '/res/cancel.svg'}
-          />
-        );
-      }
-      if (props.answersGraded?.[radioAnswerKey] === 'false' && checked) {
-        style.border = '1px solid ' + getColors().ERROR_TEXT;
-        icon = (
-          <Img
-            style={{
-              width: '22px',
-              marginRight: '16px',
-              background: isCorrectAnswer
-                ? getColors().SUCCESS_BACKGROUND
-                : getColors().ERROR_BACKGROUND,
-            }}
-            alt="Answer"
-            src={isCorrectAnswer ? '/res/check-mark.svg' : '/res/cancel.svg'}
-          />
-        );
-      }
-    }
-
-    radioBoxes.push(
-      <div
-        key={'radio' + i}
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          margin: '9px 0px',
-          padding: '8px',
-          ...style,
-        }}
-      >
-        {icon}
-        <Input
-          type="radio"
-          checked={checked}
-          id={id}
-          value={value}
-          name={radioName}
-          onChange={props.disabled ? () => void 0 : handleRadioChange}
-          style={{
-            transform: 'scale(1.5)',
-            pointerEvents: props.disabled ? 'none' : 'auto',
-          }}
-        />
-        <label
-          htmlFor={id}
-          style={{
-            marginLeft: '16px',
-          }}
-        >
-          {value}
-        </label>
-      </div>
-    );
-  }
-
-  if (radioBoxes.length && props.question.answers?.[radioAnswerKey]) {
-    radioBoxes.push(
-      <CorrectAnswers
-        key={'radio-answer' + props.questionNumber}
-        correctAnswers={[props.question.answers?.[radioAnswerKey]]}
-        answersStats={props.answersStats}
-        numTeams={props.numTeams}
-      />
-    );
-  }
-
-  return (
-    <div
-      style={{
-        padding: '16px',
-        borderRadius: '8px',
-        backgroundColor: getColors().BACKGROUND2,
-        margin: '4px 0px',
-        boxSizing: 'border-box',
-      }}
-    >
-      <div
-        style={{
-          marginBottom: '8px',
-        }}
-      >
-        {props.questionNumber}.{' '}
-        {props.question.text.split('\n').map((line, i) => {
-          return (
-            <React.Fragment key={i}>
-              <span key={i} dangerouslySetInnerHTML={{ __html: line }}></span>
-              <br />
-            </React.Fragment>
-          );
-        })}
-      </div>
-      {props.question.imageLink ? (
-        props.question.imageLink.includes('<iframe ') ? (
-          <div
-            dangerouslySetInnerHTML={{ __html: props.question.imageLink }}
-          ></div>
-        ) : (
-          <Img
-            style={{
-              width: '100%',
-            }}
-            src={props.question.imageLink}
-            alt="Question"
-          />
-        )
-      ) : null}
-      <div
-        style={{
-          marginLeft: '16px',
-          marginTop: '24px',
-        }}
-      >
-        {radioBoxes}
-        {radioBoxes?.length === 0 ? answerBoxes : null}
-      </div>
-    </div>
-  );
-};
-
 const QuizInRound = (props: { quizState: LiveQuizPublicStateResponse }) => {
   const currentRound = getCurrentRoundFromPublicQuizState(props.quizState);
   const fetcher = useFetcher();
@@ -867,7 +289,7 @@ const QuizInRound = (props: { quizState: LiveQuizPublicStateResponse }) => {
             color: getColors().TEXT_DESCRIPTION,
           }}
         >
-          Description -
+          Description:
         </span>{' '}
         {currentRound?.description}
       </p>
@@ -877,7 +299,7 @@ const QuizInRound = (props: { quizState: LiveQuizPublicStateResponse }) => {
           answers = undefined;
         }
         return (
-          <QuestionAnswer
+          <QuestionAnswerInputs
             key={i}
             questionNumber={i + 1}
             question={q}
@@ -972,9 +394,7 @@ const QuizInRound = (props: { quizState: LiveQuizPublicStateResponse }) => {
                   }
                   style={{
                     marginTop: '16px',
-                    // paddingRight: '27px',
                     width: '100%',
-                    // minWidth: '200px',
                     textAlign: 'center',
                     justifyContent: 'center',
                   }}
@@ -1022,7 +442,7 @@ const QuizInRound = (props: { quizState: LiveQuizPublicStateResponse }) => {
                   Submitted!
                 </div>
               ) : null}
-              <SubmittedAnswersRound
+              <SubmittedAnswersForRound
                 submittedAnswersRound={
                   props.quizState.round?.answersSubmitted || {}
                 }
@@ -1033,65 +453,6 @@ const QuizInRound = (props: { quizState: LiveQuizPublicStateResponse }) => {
         </>
       )}
     </fetcher.Form>
-  );
-};
-
-const QuizTeamsList = (props: { quizState: LiveQuizPublicStateResponse }) => {
-  const currentTeamId = getLiveQuizTeamId();
-
-  return (
-    <>
-      <SectionTitle>Teams</SectionTitle>
-      <div
-        style={{
-          background: getColors().BACKGROUND2,
-          padding: '16px',
-          borderRadius: '4px',
-        }}
-      >
-        {props.quizState.teams
-          .sort((a, b) => (a.currentScore > b.currentScore ? -1 : 1))
-          .map((team, i) => {
-            return (
-              <div
-                key={team.id}
-                style={{
-                  color:
-                    currentTeamId === team.id
-                      ? getColors().SUCCESS_TEXT
-                      : getColors().TEXT_DEFAULT,
-                  borderBottom: '1px solid ' + getColors().TEXT_DESCRIPTION,
-                  borderRadius: '4px',
-                  padding: '4px',
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                }}
-              >
-                <span
-                  style={{
-                    marginRight: '8px',
-                  }}
-                >
-                  {i + 1}. {team.teamName}
-                </span>
-                <div
-                  style={{
-                    width: '95px',
-                    flexShrink: '0',
-                  }}
-                >
-                  Score: {team.currentScore}
-                </div>
-              </div>
-            );
-          })}
-        {props.quizState.teams.length === 0 ? (
-          <div style={{ color: getColors().TEXT_DESCRIPTION }}>
-            No teams yet!
-          </div>
-        ) : null}
-      </div>
-    </>
   );
 };
 
@@ -1109,7 +470,7 @@ const LiveQuiz = (props: { error?: boolean }) => {
   });
 
   useFormResetValues(formId);
-  const { joined, requireReconnected } = useSocketIoRefreshState(fetcher);
+  const { requireReconnected } = useSocketIoRefreshState(fetcher);
 
   if (fetcher.data) {
     liveQuizResponse = fetcher.data;
@@ -1120,15 +481,6 @@ const LiveQuiz = (props: { error?: boolean }) => {
   }
 
   const isSpectating = Boolean(getLiveQuizSpectateId());
-
-  console.log(
-    'render live quiz',
-    liveQuizResponse,
-    'joined?',
-    joined,
-    'require reconnected',
-    requireReconnected
-  );
 
   return (
     <>
@@ -1151,17 +503,7 @@ const LiveQuiz = (props: { error?: boolean }) => {
           </Button>
         </CardTitleZone>
         <CardTitle>
-          {' '}
-          <>
-            Trivivia
-            {/* <IconLeft
-              verticalAdjust={-2}
-              style={{
-                verticalAlign: 'middle',
-              }}
-              src="/res/favicon_c2.svg"
-            /> */}
-          </>
+          <>Trivivia</>
         </CardTitle>
         <CardTitleZone align="right">
           <Button
@@ -1200,14 +542,11 @@ const LiveQuiz = (props: { error?: boolean }) => {
       <MobileLayout topBar>
         <InnerRoot>
           <>
-            <p
-              style={{
-                textAlign: 'center',
-              }}
-            >
+            <p>
               {requireReconnected ? (
                 <div
                   style={{
+                    textAlign: 'center',
                     color: colorsDark.ERROR_TEXT,
                     position: 'fixed',
                     left: 0,
@@ -1225,8 +564,7 @@ const LiveQuiz = (props: { error?: boolean }) => {
                 }}
               >
                 Connected to quiz:
-              </span>
-              <br />
+              </span>{' '}
               {liveQuizResponse.data.quiz.name}
               {isSpectating ? (
                 <>

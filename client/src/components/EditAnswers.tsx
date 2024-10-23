@@ -166,7 +166,7 @@ const EditAnswers = (props: EditAnswersProps) => {
       <InputLabel htmlFor="answerType">Answer Type</InputLabel>
       <select
         style={{
-          maxWidth: '140px',
+          maxWidth: '148px',
           padding: '8px',
           marginTop: '2px',
         }}

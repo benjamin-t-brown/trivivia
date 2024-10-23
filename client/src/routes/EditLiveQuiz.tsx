@@ -28,6 +28,10 @@ import InputLabel from 'elements/InputLabel';
 import FormErrorText from 'components/FormErrorText';
 import TextCenter from 'elements/TextCenter';
 import IconLeft from 'elements/IconLeft';
+import { ButtonAction } from 'elements/ButtonAction';
+import { JustifyContentDiv } from 'elements/JustifyContentDiv';
+import { IconButton } from 'elements/IconButton';
+import { HSpace } from 'elements/HSpace';
 
 const InnerRoot = styled.div<Object>(() => {
   return {
@@ -188,7 +192,7 @@ const AdminEditLiveQuiz = (props: EditLiveQuizProps) => {
                 color: getColors().TEXT_DESCRIPTION,
               }}
             >
-              Fill out information for this quiz template.
+              Fill out information for this live quiz.
             </p>
             <InputLabel htmlFor="name">Quiz Name</InputLabel>
             <Input
@@ -246,39 +250,22 @@ const AdminEditLiveQuiz = (props: EditLiveQuizProps) => {
 
             <FormErrorText />
             <div style={{ height: '16px' }}></div>
-            <Button
-              flex
-              color="primary"
-              style={{
-                width: '100%',
-              }}
-              type="submit"
-            >
-              <IconLeft src="/res/check-mark.svg" />
-              Save
-            </Button>
-            <Button
-              flex
-              color="secondary"
-              style={{
-                width: '100%',
-              }}
-              onClick={handleCancelClick}
-            >
-              <IconLeft src="/res/cancel.svg" />
-              Cancel
-            </Button>
-            <Button
-              flex
-              color="cancel"
-              style={{
-                width: '100%',
-              }}
-              onClick={handleDeleteClick}
-            >
-              <IconLeft src="/res/trash-can.svg" />
-              Delete
-            </Button>
+            <JustifyContentDiv justifyContent="left">
+              <ButtonAction color="primary" type="submit">
+                <IconButton src="/res/check-mark.svg" />
+                Save
+              </ButtonAction>
+              <HSpace />
+              <ButtonAction color="secondary" onClick={handleCancelClick}>
+                <IconButton src="/res/cancel.svg" />
+                Cancel
+              </ButtonAction>
+              <HSpace />
+              <ButtonAction color="cancel" onClick={handleDeleteClick}>
+                <IconButton src="/res/trash-can.svg" verticalAdjust={3} />
+                Delete
+              </ButtonAction>
+            </JustifyContentDiv>
           </InnerRoot>
         </Form>
       </MobileLayout>

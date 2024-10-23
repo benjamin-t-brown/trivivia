@@ -11,9 +11,9 @@ import TextCenter from 'elements/TextCenter';
 import { colorsDark } from 'style';
 import { quizTemplateIsReady } from 'validation';
 import Img from 'elements/Img';
-import PaginatedList from 'elements/PaginatedList';
 import RelativeTime from 'react-relative-time';
-import PaginatedListFiltered from 'elements/PagindatedListFiltered';
+import PaginatedListFiltered from 'elements/PaginatedListFiltered';
+import { ButtonAction } from 'elements/ButtonAction';
 
 const InnerRoot = styled.div<Object>(() => {
   return {
@@ -151,23 +151,15 @@ const ListQuizTemplates = () => {
     navigate('/quiz-template/' + id + '/round-templates');
   };
 
-  // console.log('quiz templates', quizTemplates);
-
   return (
     <>
       <DefaultTopBar upTo="/landing" />
       <MobileLayout topBar>
         <InnerRoot>
           <p></p>
-          <Button
-            color="primary"
-            style={{
-              width: '100%',
-            }}
-            onClick={handleCreateQuizTemplateClick}
-          >
+          <ButtonAction onClick={handleCreateQuizTemplateClick}>
             + Create New Quiz Template
-          </Button>
+          </ButtonAction>
           <p>Quiz Templates</p>
           <PaginatedListFiltered
             maxItemsPerPage={20}

@@ -39,7 +39,12 @@ import PaginatedList from 'elements/PaginatedList';
 import FormErrorText, { FormError } from 'components/FormErrorText';
 import AnimatedEllipsis from 'elements/AnimatedEllipsis';
 import { LoadingPage } from 'components/LoadingPage';
-import PaginatedListFiltered from 'elements/PagindatedListFiltered';
+import PaginatedListFiltered from 'elements/PaginatedListFiltered';
+import { ButtonAction } from 'elements/ButtonAction';
+import { IconButton } from 'elements/IconButton';
+import { JustifyContentDiv } from 'elements/JustifyContentDiv';
+import { HSpace } from 'elements/HSpace';
+import { StickyContent } from 'elements/FixedContent';
 
 const InnerRoot = styled.div<Object>(() => {
   return {
@@ -267,6 +272,11 @@ const ListAllRoundTemplates = (props: { error?: boolean }) => {
     });
   };
 
+  const handleCancelClick = (ev: React.MouseEvent) => {
+    ev.preventDefault();
+    navigate(-1);
+  };
+
   const handleRoundTemplateClick = (id: string) => (ev: React.MouseEvent) => {
     ev.preventDefault();
     ev.stopPropagation();
@@ -327,15 +337,30 @@ const ListAllRoundTemplates = (props: { error?: boolean }) => {
       <DefaultTopBar upTo={upToUrl} />
       <MobileLayout topBar>
         <InnerRoot>
-          <p
-            style={{
-              textAlign: 'center',
-            }}
-          >
-            Choose Round Templates
-          </p>
-          <FormErrorText />
-
+          <p>Choose Round Templates</p>
+          <StickyContent>
+            <FormErrorText />
+            <JustifyContentDiv justifyContent="left">
+              <ButtonAction
+                type="submit"
+                color="primary"
+                disabled={selectedTemplateIds.length === 0}
+                onClick={handleSaveClick}
+              >
+                <IconButton src="/res/check-mark.svg" /> Save
+              </ButtonAction>
+              <HSpace />
+              <ButtonAction
+                type="submit"
+                color="secondary"
+                onClick={handleCancelClick}
+              >
+                <IconButton src="/res/cancel.svg" />
+                Cancel
+              </ButtonAction>
+            </JustifyContentDiv>
+          </StickyContent>
+          <p></p>
           <Form method="post" id="choose-rounds-form">
             <PaginatedListFiltered
               maxItemsPerPage={20}
@@ -362,20 +387,6 @@ const ListAllRoundTemplates = (props: { error?: boolean }) => {
             ></PaginatedListFiltered>
             <p>
               <HiddenTextField name="selectedTemplatesJson" value={''} />
-              <Button
-                type="submit"
-                color="primary"
-                disabled={selectedTemplateIds.length === 0}
-                style={{
-                  width: '100%',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}
-                onClick={handleSaveClick}
-              >
-                <IconLeft src="/res/check-mark.svg" /> Save
-              </Button>
             </p>
           </Form>
         </InnerRoot>

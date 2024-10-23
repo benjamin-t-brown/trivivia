@@ -26,6 +26,9 @@ import IconLeft from 'elements/IconLeft';
 import HiddenTextField from 'components/HiddenTextField';
 import { updateCacheQuizTemplate } from 'cache';
 import Img from 'elements/Img';
+import { ButtonAction } from 'elements/ButtonAction';
+import { JustifyContentDiv } from 'elements/JustifyContentDiv';
+import { HSpace } from 'elements/HSpace';
 
 const InnerRoot = styled.div<Object>(() => {
   return {
@@ -217,33 +220,27 @@ const ListRoundTemplates = () => {
               / {numRoundsTotal}
             </span>
           </p>
-
-          <Button
-            disabled={
-              (loaderResponse?.data.roundTemplates.length ?? 0) >=
-              (loaderResponse?.data.quizTemplate.numRounds ?? 0)
-            }
-            color="primary"
-            style={{
-              width: '100%',
-            }}
-            onClick={handleCreateRoundTemplateClick}
-          >
-            + Create New Round Template
-          </Button>
-          <Button
-            disabled={
-              (loaderResponse?.data.roundTemplates.length ?? 0) >=
-              (loaderResponse?.data.quizTemplate.numRounds ?? 0)
-            }
-            color="primary"
-            style={{
-              width: '100%',
-            }}
-            onClick={handlePickExistingRoundTemplateClick}
-          >
-            + Pick Existing Round Templates
-          </Button>
+          <JustifyContentDiv justifyContent="left">
+            <ButtonAction
+              disabled={
+                (loaderResponse?.data.roundTemplates.length ?? 0) >=
+                (loaderResponse?.data.quizTemplate.numRounds ?? 0)
+              }
+              onClick={handleCreateRoundTemplateClick}
+            >
+              + Create New Round Template
+            </ButtonAction>
+            <HSpace />
+            <ButtonAction
+              disabled={
+                (loaderResponse?.data.roundTemplates.length ?? 0) >=
+                (loaderResponse?.data.quizTemplate.numRounds ?? 0)
+              }
+              onClick={handlePickExistingRoundTemplateClick}
+            >
+              + Pick Existing Round Templates
+            </ButtonAction>
+          </JustifyContentDiv>
           <p>Round Templates</p>
           {orderedRoundTemplates?.map((templateId, i) => {
             const t = loaderResponse?.data.roundTemplates.find(

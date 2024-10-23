@@ -37,6 +37,10 @@ import TextArea from 'elements/TextArea';
 import HiddenTextField from 'components/HiddenTextField';
 import { fetchImportRoundTemplate } from 'fetches';
 import { LoadingPage } from 'components/LoadingPage';
+import { JustifyContentDiv } from 'elements/JustifyContentDiv';
+import { ButtonAction } from 'elements/ButtonAction';
+import { HSpace } from 'elements/HSpace';
+import { IconButton } from 'elements/IconButton';
 
 const InnerRoot = styled.div<Object>(() => {
   return {
@@ -373,44 +377,37 @@ const EditRoundTemplate = (props: EditRoundProps) => {
                 Disable Joker
               </label>
             </div>
-            <p>
-              <Button
-                flex
-                type="submit"
-                color="secondary"
+            <p></p>
+            <ButtonAction type="submit" color="secondary">
+              <div
                 style={{
+                  position: 'relative',
                   width: '100%',
+                  textAlign: 'left',
                 }}
               >
-                <div
-                  style={{
-                    position: 'relative',
-                    width: '100%',
-                    textAlign: 'left',
-                  }}
-                >
-                  <IconLeft src="/res/clone.svg" />
-                  Upload Round
-                  <label htmlFor="import-round">
-                    <input
-                      onChange={handleImportClick}
-                      ref={fileInputRef}
-                      name="import-round"
-                      id="import-round"
-                      type="file"
-                      style={{
-                        transform: 'translateY(-6px) scaleY(1.5)',
-                        cursor: 'pointer',
-                        opacity: 0,
-                        left: 0,
-                        width: '100%',
-                        position: 'absolute',
-                      }}
-                    />
-                  </label>
-                </div>
-              </Button>
-            </p>
+                <IconButton src="/res/clone.svg" verticalAdjust={7} />
+                Upload Round
+                <label htmlFor="import-round">
+                  <input
+                    onChange={handleImportClick}
+                    ref={fileInputRef}
+                    name="import-round"
+                    id="import-round"
+                    type="file"
+                    style={{
+                      transform: 'translateY(-6px) scaleY(1.5)',
+                      cursor: 'pointer',
+                      opacity: 0,
+                      left: 0,
+                      width: '100%',
+                      position: 'absolute',
+                    }}
+                  />
+                </label>
+              </div>
+            </ButtonAction>
+
             <div
               style={{
                 display: roundTemplateImport ? 'block' : 'none',
@@ -424,41 +421,24 @@ const EditRoundTemplate = (props: EditRoundProps) => {
             </div>
             <FormErrorText />
             <div style={{ height: '16px' }}></div>
-            <Button
-              flex
-              color="primary"
-              style={{
-                width: '100%',
-              }}
-              type="submit"
-            >
-              <IconLeft src="/res/check-mark.svg" />
-              Save
-            </Button>
-            <Button
-              flex
-              color="secondary"
-              style={{
-                width: '100%',
-              }}
-              onClick={handleCancelClick}
-            >
-              <IconLeft src="/res/cancel.svg" />
-              Cancel
-            </Button>
-            {props.isNew ? null : (
-              <Button
-                flex
-                color="cancel"
-                style={{
-                  width: '100%',
-                }}
-                onClick={handleDeleteClick}
-              >
-                <IconLeft src="/res/trash-can.svg" />
-                Delete
-              </Button>
-            )}
+            <JustifyContentDiv justifyContent="left">
+              <ButtonAction color="primary" type="submit">
+                <IconButton src="/res/check-mark.svg" />
+                Save
+              </ButtonAction>
+              <HSpace />
+              <ButtonAction color="secondary" onClick={handleCancelClick}>
+                <IconButton src="/res/cancel.svg" />
+                Cancel
+              </ButtonAction>
+              <HSpace />
+              {props.isNew ? null : (
+                <ButtonAction color="cancel" onClick={handleDeleteClick}>
+                  <IconButton src="/res/trash-can.svg" verticalAdjust={3} />
+                  Delete
+                </ButtonAction>
+              )}
+            </JustifyContentDiv>
           </InnerRoot>
         </Form>
       </MobileLayout>
