@@ -12,6 +12,8 @@ import {
   redirect,
   useFetcher,
   json,
+  useParams,
+  useSearchParams,
 } from 'react-router-dom';
 import { getColors } from 'style';
 import styled from 'styled-components';
@@ -47,7 +49,7 @@ const updatePwAction = createAction(
       throwValidationError(result.message, values);
     }
 
-    return null;
+    return redirect('/admin-settings?success=true');
   }
 );
 
@@ -68,6 +70,7 @@ const Settings = (props: { error?: boolean; admin?: boolean }) => {
   const [settings, setSettings] = React.useState(getSettingsFromLs());
   const [password, setPassword] = React.useState('');
   const [loading, setLoading] = React.useState(false);
+  const [params] = useSearchParams();
   const fetcher = useFetcher();
 
   const handleUpdatePasswordChange: React.ChangeEventHandler<
@@ -82,7 +85,6 @@ const Settings = (props: { error?: boolean; admin?: boolean }) => {
     formData.append('password', password);
     fetcher.submit(formData, {
       method: 'put',
-      action: 'updatePwAction',
     });
     setPassword('');
   };
@@ -96,6 +98,8 @@ const Settings = (props: { error?: boolean; admin?: boolean }) => {
     setLoading(false);
     setPassword('');
   }
+
+  console.log('PARAMS', params);
 
   return (
     <>
@@ -153,6 +157,11 @@ const Settings = (props: { error?: boolean; admin?: boolean }) => {
                   >
                     {loading ? 'Loading...' : 'Update Password'}
                   </Button>
+                  {params.get('success') ? (
+                    <div style={{ color: getColors().SUCCESS_TEXT }}>
+                      Password saved successfully.
+                    </div>
+                  ) : null}
                 </div>
                 <div
                   style={{
@@ -187,10 +196,6 @@ export const SettingsAdminRoute = {
   path: 'admin-settings',
   element: <Settings admin={true} />,
   errorElement: <Settings error={true} admin={true} />,
-  loader,
-};
-
-export const UpdatePasswordRoute = {
-  path: 'updatePwAction',
   action: updatePwAction,
+  loader,
 };

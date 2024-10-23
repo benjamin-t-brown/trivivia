@@ -6,10 +6,11 @@
   "scripts": {
     "start": "yarn start:dev",
     "start:dev": "concurrently -n srv,client \"yarn start:server\" \"yarn start:client\"",
-    "start:client": "cd client && yarn start",
-    "start:server": "cd server && yarn start",
-    "postinstall": "(cd client && yarn) && (cd server && yarn)",
-    "build": "(cd client && yarn build)"
+    "start:client": "yarn --cwd client start",
+    "start:server": "yarn --cwd server start",
+    "install-playwright": "yarn --cwd test-browser && npx playwright install",
+    "postinstall": "yarn --cwd client && yarn --cwd server",
+    "build": "yarn --cwd client build"
   },
   "author": "",
   "license": "ISC",
@@ -17,7 +18,8 @@
   "workspaces": [
     "client",
     "server",
-    "shared"
+    "shared",
+    "test-browser"
   ],
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^5.57.0",

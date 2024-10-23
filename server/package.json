@@ -11,7 +11,7 @@
     "start:prod": "tsx --no-cache --tsconfig ./tsconfig.json ./src/server.ts",
     "create-initial-migration": "ts-node --project ./tsconfig.json scripts/createMigration.ts",
     "migrate": "sequelize db:migrate",
-    "postinstall": "cp -n database.example.json database.json && yarn migrate"
+    "setup-db": "cp -n database.example.json database.json && yarn migrate"
   },
   "author": "",
   "license": "ISC",
