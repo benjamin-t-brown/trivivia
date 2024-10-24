@@ -8,3 +8,6 @@ test-results/
 test-results-output/
 playwright-report/
 .DS_Store
+yarn-error.log
+test-browser/gwd
+scratch/gwd-rounds/

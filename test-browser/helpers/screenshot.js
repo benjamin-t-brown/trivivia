@@ -16,3 +16,19 @@ export async function saveHtml(prefix = 'test', page) {
   const html = await page.content();
   fs.writeFileSync(`${SCRATCH_DIR}/${prefix}.html`, html);
 }
+
+export function removeUnnecessaryWhitespace(text) {
+  return text
+    .split('\n')
+    .map(n => n.replace(/\s+/g, ' ').trim())
+    .filter(Boolean)
+    .join('\n');
+}
+
+export async function saveText(prefix = 'test', page) {
+  const text = await page.textContent('body');
+  fs.writeFileSync(
+    `${SCRATCH_DIR}/${prefix}.txt`,
+    removeUnnecessaryWhitespace(text)
+  );
+}
