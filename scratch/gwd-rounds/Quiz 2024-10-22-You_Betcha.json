@@ -1,0 +1,168 @@
+{
+  "id": "c1a0c4bb-23c4-4cb5-9866-5733aa99b610",
+  "title": "You Betcha",
+  "description": "(8 points) A round on Minnesota.",
+  "questionOrder": [
+    "26b0123e-b987-4ff0-8939-2ee3057bad59",
+    "d6954b30-61da-4de0-87bb-b228470e8f53",
+    "3d0b7cd7-d0c0-49cc-9636-0a346db55620",
+    "5280e3b3-8cec-4ef1-844f-64119b22cd2e",
+    "9627d42f-f8c3-4644-a6c6-67fe8246797d",
+    "49930428-8437-4ff4-bdf5-a7686d8cb9f7",
+    "37d5c296-546e-46eb-aefb-c408addb1770",
+    "d4a37e4f-d519-4552-984a-5a7b3d62f34d",
+    "bc0cf470-45e3-48a6-a2ff-e67e7dd3abe0"
+  ],
+  "notes": "",
+  "jokerDisabled": false,
+  "creationDate": "2024-10-24T22:59:03.435Z",
+  "updatedOn": "2024-10-24T22:59:03.435Z",
+  "deletionDate": null,
+  "quizTemplateId": "11111111-2222-3333-4444-123412341234",
+  "questions": [
+    {
+      "id": "26b0123e-b987-4ff0-8939-2ee3057bad59",
+      "text": "Representing the night sky and the lakes they're so proud of, most of Minnesota's new state flag is shades of what primary color?",
+      "answers": {
+        "answer1": "Blue"
+      },
+      "answerType": "input1",
+      "imageLink": "",
+      "orderMatters": false,
+      "isBonus": false,
+      "notes": "",
+      "creationDate": "2024-10-24T22:59:03.435Z",
+      "updatedOn": "2024-10-24T22:59:03.435Z",
+      "deletionDate": null,
+      "roundTemplateId": "c1a0c4bb-23c4-4cb5-9866-5733aa99b610"
+    },
+    {
+      "id": "d6954b30-61da-4de0-87bb-b228470e8f53",
+      "text": "This image is from the original patent filed by two Minnesotans for what board game that Sears deemed \"too risqué\" to stock?",
+      "answers": {
+        "answer1": "Twister"
+      },
+      "answerType": "input1",
+      "imageLink": "https://www.geekswhodrink.com/wp-content/uploads/2024/10/GWD-102224-R1Q2.png",
+      "orderMatters": false,
+      "isBonus": false,
+      "notes": "",
+      "creationDate": "2024-10-24T22:59:03.435Z",
+      "updatedOn": "2024-10-24T22:59:03.435Z",
+      "deletionDate": null,
+      "roundTemplateId": "c1a0c4bb-23c4-4cb5-9866-5733aa99b610"
+    },
+    {
+      "id": "3d0b7cd7-d0c0-49cc-9636-0a346db55620",
+      "text": "In 1857, a state legislator physically stole a bill that would've moved the capital to St. Peter from what other saintly city?",
+      "answers": {
+        "answer1": "St. Paul"
+      },
+      "answerType": "input1",
+      "imageLink": "",
+      "orderMatters": false,
+      "isBonus": false,
+      "notes": "",
+      "creationDate": "2024-10-24T22:59:03.435Z",
+      "updatedOn": "2024-10-24T22:59:03.435Z",
+      "deletionDate": null,
+      "roundTemplateId": "c1a0c4bb-23c4-4cb5-9866-5733aa99b610"
+    },
+    {
+      "id": "5280e3b3-8cec-4ef1-844f-64119b22cd2e",
+      "text": "Mankato, Minnesota won a high school football championship in 1999, with a defense run by what eventual governor and maybe vice president?",
+      "answers": {
+        "answer1": "Tim Walz"
+      },
+      "answerType": "input1",
+      "imageLink": "",
+      "orderMatters": false,
+      "isBonus": false,
+      "notes": "",
+      "creationDate": "2024-10-24T22:59:03.435Z",
+      "updatedOn": "2024-10-24T22:59:03.435Z",
+      "deletionDate": null,
+      "roundTemplateId": "c1a0c4bb-23c4-4cb5-9866-5733aa99b610"
+    },
+    {
+      "id": "9627d42f-f8c3-4644-a6c6-67fe8246797d",
+      "text": "Recognizing all the slick fielders who've played for them, the Minnesota Twins' stadium features a giant golden version of what sporting equipment?",
+      "answers": {
+        "answer1": "Glove"
+      },
+      "answerType": "input1",
+      "imageLink": "",
+      "orderMatters": false,
+      "isBonus": false,
+      "notes": "",
+      "creationDate": "2024-10-24T22:59:03.435Z",
+      "updatedOn": "2024-10-24T22:59:03.435Z",
+      "deletionDate": null,
+      "roundTemplateId": "c1a0c4bb-23c4-4cb5-9866-5733aa99b610"
+    },
+    {
+      "id": "49930428-8437-4ff4-bdf5-a7686d8cb9f7",
+      "text": "As part of her award-winning Korean-fusion pizzas, Minneapolis chef Ann Kim individually salts every cabbage leaf to create what fermented staple?",
+      "answers": {
+        "answer1": "Kimchi"
+      },
+      "answerType": "input1",
+      "imageLink": "",
+      "orderMatters": false,
+      "isBonus": false,
+      "notes": "",
+      "creationDate": "2024-10-24T22:59:03.435Z",
+      "updatedOn": "2024-10-24T22:59:03.435Z",
+      "deletionDate": null,
+      "roundTemplateId": "c1a0c4bb-23c4-4cb5-9866-5733aa99b610"
+    },
+    {
+      "id": "37d5c296-546e-46eb-aefb-c408addb1770",
+      "text": "\"It seemed like a better title than 'Brainerd.'\" That was Joel Coen's answer for why what classic Minnesota film was named for a North Dakota city?",
+      "answers": {
+        "answer1": "Fargo"
+      },
+      "answerType": "input1",
+      "imageLink": "",
+      "orderMatters": false,
+      "isBonus": false,
+      "notes": "",
+      "creationDate": "2024-10-24T22:59:03.435Z",
+      "updatedOn": "2024-10-24T22:59:03.435Z",
+      "deletionDate": null,
+      "roundTemplateId": "c1a0c4bb-23c4-4cb5-9866-5733aa99b610"
+    },
+    {
+      "id": "d4a37e4f-d519-4552-984a-5a7b3d62f34d",
+      "text": "No, we're not joking: A doctor named Richard Hellman contributed to an elite nephrology group founded by what prestigious hospital in Rochester?",
+      "answers": {
+        "answer1": "Mayo Clinic"
+      },
+      "answerType": "input1",
+      "imageLink": "",
+      "orderMatters": false,
+      "isBonus": false,
+      "notes": "",
+      "creationDate": "2024-10-24T22:59:03.435Z",
+      "updatedOn": "2024-10-24T22:59:03.435Z",
+      "deletionDate": null,
+      "roundTemplateId": "c1a0c4bb-23c4-4cb5-9866-5733aa99b610"
+    },
+    {
+      "id": "bc0cf470-45e3-48a6-a2ff-e67e7dd3abe0",
+      "text": "Bonus: For the 40th anniversary of \"Purple Rain,\" this year Airbnb rented out a house owned by what musician who was literally Minnesota royalty?",
+      "answers": {
+        "answer1": "Prince"
+      },
+      "answerType": "input1",
+      "imageLink": "",
+      "orderMatters": false,
+      "isBonus": true,
+      "notes": "",
+      "creationDate": "2024-10-24T22:59:03.435Z",
+      "updatedOn": "2024-10-24T22:59:03.435Z",
+      "deletionDate": null,
+      "roundTemplateId": "c1a0c4bb-23c4-4cb5-9866-5733aa99b610"
+    }
+  ]
+}

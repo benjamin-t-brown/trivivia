@@ -1,0 +1,176 @@
+{
+  "id": "51600a69-f019-4400-b6d6-5e82a47ac11c",
+  "title": "Totally Tubular!",
+  "description": "(16 points) Every answer to these two-part questions starts with \"T.\" Answer both parts for a point each. No penalty for wrong guesses!",
+  "questionOrder": [
+    "20c79b21-6a77-445b-bf1c-85810b120ba1",
+    "25ec73ca-5bb1-4413-93a6-d1b05b92bef8",
+    "e5f32400-80b2-485f-acef-0813bba2119d",
+    "1b18d228-df7c-408d-b192-e55cadaf886c",
+    "75ed1b10-7f68-4d76-8d20-40bb3e43f430",
+    "ba4e886c-926a-40ee-962f-014380f064fe",
+    "ce00b672-5230-4b8e-bd5c-daa387201f07",
+    "4ca54119-e086-4b4b-9a0a-7dc59ce1bb11",
+    "2d26c7db-54b9-4df6-b153-a726792862b7"
+  ],
+  "notes": "",
+  "jokerDisabled": false,
+  "creationDate": "2024-10-24T23:00:00.695Z",
+  "updatedOn": "2024-10-24T23:00:00.695Z",
+  "deletionDate": null,
+  "quizTemplateId": "11111111-2222-3333-4444-123412341234",
+  "questions": [
+    {
+      "id": "20c79b21-6a77-445b-bf1c-85810b120ba1",
+      "text": "What fast-food chain unleashed the bright orange horror of Doritos Locos in 2012? Florida orange growers protested when NASA took what powder mix to the moon?",
+      "answers": {
+        "answer1": "Taco Bell",
+        "answer2": "Tang"
+      },
+      "answerType": "input2",
+      "imageLink": "",
+      "orderMatters": false,
+      "isBonus": false,
+      "notes": "",
+      "creationDate": "2024-10-24T23:00:00.696Z",
+      "updatedOn": "2024-10-24T23:00:00.696Z",
+      "deletionDate": null,
+      "roundTemplateId": "51600a69-f019-4400-b6d6-5e82a47ac11c"
+    },
+    {
+      "id": "25ec73ca-5bb1-4413-93a6-d1b05b92bef8",
+      "text": "Phil Collins narrated and sang most of the songs for what '90s Disney film? Ewan McGregor narrates a list of all the supplies you'll need for a heroin detox, in what 1996 film?",
+      "answers": {
+        "answer1": "Tarzan",
+        "answer2": "Trainspotting"
+      },
+      "answerType": "input2",
+      "imageLink": "",
+      "orderMatters": false,
+      "isBonus": false,
+      "notes": "",
+      "creationDate": "2024-10-24T23:00:00.696Z",
+      "updatedOn": "2024-10-24T23:00:00.696Z",
+      "deletionDate": null,
+      "roundTemplateId": "51600a69-f019-4400-b6d6-5e82a47ac11c"
+    },
+    {
+      "id": "e5f32400-80b2-485f-acef-0813bba2119d",
+      "text": "Unsurprisingly, what Asian capital has the world's biggest fish market? More surprisingly, what Middle Eastern capital has the world's largest shopping mall?",
+      "answers": {
+        "answer1": "Tokyo",
+        "answer2": "Tehran"
+      },
+      "answerType": "input2",
+      "imageLink": "",
+      "orderMatters": false,
+      "isBonus": false,
+      "notes": "",
+      "creationDate": "2024-10-24T23:00:00.696Z",
+      "updatedOn": "2024-10-24T23:00:00.696Z",
+      "deletionDate": null,
+      "roundTemplateId": "51600a69-f019-4400-b6d6-5e82a47ac11c"
+    },
+    {
+      "id": "1b18d228-df7c-408d-b192-e55cadaf886c",
+      "text": "Michael Artiaga recently became the first person to clear level 255 in what 40-year-old puzzle game? The name \"Lara Croft\" was picked out of a phone book for what relic-smashing franchise?",
+      "answers": {
+        "answer1": "Tetris",
+        "answer2": "Tomb Raider"
+      },
+      "answerType": "input2",
+      "imageLink": "",
+      "orderMatters": false,
+      "isBonus": false,
+      "notes": "",
+      "creationDate": "2024-10-24T23:00:00.696Z",
+      "updatedOn": "2024-10-24T23:00:00.696Z",
+      "deletionDate": null,
+      "roundTemplateId": "51600a69-f019-4400-b6d6-5e82a47ac11c"
+    },
+    {
+      "id": "75ed1b10-7f68-4d76-8d20-40bb3e43f430",
+      "text": "Chemistry's ideal gas law says that PV = nRT. What does that T stand for? In 2016, element number 117 was renamed in honor of which U.S. state?",
+      "answers": {
+        "answer1": "Temperature",
+        "answer2": "Tennessee"
+      },
+      "answerType": "input2",
+      "imageLink": "",
+      "orderMatters": false,
+      "isBonus": false,
+      "notes": "",
+      "creationDate": "2024-10-24T23:00:00.696Z",
+      "updatedOn": "2024-10-24T23:00:00.696Z",
+      "deletionDate": null,
+      "roundTemplateId": "51600a69-f019-4400-b6d6-5e82a47ac11c"
+    },
+    {
+      "id": "ba4e886c-926a-40ee-962f-014380f064fe",
+      "text": "What novel-turned-Gary Oldman Cold War film got its long title from a British nursery rhyme? What 1958 Chinua Achebe novel got its bleak title from a poem by William Butler Yeats?",
+      "answers": {
+        "answer1": "Tinker Tailor Soldier Spy",
+        "answer2": "Things Fall Apart"
+      },
+      "answerType": "input2",
+      "imageLink": "",
+      "orderMatters": false,
+      "isBonus": false,
+      "notes": "",
+      "creationDate": "2024-10-24T23:00:00.696Z",
+      "updatedOn": "2024-10-24T23:00:00.696Z",
+      "deletionDate": null,
+      "roundTemplateId": "51600a69-f019-4400-b6d6-5e82a47ac11c"
+    },
+    {
+      "id": "ce00b672-5230-4b8e-bd5c-daa387201f07",
+      "text": "\"Motor City Kitties\" is the adorable nickname of what MLB team? The Rip City Remix are the G-League affiliate of what NBA team?",
+      "answers": {
+        "answer1": "Tigers",
+        "answer2": "Trail Blazers"
+      },
+      "answerType": "input2",
+      "imageLink": "",
+      "orderMatters": false,
+      "isBonus": false,
+      "notes": "",
+      "creationDate": "2024-10-24T23:00:00.696Z",
+      "updatedOn": "2024-10-24T23:00:00.696Z",
+      "deletionDate": null,
+      "roundTemplateId": "51600a69-f019-4400-b6d6-5e82a47ac11c"
+    },
+    {
+      "id": "4ca54119-e086-4b4b-9a0a-7dc59ce1bb11",
+      "text": "Sterling K. Brown says that strangers who ask him for hugs are usually fans of what downer drama? Fans told director Rob Reiner he should've picked a better-known band to follow for what 1984 comedy film?",
+      "answers": {
+        "answer1": "This Is Us",
+        "answer2": "This Is Spinal Tap"
+      },
+      "answerType": "input2",
+      "imageLink": "",
+      "orderMatters": false,
+      "isBonus": false,
+      "notes": "",
+      "creationDate": "2024-10-24T23:00:00.696Z",
+      "updatedOn": "2024-10-24T23:00:00.696Z",
+      "deletionDate": null,
+      "roundTemplateId": "51600a69-f019-4400-b6d6-5e82a47ac11c"
+    },
+    {
+      "id": "2d26c7db-54b9-4df6-b153-a726792862b7",
+      "text": "Bonus: The Blue Line of the T will get you to Logan Airport, if you're flying out of what state capital with one \"t\" in it?",
+      "answers": {
+        "answer1": "Boston"
+      },
+      "answerType": "input1",
+      "imageLink": "",
+      "orderMatters": false,
+      "isBonus": true,
+      "notes": "",
+      "creationDate": "2024-10-24T23:00:00.696Z",
+      "updatedOn": "2024-10-24T23:00:00.696Z",
+      "deletionDate": null,
+      "roundTemplateId": "51600a69-f019-4400-b6d6-5e82a47ac11c"
+    }
+  ]
+}

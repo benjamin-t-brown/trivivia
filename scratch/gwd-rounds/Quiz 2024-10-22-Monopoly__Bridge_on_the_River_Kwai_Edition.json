@@ -1,0 +1,151 @@
+{
+  "id": "aedbca41-387b-4e03-a299-ff7aa06220d9",
+  "title": "Monopoly: Bridge on the River Kwai Edition",
+  "description": "(8 points) Name the properties that inspired the Monopoly games these nifty pewter tokens came from.",
+  "questionOrder": [
+    "120cbcb6-416d-48fb-abf6-fa6ea135d43a",
+    "8fc7d912-491e-4154-95c8-724957a61e1b",
+    "18ea431a-ce9b-4fd4-b148-d4c8d5af1ded",
+    "20dc83f4-c7f9-48d3-ab48-6ce3b1210323",
+    "3b811c60-4c39-48a2-bc29-07657fc51f01",
+    "2bca77e3-d81d-4b5d-82aa-562ee594cbcc",
+    "7faaf581-9f69-4475-acd5-966091979962",
+    "3e87efbf-f085-4a1e-862b-831db434a703"
+  ],
+  "notes": "",
+  "jokerDisabled": false,
+  "creationDate": "2024-10-24T22:59:53.106Z",
+  "updatedOn": "2024-10-24T22:59:53.106Z",
+  "deletionDate": null,
+  "quizTemplateId": "11111111-2222-3333-4444-123412341234",
+  "questions": [
+    {
+      "id": "120cbcb6-416d-48fb-abf6-fa6ea135d43a",
+      "text": "Name the TV show whose Monopoly edition these tokens are from.",
+      "answers": {
+        "answer1": "SpongeBob SquarePants"
+      },
+      "answerType": "input1",
+      "imageLink": "https://www.geekswhodrink.com/wp-content/uploads/2024/10/GWD-102224-R5Q1.png",
+      "orderMatters": false,
+      "isBonus": false,
+      "notes": "",
+      "creationDate": "2024-10-24T22:59:53.106Z",
+      "updatedOn": "2024-10-24T22:59:53.106Z",
+      "deletionDate": null,
+      "roundTemplateId": "aedbca41-387b-4e03-a299-ff7aa06220d9"
+    },
+    {
+      "id": "8fc7d912-491e-4154-95c8-724957a61e1b",
+      "text": "Name the video game series whose Monopoly edition these tokens are from.",
+      "answers": {
+        "answer1": "The Legend of Zelda"
+      },
+      "answerType": "input1",
+      "imageLink": "https://www.geekswhodrink.com/wp-content/uploads/2024/10/GWD-102224-R5Q2.png",
+      "orderMatters": false,
+      "isBonus": false,
+      "notes": "",
+      "creationDate": "2024-10-24T22:59:53.106Z",
+      "updatedOn": "2024-10-24T22:59:53.106Z",
+      "deletionDate": null,
+      "roundTemplateId": "aedbca41-387b-4e03-a299-ff7aa06220d9"
+    },
+    {
+      "id": "18ea431a-ce9b-4fd4-b148-d4c8d5af1ded",
+      "text": "Name the movie whose Monopoly edition these tokens are from.",
+      "answers": {
+        "answer1": "Dune"
+      },
+      "answerType": "input1",
+      "imageLink": "https://www.geekswhodrink.com/wp-content/uploads/2024/10/GWD-102224-R5Q3.png",
+      "orderMatters": false,
+      "isBonus": false,
+      "notes": "",
+      "creationDate": "2024-10-24T22:59:53.106Z",
+      "updatedOn": "2024-10-24T22:59:53.106Z",
+      "deletionDate": null,
+      "roundTemplateId": "aedbca41-387b-4e03-a299-ff7aa06220d9"
+    },
+    {
+      "id": "20dc83f4-c7f9-48d3-ab48-6ce3b1210323",
+      "text": "Name the TV show whose Monopoly edition these tokens are from.",
+      "answers": {
+        "answer1": "The Walking Dead"
+      },
+      "answerType": "input1",
+      "imageLink": "https://www.geekswhodrink.com/wp-content/uploads/2024/10/GWD-102224-R5Q4.png",
+      "orderMatters": false,
+      "isBonus": false,
+      "notes": "",
+      "creationDate": "2024-10-24T22:59:53.106Z",
+      "updatedOn": "2024-10-24T22:59:53.106Z",
+      "deletionDate": null,
+      "roundTemplateId": "aedbca41-387b-4e03-a299-ff7aa06220d9"
+    },
+    {
+      "id": "3b811c60-4c39-48a2-bc29-07657fc51f01",
+      "text": "Name the movie whose Monopoly edition these tokens are from.",
+      "answers": {
+        "answer1": "The Goonies"
+      },
+      "answerType": "input1",
+      "imageLink": "https://www.geekswhodrink.com/wp-content/uploads/2024/10/GWD-102224-R5Q5.png",
+      "orderMatters": false,
+      "isBonus": false,
+      "notes": "",
+      "creationDate": "2024-10-24T22:59:53.106Z",
+      "updatedOn": "2024-10-24T22:59:53.106Z",
+      "deletionDate": null,
+      "roundTemplateId": "aedbca41-387b-4e03-a299-ff7aa06220d9"
+    },
+    {
+      "id": "2bca77e3-d81d-4b5d-82aa-562ee594cbcc",
+      "text": "Name the TV show whose Monopoly edition these tokens are from.",
+      "answers": {
+        "answer1": "Ted Lasso"
+      },
+      "answerType": "input1",
+      "imageLink": "https://www.geekswhodrink.com/wp-content/uploads/2024/10/GWD-102224-R5Q6.png",
+      "orderMatters": false,
+      "isBonus": false,
+      "notes": "",
+      "creationDate": "2024-10-24T22:59:53.106Z",
+      "updatedOn": "2024-10-24T22:59:53.106Z",
+      "deletionDate": null,
+      "roundTemplateId": "aedbca41-387b-4e03-a299-ff7aa06220d9"
+    },
+    {
+      "id": "7faaf581-9f69-4475-acd5-966091979962",
+      "text": "Name the video game series whose Monopoly edition these tokens are from.",
+      "answers": {
+        "answer1": "Team Fortress 2"
+      },
+      "answerType": "input1",
+      "imageLink": "https://www.geekswhodrink.com/wp-content/uploads/2024/10/GWD-102224-R5Q7.png",
+      "orderMatters": false,
+      "isBonus": false,
+      "notes": "",
+      "creationDate": "2024-10-24T22:59:53.106Z",
+      "updatedOn": "2024-10-24T22:59:53.106Z",
+      "deletionDate": null,
+      "roundTemplateId": "aedbca41-387b-4e03-a299-ff7aa06220d9"
+    },
+    {
+      "id": "3e87efbf-f085-4a1e-862b-831db434a703",
+      "text": "Name the movie whose Monopoly edition these tokens are from.",
+      "answers": {
+        "answer1": "The Godfather"
+      },
+      "answerType": "input1",
+      "imageLink": "https://www.geekswhodrink.com/wp-content/uploads/2024/10/GWD-102224-R5Q8.png",
+      "orderMatters": false,
+      "isBonus": false,
+      "notes": "",
+      "creationDate": "2024-10-24T22:59:53.106Z",
+      "updatedOn": "2024-10-24T22:59:53.106Z",
+      "deletionDate": null,
+      "roundTemplateId": "aedbca41-387b-4e03-a299-ff7aa06220d9"
+    }
+  ]
+}

@@ -8,3 +8,4 @@ test-results/
 test-results-output/
 playwright-report/
 .DS_Store
+yarn-error.log

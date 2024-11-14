@@ -1,0 +1,168 @@
+{
+  "id": "3d406ec2-9c53-40c1-9abe-dc92930aac23",
+  "title": "We Are Round Four",
+  "description": "(8 points) It's a whole round on symbiotes! That's when two species have a close and long-term relationship, which might or might not be positive.",
+  "questionOrder": [
+    "5e03ef7d-44b7-43f3-9fa4-4d01767df816",
+    "768ec279-3ca5-40da-8a54-1a268f5726ed",
+    "ff5b9360-c0e8-4b77-abfb-2df73adc5e51",
+    "f2decfea-cace-457a-8fbc-fc5a6e6d6bc7",
+    "81ff1664-82c5-4038-bb1b-1c92d42c310f",
+    "52da5d16-c5c6-41dc-9c68-746cadc8c99d",
+    "cca07c1d-c943-4ad0-b12e-58d6a777da44",
+    "a089b1a5-1d3f-419c-b11b-b2638820789a",
+    "a854ec64-c5d5-4ff8-b7af-996354976a0d"
+  ],
+  "notes": "",
+  "jokerDisabled": false,
+  "creationDate": "2024-10-24T22:59:42.056Z",
+  "updatedOn": "2024-10-24T22:59:42.056Z",
+  "deletionDate": null,
+  "quizTemplateId": "11111111-2222-3333-4444-123412341234",
+  "questions": [
+    {
+      "id": "5e03ef7d-44b7-43f3-9fa4-4d01767df816",
+      "text": "Causing workers to just up and quit, colony collapse disorder is a potentially economically devastating phenomenon that affects what key pollinators?",
+      "answers": {
+        "answer1": "Bees"
+      },
+      "answerType": "input1",
+      "imageLink": "",
+      "orderMatters": false,
+      "isBonus": false,
+      "notes": "",
+      "creationDate": "2024-10-24T22:59:42.056Z",
+      "updatedOn": "2024-10-24T22:59:42.056Z",
+      "deletionDate": null,
+      "roundTemplateId": "3d406ec2-9c53-40c1-9abe-dc92930aac23"
+    },
+    {
+      "id": "768ec279-3ca5-40da-8a54-1a268f5726ed",
+      "text": "Picking rotten meat out from between their vicious teeth, Egyptian plovers are birds known for giving free dental cleanings to what Nile dwellers?",
+      "answers": {
+        "answer1": "Crocodile"
+      },
+      "answerType": "input1",
+      "imageLink": "",
+      "orderMatters": false,
+      "isBonus": false,
+      "notes": "",
+      "creationDate": "2024-10-24T22:59:42.056Z",
+      "updatedOn": "2024-10-24T22:59:42.056Z",
+      "deletionDate": null,
+      "roundTemplateId": "3d406ec2-9c53-40c1-9abe-dc92930aac23"
+    },
+    {
+      "id": "ff5b9360-c0e8-4b77-abfb-2df73adc5e51",
+      "text": "Some butterflies have been observed drinking turtles' tears, probably to get what essential element that's otherwise missing from their diet?",
+      "answers": {
+        "answer1": "Sodium"
+      },
+      "answerType": "input1",
+      "imageLink": "",
+      "orderMatters": false,
+      "isBonus": false,
+      "notes": "",
+      "creationDate": "2024-10-24T22:59:42.056Z",
+      "updatedOn": "2024-10-24T22:59:42.056Z",
+      "deletionDate": null,
+      "roundTemplateId": "3d406ec2-9c53-40c1-9abe-dc92930aac23"
+    },
+    {
+      "id": "f2decfea-cace-457a-8fbc-fc5a6e6d6bc7",
+      "text": "Though the CDC says they're going overboard, many schools still have \"no nit policies\" to cut down on the spread of what parasitic pests?",
+      "answers": {
+        "answer1": "Lice"
+      },
+      "answerType": "input1",
+      "imageLink": "",
+      "orderMatters": false,
+      "isBonus": false,
+      "notes": "",
+      "creationDate": "2024-10-24T22:59:42.056Z",
+      "updatedOn": "2024-10-24T22:59:42.056Z",
+      "deletionDate": null,
+      "roundTemplateId": "3d406ec2-9c53-40c1-9abe-dc92930aac23"
+    },
+    {
+      "id": "81ff1664-82c5-4038-bb1b-1c92d42c310f",
+      "text": "A detail that would have made \"Finding Nemo\" a lot weirder, what species of fish is known for letting sea anemones eat their poop in exchange for protection?",
+      "answers": {
+        "answer1": "Clownfish"
+      },
+      "answerType": "input1",
+      "imageLink": "",
+      "orderMatters": false,
+      "isBonus": false,
+      "notes": "",
+      "creationDate": "2024-10-24T22:59:42.056Z",
+      "updatedOn": "2024-10-24T22:59:42.057Z",
+      "deletionDate": null,
+      "roundTemplateId": "3d406ec2-9c53-40c1-9abe-dc92930aac23"
+    },
+    {
+      "id": "52da5d16-c5c6-41dc-9c68-746cadc8c99d",
+      "text": "What, you thought there'd be just one question about poop eating? With a weird suction cup-shaped dorsal fin, what fish spends most of its life attached to other animals and eating their crap?",
+      "answers": {
+        "answer1": "Remora"
+      },
+      "answerType": "input1",
+      "imageLink": "",
+      "orderMatters": false,
+      "isBonus": false,
+      "notes": "",
+      "creationDate": "2024-10-24T22:59:42.057Z",
+      "updatedOn": "2024-10-24T22:59:42.057Z",
+      "deletionDate": null,
+      "roundTemplateId": "3d406ec2-9c53-40c1-9abe-dc92930aac23"
+    },
+    {
+      "id": "cca07c1d-c943-4ad0-b12e-58d6a777da44",
+      "text": "One can give chase if prey runs, one can dig if prey burrows: That seems to be the reasoning behind why coyotes often hunt by teaming up with what ferocious mustelids?",
+      "answers": {
+        "answer1": "Badgers"
+      },
+      "answerType": "input1",
+      "imageLink": "",
+      "orderMatters": false,
+      "isBonus": false,
+      "notes": "",
+      "creationDate": "2024-10-24T22:59:42.057Z",
+      "updatedOn": "2024-10-24T22:59:42.057Z",
+      "deletionDate": null,
+      "roundTemplateId": "3d406ec2-9c53-40c1-9abe-dc92930aac23"
+    },
+    {
+      "id": "a089b1a5-1d3f-419c-b11b-b2638820789a",
+      "text": "For people looking for all-natural alternatives to Ozempic, it's been reported that dieters still buy weight loss pills containing what parasite that can grow up to 30 feet?",
+      "answers": {
+        "answer1": "Tapeworm"
+      },
+      "answerType": "input1",
+      "imageLink": "",
+      "orderMatters": false,
+      "isBonus": false,
+      "notes": "",
+      "creationDate": "2024-10-24T22:59:42.057Z",
+      "updatedOn": "2024-10-24T22:59:42.057Z",
+      "deletionDate": null,
+      "roundTemplateId": "3d406ec2-9c53-40c1-9abe-dc92930aac23"
+    },
+    {
+      "id": "a854ec64-c5d5-4ff8-b7af-996354976a0d",
+      "text": "Bonus: Allowing for a symbiotic relationship between the movie studio and movie theaters, \"Venom: The Last Dance\" is being released in what big ol' format common at science museums?",
+      "answers": {
+        "answer1": "IMAX"
+      },
+      "answerType": "input1",
+      "imageLink": "",
+      "orderMatters": false,
+      "isBonus": true,
+      "notes": "",
+      "creationDate": "2024-10-24T22:59:42.057Z",
+      "updatedOn": "2024-10-24T22:59:42.057Z",
+      "deletionDate": null,
+      "roundTemplateId": "3d406ec2-9c53-40c1-9abe-dc92930aac23"
+    }
+  ]
+}

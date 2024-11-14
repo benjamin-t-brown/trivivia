@@ -1,0 +1,168 @@
+{
+  "id": "a54f54b8-1541-4f33-b709-cc5196cdd84e",
+  "title": "The Most Important Round of the Quiz",
+  "description": "(8 points) I'll describe a phrase with one word missing. You supply the missing word, which will always be some kind of breakfast item.",
+  "questionOrder": [
+    "fc020bb3-3884-47f1-86cd-64be49a051dd",
+    "4a91eacd-a3e5-4393-8258-5cd85b496e18",
+    "3bde0daf-18cd-419d-87f5-22312199696a",
+    "5dcc4490-54a6-4496-8a3b-a68b18bd5fee",
+    "eeca3c65-6890-4f0f-af2e-5d8229fd7309",
+    "17c2f2d5-76e3-4504-b9dc-a2b7cd2a65a5",
+    "b5dcd3c3-1673-4266-b07a-b7111a53cb15",
+    "cbd57019-3c42-4b3e-8295-9413681539c9",
+    "aea5faa8-3cc9-4e20-b140-551b6248474f"
+  ],
+  "notes": "",
+  "jokerDisabled": false,
+  "creationDate": "2024-10-24T22:59:17.221Z",
+  "updatedOn": "2024-10-24T22:59:17.221Z",
+  "deletionDate": null,
+  "quizTemplateId": "11111111-2222-3333-4444-123412341234",
+  "questions": [
+    {
+      "id": "fc020bb3-3884-47f1-86cd-64be49a051dd",
+      "text": "According to urban legend, the nursery rhyme inspired by a serial killer who lived on Drury Lane: The WHAT Man?",
+      "answers": {
+        "answer1": "Muffin"
+      },
+      "answerType": "input1",
+      "imageLink": "",
+      "orderMatters": false,
+      "isBonus": false,
+      "notes": "",
+      "creationDate": "2024-10-24T22:59:17.221Z",
+      "updatedOn": "2024-10-24T22:59:17.221Z",
+      "deletionDate": null,
+      "roundTemplateId": "a54f54b8-1541-4f33-b709-cc5196cdd84e"
+    },
+    {
+      "id": "4a91eacd-a3e5-4393-8258-5cd85b496e18",
+      "text": "The \"Apollo 13\" actor who's somehow only three degrees of movie separation from Teddy Roosevelt: Kevin WHO?",
+      "answers": {
+        "answer1": "Bacon"
+      },
+      "answerType": "input1",
+      "imageLink": "",
+      "orderMatters": false,
+      "isBonus": false,
+      "notes": "",
+      "creationDate": "2024-10-24T22:59:17.221Z",
+      "updatedOn": "2024-10-24T22:59:17.221Z",
+      "deletionDate": null,
+      "roundTemplateId": "a54f54b8-1541-4f33-b709-cc5196cdd84e"
+    },
+    {
+      "id": "3bde0daf-18cd-419d-87f5-22312199696a",
+      "text": "The \"Robbery\" rapper whose third posthumous album comes out in November: WHAT Wrld?",
+      "answers": {
+        "answer1": "Juice"
+      },
+      "answerType": "input1",
+      "imageLink": "",
+      "orderMatters": false,
+      "isBonus": false,
+      "notes": "",
+      "creationDate": "2024-10-24T22:59:17.221Z",
+      "updatedOn": "2024-10-24T22:59:17.221Z",
+      "deletionDate": null,
+      "roundTemplateId": "a54f54b8-1541-4f33-b709-cc5196cdd84e"
+    },
+    {
+      "id": "5dcc4490-54a6-4496-8a3b-a68b18bd5fee",
+      "text": "The term for an unstable country coined by author O. Henry after his time in Honduras: WHAT republic?",
+      "answers": {
+        "answer1": "Banana"
+      },
+      "answerType": "input1",
+      "imageLink": "",
+      "orderMatters": false,
+      "isBonus": false,
+      "notes": "",
+      "creationDate": "2024-10-24T22:59:17.221Z",
+      "updatedOn": "2024-10-24T22:59:17.221Z",
+      "deletionDate": null,
+      "roundTemplateId": "a54f54b8-1541-4f33-b709-cc5196cdd84e"
+    },
+    {
+      "id": "eeca3c65-6890-4f0f-af2e-5d8229fd7309",
+      "text": "The secretion of the melaleuca tree that supposedly treats everything from acne to athlete's foot: WHAT tree Oil?",
+      "answers": {
+        "answer1": "Tea"
+      },
+      "answerType": "input1",
+      "imageLink": "",
+      "orderMatters": false,
+      "isBonus": false,
+      "notes": "",
+      "creationDate": "2024-10-24T22:59:17.221Z",
+      "updatedOn": "2024-10-24T22:59:17.221Z",
+      "deletionDate": null,
+      "roundTemplateId": "a54f54b8-1541-4f33-b709-cc5196cdd84e"
+    },
+    {
+      "id": "17c2f2d5-76e3-4504-b9dc-a2b7cd2a65a5",
+      "text": "The Michelle Obama-produced kids' cooking show starring a yeti puppet: WHATS + Mochi?",
+      "answers": {
+        "answer1": "Waffles"
+      },
+      "answerType": "input1",
+      "imageLink": "",
+      "orderMatters": false,
+      "isBonus": false,
+      "notes": "",
+      "creationDate": "2024-10-24T22:59:17.221Z",
+      "updatedOn": "2024-10-24T22:59:17.221Z",
+      "deletionDate": null,
+      "roundTemplateId": "a54f54b8-1541-4f33-b709-cc5196cdd84e"
+    },
+    {
+      "id": "b5dcd3c3-1673-4266-b07a-b7111a53cb15",
+      "text": "The hit podcast where @girlwithnojob and @jackieoshry give celebs a light burning: The WHAT?",
+      "answers": {
+        "answer1": "Toast"
+      },
+      "answerType": "input1",
+      "imageLink": "",
+      "orderMatters": false,
+      "isBonus": false,
+      "notes": "",
+      "creationDate": "2024-10-24T22:59:17.221Z",
+      "updatedOn": "2024-10-24T22:59:17.221Z",
+      "deletionDate": null,
+      "roundTemplateId": "a54f54b8-1541-4f33-b709-cc5196cdd84e"
+    },
+    {
+      "id": "cbd57019-3c42-4b3e-8295-9413681539c9",
+      "text": "The legislative body that meets at Christiansborg Palace in Copenhagen: The WHAT Parliament?",
+      "answers": {
+        "answer1": "Danish"
+      },
+      "answerType": "input1",
+      "imageLink": "",
+      "orderMatters": false,
+      "isBonus": false,
+      "notes": "",
+      "creationDate": "2024-10-24T22:59:17.221Z",
+      "updatedOn": "2024-10-24T22:59:17.221Z",
+      "deletionDate": null,
+      "roundTemplateId": "a54f54b8-1541-4f33-b709-cc5196cdd84e"
+    },
+    {
+      "id": "aea5faa8-3cc9-4e20-b140-551b6248474f",
+      "text": "Bonus: The continental breakfast is so named because it lacks the bangers and beans characteristic of what off-the-continent country's \"full\" breakfasts?",
+      "answers": {
+        "answer1": "England"
+      },
+      "answerType": "input1",
+      "imageLink": "",
+      "orderMatters": false,
+      "isBonus": true,
+      "notes": "",
+      "creationDate": "2024-10-24T22:59:17.221Z",
+      "updatedOn": "2024-10-24T22:59:17.221Z",
+      "deletionDate": null,
+      "roundTemplateId": "a54f54b8-1541-4f33-b709-cc5196cdd84e"
+    }
+  ]
+}
