@@ -1,14 +1,17 @@
 import { test } from '@playwright/test';
 import fs from 'fs';
 import path from 'path';
-import {
-  removeUnnecessaryWhitespace,
-  saveHtml,
-  saveText,
-  SCRATCH_DIR,
-  takeScreenshot,
-} from '../helpers/screenshot';
+// import {
+//   removeUnnecessaryWhitespace,
+//   saveHtml,
+//   saveText,
+//   SCRATCH_DIR,
+//   takeScreenshot,
+// } from '../helpers/screenshot';
 import { randomUUID } from 'crypto';
+import { removeUnnecessaryWhitespace } from './helpers';
+
+const SCRATCH_DIR = path.resolve(__dirname, '../../scratch');
 
 // yarn test -c playwright.gwd.config.js parsegwd.test.js
 
@@ -138,5 +141,5 @@ test('Parse', async ({ page }) => {
     JSON.stringify(round, null, 2)
   );
 
-  await saveText(prefix, page);
+  // await saveText(prefix, page);
 });
