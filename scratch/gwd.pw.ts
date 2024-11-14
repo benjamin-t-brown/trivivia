@@ -2,7 +2,8 @@ import { exec } from 'child_process';
 import fs from 'fs';
 import path from 'path';
 import { AnswerState } from 'shared/responses';
-import { randomUUID } from 'crypto';
+
+// npx tsx scratch/gwd.pw.ts
 
 const execAsync = async (command: string): Promise<void> => {
   return new Promise(resolve => {
@@ -148,7 +149,7 @@ const convertParsedOutputToTriviviaRound = (parsedRound: ParsedRound) => {
 const main = async () => {
   await execAsync('echo "Begin quiz capture!"');
 
-  const roundNumber = 2;
+  const roundNumber = 6;
   const quizName = 'Quiz 2024-10-22';
 
   // saveConfigForTest('gwd.test', {
@@ -198,7 +199,7 @@ const main = async () => {
   const roundPath = path.resolve(
     __dirname,
     'gwd-rounds',
-    `${quizName}-${parsedRound.roundName
+    `${quizName}-${roundNumber}-${parsedRound.roundName
       .replace(/\s/g, '_')
       .replace(/:/g, '_')}.json`
   );
