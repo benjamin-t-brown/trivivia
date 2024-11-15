@@ -1,0 +1,79 @@
+{
+  "id": "8caf8ea4-907f-4901-89a1-cd81e9e7e87e",
+  "roundName": "A Quick, Quality Quiz Round",
+  "roundDescription": "(8 points) It's the 168th anniversary of the first ringing of Big Ben, so in its honor it's a radically roisterous round full of alliterative aural answers.",
+  "questions": [
+    {
+      "id": "8eb8f808-840a-45d4-ac67-f76f6a32f97a",
+      "questionImage": null,
+      "questionText": "Gene Wilder and Timothée Chalamet have both belted out \"Pure Imagination\" while in character as what chief of chocolate?",
+      "answerText": "Willy Wonka",
+      "numAnswers": 1,
+      "isBonus": false
+    },
+    {
+      "id": "4851b030-3c70-486e-8f87-91f632acf485",
+      "questionImage": null,
+      "questionText": "If your stereo system is on the fritz you can call the Geek Squad, the IT help team owned by what big box retailer?",
+      "answerText": "Best Buy",
+      "numAnswers": 1,
+      "isBonus": false
+    },
+    {
+      "id": "1f3735be-583d-489f-bc8a-7f5e86d2d241",
+      "questionImage": null,
+      "questionText": "Sending ultrahigh frequency waves, a \"sonic cannon\" was a weapon designed by what fictional billionaire baron and sneaky Superman villain?",
+      "answerText": "Lex Luthor",
+      "numAnswers": 1,
+      "isBonus": false
+    },
+    {
+      "id": "7dd87be7-b592-4805-8833-c15f6c7cd137",
+      "questionImage": null,
+      "questionText": "Apple Music subscribers stream free on flights with what U.S. carrier that flies more passengers than any other?",
+      "answerText": "American Airlines",
+      "numAnswers": 1,
+      "isBonus": false
+    },
+    {
+      "id": "8ab2d8f0-bc48-4170-82be-89f08809aef9",
+      "questionImage": null,
+      "questionText": "On \"Carpool Karaoke,\" Snoop Dogg cruised around in a Lincoln belting out \"On The Road Again\" with what actor whose singing voice is alright-alright-alright?",
+      "answerText": "Matthew McConaughey",
+      "numAnswers": 1,
+      "isBonus": false
+    },
+    {
+      "id": "e7b4fa92-5cd3-416c-8133-20aa3c60d399",
+      "questionImage": null,
+      "questionText": "Karlie Kloss and Cindy Crawford were just two of the great guest gals who appeared in T. Swift's music video for what song about Band-Aids not fixing bullet holes?",
+      "answerText": "Bad Blood",
+      "numAnswers": 1,
+      "isBonus": false
+    },
+    {
+      "id": "356b5d78-58fc-43c0-8690-fe4b41bda540",
+      "questionImage": null,
+      "questionText": "What line of pricey British SUVs brags about their sound systems from pricey British audiophile agency Meridian?",
+      "answerText": "Range Rover",
+      "numAnswers": 1,
+      "isBonus": false
+    },
+    {
+      "id": "793d6aa6-b494-486c-935a-f9e0e3720898",
+      "questionImage": null,
+      "questionText": "In 006, the Best Sound Editing AND Sound Mixing Oscars both went to what primate picture that Peter Jackson somehow thought deserved to be 187 minutes long?",
+      "answerText": "King Kong",
+      "numAnswers": 1,
+      "isBonus": false
+    },
+    {
+      "id": "8ef1c8d9-e264-45a2-8a62-97ca08cba6c1",
+      "questionImage": null,
+      "questionText": "Bonus: Along with Big Ben, Hampstead Heath, Kings Cross, and the Maritime Museum are some of the other alliterative attractions you can visit in what massive, moist metropolis?",
+      "answerText": "London",
+      "numAnswers": 1,
+      "isBonus": true
+    }
+  ]
+}

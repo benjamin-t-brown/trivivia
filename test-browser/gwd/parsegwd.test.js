@@ -14,6 +14,7 @@ import { removeUnnecessaryWhitespace } from './helpers';
 const SCRATCH_DIR = path.resolve(__dirname, '../../scratch');
 
 // yarn test -c playwright.gwd.config.js parsegwd.test.js
+// npx playwright test test-browser/gwd/parsegwd.test.js --config=playwright.config.js
 
 const locateOptional = async (locator, method, arg) => {
   try {
@@ -28,6 +29,10 @@ const removePercents = str => {
 
 const removeEmptyParens = str => {
   return str.replace(/\(\)/g, '');
+};
+
+const randomizeOrderOfArray = arr => {
+  return arr.sort(() => Math.random() - 0.5);
 };
 
 test('Parse', async ({ page }) => {
@@ -46,6 +51,7 @@ test('Parse', async ({ page }) => {
     config.parseFile
   );
 
+  console.log('loading file', parseFile);
   await page.goto('file:' + parseFile);
   const roundQuestions = [];
 
@@ -97,6 +103,79 @@ test('Parse', async ({ page }) => {
         numAnswers,
         isBonus: questionText.includes('Bonus:'),
       });
+    } else if (numH4 === 2) {
+      console.log('NUMH4', numH4);
+      // tw-text-correct-answer
+      // tw-text-incorrect-answertext
+      // ocument.querySelector('h4[data-testid="text"]').textContent
+      let questionText = removeUnnecessaryWhitespace(
+        await question.getByTestId('text').textContent()
+      ).replace(/\n/g, ' ');
+
+      // let answerText = '';
+
+      // for (let i = 0; i < 16; i++) {
+      //   const nth = question.getByTestId('answer-state').locator('..').nth(i)
+      //   let t = '';
+      //   try {
+      //     t = await nth.innerText({
+      //       timeout: 100,
+      //     });
+      //   } catch (e) {}
+      //   if (!t) {
+      //     continue;
+      //   }
+      //   answerText = ' ' + i + '. ' + removeUnnecessaryWhitespace(t);
+      // }
+      // const questionSelector = 'h4.nocopy[data-testid="text"] span';
+      // const questionText = await page.textContent(questionSelector);
+
+      // console.log('q text content', await question.textContent());
+      const correctAnswer = removeUnnecessaryWhitespace(
+        await question
+          .locator('.tw-flex.tw-flex-row .tw-text-correct-answertext')
+          .innerText()
+      );
+      let incorrectAnswers = [];
+      for (const s of await question
+        .locator('.tw-text-incorrect-answertext')
+        .all()) {
+        incorrectAnswers.push(removeUnnecessaryWhitespace(await s.innerText()));
+      }
+
+      // const answersText = [correctAnswer, incorrectAnswers];
+
+      // const answersText = await Promise.all(
+      //   answerSelectors.map(selector =>
+      //     question.locator(selector).all().then(async els =>
+
+      //     }
+      //   )
+      // );
+
+      // const answerContainerSelector = '.tw-grid-rows-1fr';
+      // const answerSelector = `${answerContainerSelector} .tw-inline.nocopy`;
+      // const answers = await question.$$eval(answerSelector, nodes =>
+      //   nodes.map(node => node.textContent.trim())
+      // );
+
+      console.log('QUeSTION ETEx', questionText);
+      // console.log('ANSWER TEXT', answersText);
+
+      const randArr = randomizeOrderOfArray([
+        correctAnswer,
+        ...incorrectAnswers,
+      ]);
+      const correctInd = randArr.indexOf(correctAnswer);
+
+      roundQuestions.push({
+        id: randomUUID(),
+        questionImage,
+        questionText,
+        choices: randArr,
+        correctChoiceInd: correctInd,
+        numAnswers,
+      });
     } else {
       const questionText = removeUnnecessaryWhitespace(
         await question.locator('h4').nth(1).textContent()
@@ -136,10 +215,9 @@ test('Parse', async ({ page }) => {
     questions: roundQuestions,
   };
 
-  fs.writeFileSync(
-    path.resolve(SCRATCH_DIR, `${prefix}.round.json`),
-    JSON.stringify(round, null, 2)
-  );
+  const p = path.resolve(SCRATCH_DIR, `${prefix}.round.json`);
+  console.log('write to', p);
+  fs.writeFileSync(p, JSON.stringify(round, null, 2));
 
   // await saveText(prefix, page);
 });
