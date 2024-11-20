@@ -1,0 +1,71 @@
+{
+  "id": "2a86df8d-3831-4bf1-ae11-b7111b3d8592",
+  "roundName": "Take Two",
+  "roundDescription": "(16 points) I'll give you a list of four things in a specified group. Only two of those things fit the category. Give me both answers for a point apiece.",
+  "questions": [
+    {
+      "id": "770f48e4-2f0f-48e5-b866-89c983171027",
+      "questionImage": null,
+      "questionText": "Animals that lay eggs: Echidnas, Okapis, Pangolins, Wasps.",
+      "answerText": "Echidnas|Wasps",
+      "numAnswers": 2
+    },
+    {
+      "id": "6c610e7b-ca74-439c-965d-536bc2503779",
+      "questionImage": null,
+      "questionText": "Animated shows streaming on Netflix: Arcane, Castlevania, The Legend of Vox Machina, X-Men '97.",
+      "answerText": "Arcane|Castlevania",
+      "numAnswers": 2
+    },
+    {
+      "id": "dd6013cf-e6c4-4857-8650-d87789789828",
+      "questionImage": null,
+      "questionText": "First season SNL cast members: Dan Aykroyd, Eddie Murphy, Bill Murray, Laraine Newman.",
+      "answerText": "Dan Aykroyd|Laraine Newman",
+      "numAnswers": 2
+    },
+    {
+      "id": "ff582132-bfca-4b82-becb-941336751108",
+      "questionImage": null,
+      "questionText": "Died during the Titanic sinking: Captain Edward Smith, director J. Bruce Ismay, socialite Margaret Brown, tycoon John Jacob Astor IV.",
+      "answerText": "Captain Edward Smith|John Jacob Astor IV",
+      "numAnswers": 2
+    },
+    {
+      "id": "3a43e5bd-c81b-4d52-8938-9919ec0de14a",
+      "questionImage": null,
+      "questionText": "Members of the EU: Georgia, Greece, Portugal, Switzerland.",
+      "answerText": "Portugal|Greece",
+      "numAnswers": 2
+    },
+    {
+      "id": "957a08f5-0653-4d36-a176-32ecde451409",
+      "questionImage": null,
+      "questionText": "NFL teams that have fired their head coaches this year: Bengals, Jets, Saints, Vikings.",
+      "answerText": "Jets|Saints",
+      "numAnswers": 2
+    },
+    {
+      "id": "f7c81b92-804a-4658-ac5a-af17b9182bb4",
+      "questionImage": "https://www.geekswhodrink.com/wp-content/uploads/2024/11/GWD-111324-R6Q7.png",
+      "questionText": "Cities that are home to one of these mind-bending Meow Wolf art installations: Denver, Las Vegas, Phoenix, Portland.",
+      "answerText": "Denver|Las Vegas",
+      "numAnswers": 2
+    },
+    {
+      "id": "3499f879-498e-4cc2-a227-4a5ce80ada28",
+      "questionImage": null,
+      "questionText": "Elements named after places: Fermium, Gallium, Holmium, Seaborgium.",
+      "answerText": "Gallium|Holmium",
+      "numAnswers": 2
+    },
+    {
+      "id": "9acf2013-c2ac-436d-a6f8-767d293228c2",
+      "questionImage": null,
+      "questionText": "Bonus: Including some nice shots of the Legacy Ottoman Hotel, \"Taken 2\" is mostly set in what city that's about 65% European?",
+      "answerText": "Istanbul",
+      "numAnswers": 1,
+      "isBonus": true
+    }
+  ]
+}

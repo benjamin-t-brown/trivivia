@@ -118,7 +118,7 @@ export class TemplateService {
     }
 
     return ret.sort((a, b) => {
-      return a.updatedAt < b.updatedAt ? -1 : 1;
+      return (a.updatedAt ?? 0) < (b.updatedAt ?? 0) ? -1 : 1;
     });
   }
 
@@ -547,11 +547,15 @@ export class TemplateService {
       const numRadios = getNumRadioBoxes(questionTemplateResponse.answerType);
       let htmlInputs = '';
       if (numRadios > 0) {
-        htmlInputs += `<span>${Object.entries(questionTemplateResponse.answers)
-          .filter(([key]) => key.includes('radio'))
-          .map(([, value]) => value)
-          .join(', ')}</span>`;
-        htmlInputs += `<br /><input type="text" style="margin: 2px 0px" />`;
+        const radioName = `${questionTemplateResponse.id}_${args.questionNumber}`;
+        for (let i = 0; i < numRadios; i++) {
+          const radioAnswer =
+            questionTemplateResponse.answers['radio' + (i + 1)];
+          const radioId = radioName + '_' + i;
+          htmlInputs +=
+            `<br /><input type="radio" name="${radioName}" id="${radioId}" value="${radioAnswer}" style="margin: 2px 0px" />` +
+            `<label for="${radioId}" style="margin-left: 8px">${radioAnswer}</label>`;
+        }
       } else {
         for (let k = 0; k < numAnswers; k++) {
           htmlInputs += `<br /><input type="text" style="margin: 2px 0px" />`;

@@ -1,0 +1,145 @@
+{
+  "quizTemplateName": "",
+  "id": "8d04a03d-fb29-4709-9fb1-0524eca6c77b",
+  "title": "Random Knowledge",
+  "description": "(16 points) It's Random Knowledge! Beware: Some of these questions will require multiple answers!",
+  "questionOrder": [
+    "35c76693-6f38-4711-84de-2c91fd19c9cf",
+    "e4b95de2-ee01-4118-8afc-e1f6667bfdf9",
+    "a1208539-8418-4f2a-91a0-bbcf0c53b805",
+    "09f897b3-e661-4a87-8617-1f1e77753695",
+    "87175d0d-9ce0-46d1-91a2-29472141401d",
+    "7f7e5182-2e65-48c8-8f24-45fde2ac3d64",
+    "b093988d-bb73-420e-b729-2d7980fe0ea4",
+    "33e3f5bf-f1ad-4a76-b296-2fd372c78102",
+    "2aea6a26-312c-404c-ae81-2cb8fbb54f71"
+  ],
+  "notes": "",
+  "jokerDisabled": false,
+  "creationDate": "2024-11-15T21:28:09.766Z",
+  "updatedOn": "2024-11-15T21:28:09.766Z",
+  "questions": [
+    {
+      "id": "35c76693-6f38-4711-84de-2c91fd19c9cf",
+      "creationDate": "2024-11-15T21:28:09.766Z",
+      "roundTemplateId": "8d04a03d-fb29-4709-9fb1-0524eca6c77b",
+      "notes": "",
+      "text": "Don't they already sell water? That's what people joked in the early '90s when what beer brand launched their failed line of Rocky Mountain Spring Water?",
+      "answerType": "input1",
+      "answers": {
+        "answer1": "Coors"
+      },
+      "orderMatters": false,
+      "isBonus": false
+    },
+    {
+      "id": "e4b95de2-ee01-4118-8afc-e1f6667bfdf9",
+      "creationDate": "2024-11-15T21:28:09.766Z",
+      "roundTemplateId": "8d04a03d-fb29-4709-9fb1-0524eca6c77b",
+      "notes": "",
+      "text": "Two points: Named after the Celtic matron of the isle, Ériu, what is the only modern country named after a goddess? Named after a saint and martyr, what tiny Caribbean island is the only country named after a specific human woman?",
+      "answerType": "input2",
+      "answers": {
+        "answer1": "Ireland",
+        "answer2": "Saint Lucia"
+      },
+      "orderMatters": false
+    },
+    {
+      "id": "a1208539-8418-4f2a-91a0-bbcf0c53b805",
+      "creationDate": "2024-11-15T21:28:09.766Z",
+      "roundTemplateId": "8d04a03d-fb29-4709-9fb1-0524eca6c77b",
+      "notes": "",
+      "text": "One of the 10 top-grossing films of the '90s was what disaster film that anagrams to GRANDMA ODE?",
+      "answerType": "input1",
+      "answers": {
+        "answer1": "Armageddon"
+      },
+      "orderMatters": false,
+      "isBonus": false
+    },
+    {
+      "id": "09f897b3-e661-4a87-8617-1f1e77753695",
+      "creationDate": "2024-11-15T21:28:09.766Z",
+      "roundTemplateId": "8d04a03d-fb29-4709-9fb1-0524eca6c77b",
+      "notes": "",
+      "text": "Three points: Maryland's state crustacean is the blue WHAT? Texas's state flower is the blueWHAT? And the blue hen is the official bird of what tiny state?",
+      "answerType": "input3",
+      "answers": {
+        "answer1": "Crab",
+        "answer2": "Bonnet",
+        "answer3": "Delaware"
+      },
+      "orderMatters": false
+    },
+    {
+      "id": "87175d0d-9ce0-46d1-91a2-29472141401d",
+      "creationDate": "2024-11-15T21:28:09.766Z",
+      "roundTemplateId": "8d04a03d-fb29-4709-9fb1-0524eca6c77b",
+      "notes": "",
+      "text": "\"They shall not pass\" was a popular French slogan during WWI, around the time what author was serving in the 11th battalion of the Lancashire Fusiliers?",
+      "answerType": "input1",
+      "answers": {
+        "answer1": "J.R.R. Tolkien"
+      },
+      "orderMatters": false,
+      "isBonus": false
+    },
+    {
+      "id": "7f7e5182-2e65-48c8-8f24-45fde2ac3d64",
+      "creationDate": "2024-11-15T21:28:09.766Z",
+      "roundTemplateId": "8d04a03d-fb29-4709-9fb1-0524eca6c77b",
+      "notes": "",
+      "text": "Three points: Wiz Khalifa and Charlie Puth's \"See You Again\" is written in honor of actor? Queen's \"Crazy Little Thing Called Love\" features Freddie Mercury's impression of what musician? R.E.M.'s \"Man on the Moon\" was pretty blatantly about what comic?",
+      "answerType": "input3",
+      "answers": {
+        "answer1": "Paul Walker",
+        "answer2": "Elvis Presley",
+        "answer3": "Andy Kaufman"
+      },
+      "orderMatters": false
+    },
+    {
+      "id": "b093988d-bb73-420e-b729-2d7980fe0ea4",
+      "creationDate": "2024-11-15T21:28:09.767Z",
+      "roundTemplateId": "8d04a03d-fb29-4709-9fb1-0524eca6c77b",
+      "notes": "",
+      "text": "Some say the world will end in fire, others jaguars: What sun-worshiping people believed the world had already been destroyed four times, including once by big cats?",
+      "answerType": "input1",
+      "answers": {
+        "answer1": "Aztec"
+      },
+      "orderMatters": false,
+      "isBonus": false
+    },
+    {
+      "id": "33e3f5bf-f1ad-4a76-b296-2fd372c78102",
+      "creationDate": "2024-11-15T21:28:09.767Z",
+      "roundTemplateId": "8d04a03d-fb29-4709-9fb1-0524eca6c77b",
+      "notes": "",
+      "text": "Four points: Obviously big fans of Jayson Tatum, Shai Gilgeous-Alexander, Jalen Brunson, and Luka Doncic, FanDuel gives what four teams the best odds of making the NBA finals this season?",
+      "answerType": "input4",
+      "answers": {
+        "answer1": "Boston Celtics",
+        "answer2": "New York Knicks",
+        "answer3": "Dallas Mavericks",
+        "answer4": "Oklahoma City Thunder"
+      },
+      "orderMatters": false
+    },
+    {
+      "id": "2aea6a26-312c-404c-ae81-2cb8fbb54f71",
+      "creationDate": "2024-11-15T21:28:09.767Z",
+      "roundTemplateId": "8d04a03d-fb29-4709-9fb1-0524eca6c77b",
+      "notes": "",
+      "text": "Bonus: To prevent its 320,000 people from accidentally bumping uglies with their fellow viking-descended cousins, what insular country has a special incest-preventing app called Islendiga?",
+      "answerType": "input1",
+      "answers": {
+        "answer1": "Iceland"
+      },
+      "orderMatters": false,
+      "isBonus": true
+    }
+  ],
+  "quizTemplateId": ""
+}

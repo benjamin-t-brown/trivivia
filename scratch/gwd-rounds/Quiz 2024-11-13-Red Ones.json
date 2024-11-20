@@ -1,0 +1,149 @@
+{
+  "quizTemplateName": "",
+  "id": "b0cdde68-c688-4696-a053-244f85fe4fc1",
+  "title": "Red Ones",
+  "description": "(8 points) No tricks, just tell me which one is red.",
+  "questionOrder": [
+    "816fdb43-73d1-49fa-b34c-6ef2f9b062bc",
+    "79321403-8bf4-4465-926b-f28c6bd00e95",
+    "51da0052-22b5-4fe1-a175-636311e51f87",
+    "d1d3eb0c-d72d-4164-950c-3c46a2e516cd",
+    "4d63979a-9dcd-4487-8f39-641df42e78ba",
+    "0dd0f80a-9090-4ca2-b826-8f83839d7948",
+    "64851e1c-9a2d-46b0-bc78-925f75d5ff72",
+    "f8eae604-72c4-411f-b343-e1975dd07192",
+    "419b7a90-920f-43b1-b4df-24f246393a23"
+  ],
+  "notes": "",
+  "jokerDisabled": false,
+  "creationDate": "2024-11-15T18:37:10.437Z",
+  "updatedOn": "2024-11-15T18:37:10.438Z",
+  "questions": [
+    {
+      "id": "816fdb43-73d1-49fa-b34c-6ef2f9b062bc",
+      "creationDate": "2024-11-15T18:37:10.438Z",
+      "roundTemplateId": "b0cdde68-c688-4696-a053-244f85fe4fc1",
+      "notes": "",
+      "text": "Which sparkling wine is red: Lambrusco or Prosecco?",
+      "answerType": "radio2",
+      "answers": {
+        "radio1": "Lambrusco",
+        "radio2": "Prosecco",
+        "answer1": "Lambrusco"
+      },
+      "orderMatters": true
+    },
+    {
+      "id": "79321403-8bf4-4465-926b-f28c6bd00e95",
+      "creationDate": "2024-11-15T18:37:10.438Z",
+      "roundTemplateId": "b0cdde68-c688-4696-a053-244f85fe4fc1",
+      "notes": "",
+      "text": "Which \"Sonic the Hedgehog\" character has a spiky red body: Sonic or Knuckles?",
+      "answerType": "radio2",
+      "answers": {
+        "radio1": "Sonic",
+        "radio2": "Knuckles",
+        "answer1": "Knuckles"
+      },
+      "orderMatters": true
+    },
+    {
+      "id": "51da0052-22b5-4fe1-a175-636311e51f87",
+      "creationDate": "2024-11-15T18:37:10.438Z",
+      "roundTemplateId": "b0cdde68-c688-4696-a053-244f85fe4fc1",
+      "notes": "",
+      "text": "Which one turns purple litmus paper red: Acids or Bases?",
+      "answerType": "radio2",
+      "answers": {
+        "radio1": "Bases",
+        "radio2": "Acids",
+        "answer1": "Acids"
+      },
+      "orderMatters": true
+    },
+    {
+      "id": "d1d3eb0c-d72d-4164-950c-3c46a2e516cd",
+      "creationDate": "2024-11-15T18:37:10.438Z",
+      "roundTemplateId": "b0cdde68-c688-4696-a053-244f85fe4fc1",
+      "notes": "",
+      "text": "Which Gatorade flavor is red, weirdly: Blackberry Wave or Glacier Freeze?",
+      "answerType": "radio2",
+      "answers": {
+        "radio1": "Blackberry Wave",
+        "radio2": "Glazier Freeze",
+        "answer1": "Blackberry Wave"
+      },
+      "orderMatters": true
+    },
+    {
+      "id": "4d63979a-9dcd-4487-8f39-641df42e78ba",
+      "creationDate": "2024-11-15T18:37:10.438Z",
+      "roundTemplateId": "b0cdde68-c688-4696-a053-244f85fe4fc1",
+      "notes": "",
+      "text": "Which country has a flag with a red background: Norway or Sweden?",
+      "answerType": "radio2",
+      "answers": {
+        "radio1": "Norway",
+        "radio2": "Sweden",
+        "answer1": "Norway"
+      },
+      "orderMatters": true
+    },
+    {
+      "id": "0dd0f80a-9090-4ca2-b826-8f83839d7948",
+      "creationDate": "2024-11-15T18:37:10.438Z",
+      "roundTemplateId": "b0cdde68-c688-4696-a053-244f85fe4fc1",
+      "notes": "",
+      "text": "Which Big Four English soccer club wears red jerseys at home: Chelsea or Liverpool?",
+      "answerType": "radio2",
+      "answers": {
+        "radio1": "Liverpool",
+        "radio2": "Chelsea",
+        "answer1": "Liverpool"
+      },
+      "orderMatters": true
+    },
+    {
+      "id": "64851e1c-9a2d-46b0-bc78-925f75d5ff72",
+      "creationDate": "2024-11-15T18:37:10.438Z",
+      "roundTemplateId": "b0cdde68-c688-4696-a053-244f85fe4fc1",
+      "notes": "",
+      "text": "Which month has a red birthstone: February or July?",
+      "answerType": "radio2",
+      "answers": {
+        "radio1": "February",
+        "radio2": "July",
+        "answer1": "July"
+      },
+      "orderMatters": true
+    },
+    {
+      "id": "f8eae604-72c4-411f-b343-e1975dd07192",
+      "creationDate": "2024-11-15T18:37:10.438Z",
+      "roundTemplateId": "b0cdde68-c688-4696-a053-244f85fe4fc1",
+      "notes": "",
+      "text": "Lupita Nyong'o played a doppelganger named Red in what film: Us or The Wild Robot?",
+      "answerType": "radio2",
+      "answers": {
+        "radio1": "The Wild Robot",
+        "radio2": "Us",
+        "answer1": "Us"
+      },
+      "orderMatters": true
+    },
+    {
+      "id": "419b7a90-920f-43b1-b4df-24f246393a23",
+      "creationDate": "2024-11-15T18:37:10.438Z",
+      "roundTemplateId": "b0cdde68-c688-4696-a053-244f85fe4fc1",
+      "notes": "",
+      "text": "Bonus: In a new film, Dwayne Johnson plays a member of North Pole security out to save Red One, the code name for WHO?",
+      "answerType": "input1",
+      "answers": {
+        "answer1": "Santa Claus"
+      },
+      "orderMatters": false,
+      "isBonus": true
+    }
+  ],
+  "quizTemplateId": ""
+}

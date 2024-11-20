@@ -1,20 +1,20 @@
 import { test } from '@playwright/test';
 import fs from 'fs';
 import path from 'path';
-// import {
-//   removeUnnecessaryWhitespace,
-//   saveHtml,
-//   saveText,
-//   SCRATCH_DIR,
-//   takeScreenshot,
-// } from '../helpers/screenshot';
 import { randomUUID } from 'crypto';
 import { removeUnnecessaryWhitespace } from './helpers';
 
 const SCRATCH_DIR = path.resolve(__dirname, '../../scratch');
 
-// yarn test -c playwright.gwd.config.js parsegwd.test.js
+// This file loads a round html file from 'test-results-output' and parses it into a round json file
+// placing it in the scratch directory.
+
 // npx playwright test test-browser/gwd/parsegwd.test.js --config=playwright.config.js
+
+const { quizName, playerCode, url, roundFile } = JSON.parse(
+  fs.readFileSync(__dirname + '/gwd.test.config.json', 'utf8')
+);
+// const roundFile = 'QUIZ-2024-11-15-TEST-round6';
 
 const locateOptional = async (locator, method, arg) => {
   try {
@@ -24,7 +24,7 @@ const locateOptional = async (locator, method, arg) => {
 };
 
 const removePercents = str => {
-  return str.replace(/\d+%/g, '');
+  return str.replace(/\d+%/g, '_');
 };
 
 const removeEmptyParens = str => {
@@ -36,19 +36,12 @@ const randomizeOrderOfArray = arr => {
 };
 
 test('Parse', async ({ page }) => {
-  const config = JSON.parse(
-    fs.readFileSync(
-      path.resolve(__dirname, 'parsegwd.test.config.json'),
-      'utf8'
-    )
-  );
-
-  const prefix = config.prefix;
+  const prefix = roundFile;
   const parseFile = path.resolve(
     __dirname,
     '../',
     'test-results-output',
-    config.parseFile
+    roundFile + '.html'
   );
 
   console.log('loading file', parseFile);
@@ -77,6 +70,9 @@ test('Parse', async ({ page }) => {
       'src'
     );
     const numH4 = await question.locator('h4').count();
+    const numAnswerText = await question
+      .locator('.tw-flex.tw-flex-row .tw-text-correct-answertext')
+      .count();
     const numAnswers = await question.locator('input').count();
     if (numH4 === 3) {
       const questionText = removeUnnecessaryWhitespace(
@@ -84,10 +80,12 @@ test('Parse', async ({ page }) => {
       ).replace(/\n/g, ' ');
       let answerText = removeEmptyParens(
         removePercents(
-          removeUnnecessaryWhitespace(
-            await question.locator('h4').nth(2).textContent()
-          )
-        ).trim()
+          removeEmptyParens(
+            removeUnnecessaryWhitespace(
+              await question.locator('h4').nth(2).textContent()
+            )
+          ).trim()
+        ).replace(/_/g, '')
       );
 
       const answerInd = answerText.indexOf('Answer:');
@@ -103,64 +101,23 @@ test('Parse', async ({ page }) => {
         numAnswers,
         isBonus: questionText.includes('Bonus:'),
       });
-    } else if (numH4 === 2) {
-      console.log('NUMH4', numH4);
-      // tw-text-correct-answer
-      // tw-text-incorrect-answertext
-      // ocument.querySelector('h4[data-testid="text"]').textContent
-      let questionText = removeUnnecessaryWhitespace(
+    } else if (numAnswerText > 0) {
+      // multiple choice
+
+      const questionText = removeUnnecessaryWhitespace(
         await question.getByTestId('text').textContent()
       ).replace(/\n/g, ' ');
-
-      // let answerText = '';
-
-      // for (let i = 0; i < 16; i++) {
-      //   const nth = question.getByTestId('answer-state').locator('..').nth(i)
-      //   let t = '';
-      //   try {
-      //     t = await nth.innerText({
-      //       timeout: 100,
-      //     });
-      //   } catch (e) {}
-      //   if (!t) {
-      //     continue;
-      //   }
-      //   answerText = ' ' + i + '. ' + removeUnnecessaryWhitespace(t);
-      // }
-      // const questionSelector = 'h4.nocopy[data-testid="text"] span';
-      // const questionText = await page.textContent(questionSelector);
-
-      // console.log('q text content', await question.textContent());
       const correctAnswer = removeUnnecessaryWhitespace(
         await question
           .locator('.tw-flex.tw-flex-row .tw-text-correct-answertext')
           .innerText()
       );
-      let incorrectAnswers = [];
+      const incorrectAnswers = [];
       for (const s of await question
         .locator('.tw-text-incorrect-answertext')
         .all()) {
         incorrectAnswers.push(removeUnnecessaryWhitespace(await s.innerText()));
       }
-
-      // const answersText = [correctAnswer, incorrectAnswers];
-
-      // const answersText = await Promise.all(
-      //   answerSelectors.map(selector =>
-      //     question.locator(selector).all().then(async els =>
-
-      //     }
-      //   )
-      // );
-
-      // const answerContainerSelector = '.tw-grid-rows-1fr';
-      // const answerSelector = `${answerContainerSelector} .tw-inline.nocopy`;
-      // const answers = await question.$$eval(answerSelector, nodes =>
-      //   nodes.map(node => node.textContent.trim())
-      // );
-
-      console.log('QUeSTION ETEx', questionText);
-      // console.log('ANSWER TEXT', answersText);
 
       const randArr = randomizeOrderOfArray([
         correctAnswer,
@@ -177,26 +134,32 @@ test('Parse', async ({ page }) => {
         numAnswers,
       });
     } else {
+      // multiple inputs
+
       const questionText = removeUnnecessaryWhitespace(
         await question.locator('h4').nth(1).textContent()
       ).replace(/\n/g, ' ');
-      let answerText = removePercents(
-        removeUnnecessaryWhitespace(
-          await question.locator('css=.panel-body').textContent()
-        ).replace(/\n/g, ' ')
-      );
+      let answerText = removeUnnecessaryWhitespace(
+        await question.locator('css=.panel-body').textContent()
+      ).replace(/\n/g, ' ');
+
       const correctAnswersInd = answerText.indexOf('Correct Answers');
       if (correctAnswersInd > -1) {
         answerText = answerText
           .slice(correctAnswersInd + 'Correct Answers'.length)
           .trim();
       }
+
       const hashInd = answerText.indexOf('#');
       if (hashInd > -1) {
         answerText = answerText.slice(0, hashInd).trim();
       }
 
-      answerText = answerText.replace(/  /g, '|');
+      answerText = removePercents(answerText).replace(/_/g, '|').trim();
+      if (answerText[answerText.length - 1] === '|') {
+        answerText = answerText.slice(0, -1);
+      }
+      answerText = answerText.split('|').map(s => s.trim()).join('|');
 
       roundQuestions.push({
         id: randomUUID(),
@@ -218,6 +181,4 @@ test('Parse', async ({ page }) => {
   const p = path.resolve(SCRATCH_DIR, `${prefix}.round.json`);
   console.log('write to', p);
   fs.writeFileSync(p, JSON.stringify(round, null, 2));
-
-  // await saveText(prefix, page);
 });

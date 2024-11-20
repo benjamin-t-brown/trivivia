@@ -1,0 +1,141 @@
+{
+  "quizTemplateName": "",
+  "id": "e853e775-f8f5-4868-a5eb-b9b8835e797b",
+  "title": "Gastronauts!",
+  "description": "(8 points) A round on space food.",
+  "questionOrder": [
+    "f6994bc8-1fab-4692-9b99-40892d7a9fca",
+    "f16cc688-ca34-44db-b563-12ebab42ebc0",
+    "cb9d1bbb-37d8-49e2-912d-334791ebe007",
+    "d4375a9e-77aa-48ad-80bf-ab96ec486192",
+    "b9a03a55-0771-492c-9ec3-509fa9efc329",
+    "9f949d4e-dc74-4e6e-b93f-54ebf38c58fc",
+    "60296d96-3af3-499c-8649-b9c7ba7fd6cb",
+    "e37203ad-44d0-4b32-975c-88abe26a3fb3",
+    "56659dce-9c87-4b4c-ae17-c7dd0ead440d"
+  ],
+  "notes": "",
+  "jokerDisabled": false,
+  "creationDate": "2024-11-15T20:20:51.920Z",
+  "updatedOn": "2024-11-15T20:20:51.920Z",
+  "questions": [
+    {
+      "id": "f6994bc8-1fab-4692-9b99-40892d7a9fca",
+      "creationDate": "2024-11-15T20:20:51.920Z",
+      "roundTemplateId": "e853e775-f8f5-4868-a5eb-b9b8835e797b",
+      "notes": "",
+      "text": "Let's get it out of the way: According to Buzz Aldrin, what powdered orange drink quote, \"sucks,\" unquote?",
+      "answerType": "input1",
+      "answers": {
+        "answer1": "Tang"
+      },
+      "orderMatters": false,
+      "isBonus": false
+    },
+    {
+      "id": "f16cc688-ca34-44db-b563-12ebab42ebc0",
+      "creationDate": "2024-11-15T20:20:51.920Z",
+      "roundTemplateId": "e853e775-f8f5-4868-a5eb-b9b8835e797b",
+      "notes": "",
+      "text": "For Thanksgiving last year, a bunch of space-bound astronauts were sent cappuccinos with what fall girl flavor?",
+      "answerType": "input1",
+      "answers": {
+        "answer1": "Pumpkin spice"
+      },
+      "orderMatters": false,
+      "isBonus": false
+    },
+    {
+      "id": "cb9d1bbb-37d8-49e2-912d-334791ebe007",
+      "creationDate": "2024-11-15T20:20:51.920Z",
+      "roundTemplateId": "e853e775-f8f5-4868-a5eb-b9b8835e797b",
+      "notes": "",
+      "text": "Poppin' Fresh is smarter than he looks: Energy bars were invented after what biscuit company was contracted by the government to make high-calorie Space Food Sticks?",
+      "answerType": "input1",
+      "answers": {
+        "answer1": "Pillsbury"
+      },
+      "orderMatters": false,
+      "isBonus": false
+    },
+    {
+      "id": "d4375a9e-77aa-48ad-80bf-ab96ec486192",
+      "creationDate": "2024-11-15T20:20:51.920Z",
+      "roundTemplateId": "e853e775-f8f5-4868-a5eb-b9b8835e797b",
+      "notes": "",
+      "text": "Chill to low temperatures, then lower the air pressure to turn the ice into vapor: That's the gist of what food-preserving technique that was researched by NASA and perfected by instant coffee?",
+      "answerType": "input1",
+      "answers": {
+        "answer1": "Freeze drying"
+      },
+      "orderMatters": false,
+      "isBonus": false
+    },
+    {
+      "id": "b9a03a55-0771-492c-9ec3-509fa9efc329",
+      "creationDate": "2024-11-15T20:20:51.921Z",
+      "roundTemplateId": "e853e775-f8f5-4868-a5eb-b9b8835e797b",
+      "notes": "",
+      "text": "Sparking a Congressional investigation, Gemini pilot John Young smuggled onboard the classic Jewish deli sandwich corned beef on WHAT?",
+      "answerType": "input1",
+      "answers": {
+        "answer1": "Rye"
+      },
+      "orderMatters": false,
+      "isBonus": false
+    },
+    {
+      "id": "9f949d4e-dc74-4e6e-b93f-54ebf38c58fc",
+      "creationDate": "2024-11-15T20:20:51.921Z",
+      "roundTemplateId": "e853e775-f8f5-4868-a5eb-b9b8835e797b",
+      "notes": "",
+      "text": "Yuck! The first meal eaten by a human in space was purified liver and beef paste with chocolate sauce, choked down by what unlucky cosmonaut?",
+      "answerType": "input1",
+      "answers": {
+        "answer1": "Yuri Gargarin"
+      },
+      "orderMatters": false,
+      "isBonus": false
+    },
+    {
+      "id": "60296d96-3af3-499c-8649-b9c7ba7fd6cb",
+      "creationDate": "2024-11-15T20:20:51.921Z",
+      "roundTemplateId": "e853e775-f8f5-4868-a5eb-b9b8835e797b",
+      "notes": "",
+      "text": "For the final mission of the Space Shuttle program, NASA whipped up a special batch of M&M's depicting what orbiter named for a mythical city?",
+      "answerType": "input1",
+      "answers": {
+        "answer1": "Atlantis"
+      },
+      "orderMatters": false,
+      "isBonus": false
+    },
+    {
+      "id": "e37203ad-44d0-4b32-975c-88abe26a3fb3",
+      "creationDate": "2024-11-15T20:20:51.921Z",
+      "roundTemplateId": "e853e775-f8f5-4868-a5eb-b9b8835e797b",
+      "notes": "",
+      "text": "Renaming it after they realized it sounded like PCP, Pop Rocks capitalized on the NASA culture craze with a powdery spinoff called Space WHAT?",
+      "answerType": "input1",
+      "answers": {
+        "answer1": "Dust"
+      },
+      "orderMatters": false,
+      "isBonus": false
+    },
+    {
+      "id": "56659dce-9c87-4b4c-ae17-c7dd0ead440d",
+      "creationDate": "2024-11-15T20:20:51.921Z",
+      "roundTemplateId": "e853e775-f8f5-4868-a5eb-b9b8835e797b",
+      "notes": "",
+      "text": "Bonus: The specially-designed Freezer Refrigerator Incubator Device for Galley and Experimentation, or FRIDGE, helps preserve food on what $150 billion wonder?",
+      "answerType": "input1",
+      "answers": {
+        "answer1": "International Space Station"
+      },
+      "orderMatters": false,
+      "isBonus": true
+    }
+  ],
+  "quizTemplateId": ""
+}

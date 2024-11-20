@@ -1,0 +1,75 @@
+{
+  "id": "8d04a03d-fb29-4709-9fb1-0524eca6c77b",
+  "roundName": "Random Knowledge",
+  "roundDescription": "(16 points) It's Random Knowledge! Beware: Some of these questions will require multiple answers!",
+  "questions": [
+    {
+      "id": "35c76693-6f38-4711-84de-2c91fd19c9cf",
+      "questionImage": null,
+      "questionText": "Don't they already sell water? That's what people joked in the early '90s when what beer brand launched their failed line of Rocky Mountain Spring Water?",
+      "answerText": "Coors",
+      "numAnswers": 1,
+      "isBonus": false
+    },
+    {
+      "id": "e4b95de2-ee01-4118-8afc-e1f6667bfdf9",
+      "questionImage": null,
+      "questionText": "Two points: Named after the Celtic matron of the isle, Ériu, what is the only modern country named after a goddess? Named after a saint and martyr, what tiny Caribbean island is the only country named after a specific human woman?",
+      "answerText": "Ireland|Saint Lucia",
+      "numAnswers": 2
+    },
+    {
+      "id": "a1208539-8418-4f2a-91a0-bbcf0c53b805",
+      "questionImage": null,
+      "questionText": "One of the 10 top-grossing films of the '90s was what disaster film that anagrams to GRANDMA ODE?",
+      "answerText": "Armageddon",
+      "numAnswers": 1,
+      "isBonus": false
+    },
+    {
+      "id": "09f897b3-e661-4a87-8617-1f1e77753695",
+      "questionImage": null,
+      "questionText": "Three points: Maryland's state crustacean is the blue WHAT? Texas's state flower is the blueWHAT? And the blue hen is the official bird of what tiny state?",
+      "answerText": "Crab|Bonnet|Delaware",
+      "numAnswers": 3
+    },
+    {
+      "id": "87175d0d-9ce0-46d1-91a2-29472141401d",
+      "questionImage": null,
+      "questionText": "\"They shall not pass\" was a popular French slogan during WWI, around the time what author was serving in the 11th battalion of the Lancashire Fusiliers?",
+      "answerText": "J.R.R. Tolkien",
+      "numAnswers": 1,
+      "isBonus": false
+    },
+    {
+      "id": "7f7e5182-2e65-48c8-8f24-45fde2ac3d64",
+      "questionImage": null,
+      "questionText": "Three points: Wiz Khalifa and Charlie Puth's \"See You Again\" is written in honor of actor? Queen's \"Crazy Little Thing Called Love\" features Freddie Mercury's impression of what musician? R.E.M.'s \"Man on the Moon\" was pretty blatantly about what comic?",
+      "answerText": "Paul Walker|Elvis Presley|Andy Kaufman",
+      "numAnswers": 3
+    },
+    {
+      "id": "b093988d-bb73-420e-b729-2d7980fe0ea4",
+      "questionImage": null,
+      "questionText": "Some say the world will end in fire, others jaguars: What sun-worshiping people believed the world had already been destroyed four times, including once by big cats?",
+      "answerText": "Aztec",
+      "numAnswers": 1,
+      "isBonus": false
+    },
+    {
+      "id": "33e3f5bf-f1ad-4a76-b296-2fd372c78102",
+      "questionImage": null,
+      "questionText": "Four points: Obviously big fans of Jayson Tatum, Shai Gilgeous-Alexander, Jalen Brunson, and Luka Doncic, FanDuel gives what four teams the best odds of making the NBA finals this season?",
+      "answerText": "Boston Celtics|New York Knicks|Dallas Mavericks|Oklahoma City Thunder",
+      "numAnswers": 4
+    },
+    {
+      "id": "2aea6a26-312c-404c-ae81-2cb8fbb54f71",
+      "questionImage": null,
+      "questionText": "Bonus: To prevent its 320,000 people from accidentally bumping uglies with their fellow viking-descended cousins, what insular country has a special incest-preventing app called Islendiga?",
+      "answerText": "Iceland",
+      "numAnswers": 1,
+      "isBonus": true
+    }
+  ]
+}
