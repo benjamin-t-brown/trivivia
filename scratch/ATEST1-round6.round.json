@@ -1,0 +1,71 @@
+{
+  "id": "1512028f-c428-450e-9831-306bc06bc47e",
+  "roundName": "Swap Meet",
+  "roundDescription": "(16 points) For each question, I'll give you two groups of three where one item belongs in the other group. You give me the two items that should be swapped for a point each. Example: U.S. cabinet departments: Commerce, Energy, Investigation. // Dungeons and Dragons skill checks: Defense, Medicine, Nature. You'd get a point each for \"Investigation\" and \"Defense.\"",
+  "questions": [
+    {
+      "id": "cfb0da54-9306-4ee1-9b04-c9455eaf9647",
+      "questionImage": null,
+      "questionText": "YouTube channels for toddlers: Cocomelon, Gochujang, Pinkfong. // Condiments: Blippi, Chimichurri, Remoulade.",
+      "answerText": "Gochujang|Blippi",
+      "numAnswers": 2
+    },
+    {
+      "id": "067d99fd-25c4-4c29-a024-bcaf0e57f089",
+      "questionImage": null,
+      "questionText": "\"Star Wars\" planets: Endor, Geonosis, Zantac. // Heartburn medications: Aciphex, Bespin, Prilosec.",
+      "answerText": "Zantac|Bespin",
+      "numAnswers": 2
+    },
+    {
+      "id": "84e971db-8b59-425c-b5d5-425f693714e5",
+      "questionImage": null,
+      "questionText": "Noble houses in \"Game of Thrones\": Frick, Karstark, Tarly. // Museums in New York City: Baelish, Rubin, Whitney.",
+      "answerText": "Frick|Baelish",
+      "numAnswers": 2
+    },
+    {
+      "id": "662ad67a-a96b-4dc9-b62f-38af6d617bb1",
+      "questionImage": null,
+      "questionText": "Nike sneaker lines: Air Max, Fluke, Daybreak. // Films whose title character is a dog: Blazer, Hachi, White Fang.",
+      "answerText": "Fluke|Blazer",
+      "numAnswers": 2
+    },
+    {
+      "id": "025767cb-cbb7-4694-a430-841d685a638d",
+      "questionImage": null,
+      "questionText": "Superheroes from \"The Boys\": A-Train, Black Noir, Fantastik. // Household cleaners: Ajax, Bon Ami, Lamplighter.",
+      "answerText": "Fantastik|Lamplighter",
+      "numAnswers": 2
+    },
+    {
+      "id": "73744443-9b99-46a0-ba06-4aafbcf2d4dd",
+      "questionImage": null,
+      "questionText": "Figure skating jumps: Euler, Lutz, Taimi // Dating apps: Axel, Hinge, Scruff.",
+      "answerText": "Axel|Taimi",
+      "numAnswers": 2
+    },
+    {
+      "id": "736aa6a6-6fb1-4520-a7e7-fcb3b22f3ec7",
+      "questionImage": null,
+      "questionText": "SZA singles: Broken Clocks, Gertrude Stein, Shirt. // Picasso paintings: Saturn, The Soup, Two Nudes.",
+      "answerText": "Saturn|Gertrude Stein",
+      "numAnswers": 2
+    },
+    {
+      "id": "ced2a396-787d-4c92-a4ab-ed83438177f1",
+      "questionImage": null,
+      "questionText": "Films starring Meryl Streep: Blind Guardian, Death Becomes Her, Ironweed. // Symphonic metal bands: Lions for Lambs, Nightwish, Rhapsody of Fire.",
+      "answerText": "Blind Guardian|Lions for Lambs",
+      "numAnswers": 2
+    },
+    {
+      "id": "9fb20d58-104c-4351-9a99-afaa7f615c96",
+      "questionImage": null,
+      "questionText": "Bonus: Jodie Foster, who played the daughter in the 1976 original, was offered Jamie Lee Curtis's mom part in what 2003 body swap remake?",
+      "answerText": "Freaky Friday",
+      "numAnswers": 1,
+      "isBonus": true
+    }
+  ]
+}

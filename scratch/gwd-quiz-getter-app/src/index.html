@@ -1,0 +1,162 @@
+<html>
+<title>GWZ Quiz Getter App</title>
+
+<head>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: darkslategray;
+      color: white;
+    }
+
+    h1 {
+      margin: 16px 4px;
+    }
+
+    button {
+      font-size: 1.5em;
+      padding: 10px 20px;
+      border: none;
+      background-color: darkred;
+      color: white;
+      cursor: pointer;
+      border: 2px outset #555;
+    }
+
+    button:hover {
+      filter: brightness(0.8);
+    }
+
+    button:active {
+      background-color: darkgrey;
+    }
+
+    textarea {
+      background: darkslateblue;
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 0.8rem;
+      width: 100%;
+      /* max-width: 800px; */
+      height: 200px;
+      color: lightgreen;
+    }
+
+    input {
+      width: 100%;
+      /* max-width: 800px; */
+      margin-bottom: 8px;
+    }
+
+    input[type="number"] {
+      width: 50px;
+      margin-bottom: 8px;
+    }
+
+    label {
+      margin: 4px 0;
+    }
+
+    a {
+      color: lightblue;
+    }
+
+    a:visited {
+      color: aliceblue;
+    }
+
+    .section-row {
+      /* background: rgba(0, 0, 0, 0.25); */
+      margin: 8px 4px;
+    }
+
+    .status-text {
+      margin: 0px 8px;
+      color: lightblue;
+    }
+
+    .code {
+      background: rgba(0, 0, 0, 0.25);
+      padding: 8px;
+      margin: 8px 0;
+      white-space: pre;
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 12px;
+    }
+
+    .copy-button {
+      margin: 2px;
+      font-size: 12px;
+      background-color: darkslateblue;
+    }
+
+    #copy-status {
+      display: none;
+      font-size: 12px;
+      color: lightblue;
+    }
+  </style>
+  <script type="module">
+    import * as m from './index.mjs';
+    m.init();
+  </script>
+</head>
+
+<body>
+  <h1>GWZ Quiz Getter App</h1>
+  <div class="section-row">
+    <h2>Manual Code</h2>
+    <button id="button-copy" class="copy-button">Copy</button>
+    <span id="copy-status">Copied!</span>
+    <div class="code" id="code">
+      window.onbeforeunload = function(){
+      return 'Are you sure you want to leave?';
+      };
+      var element = document.querySelector('.modal-backdrop');
+      if (element) {
+      element.classList.remove('modal-backdrop');
+      }
+      var xpath = "//button[text()='Just Watch']";
+      document.evaluate(xpath,document,null,XPathResult.FIRST_ORDERED_NODE_TYPE,null).singleNodeValue.click();
+    </div>
+  </div>
+  <div class="section-row">
+    <h2>Scan</h2>
+    <button id="button-start-scan">Start Scan</button><span class="status-text" id="scanning-status">Ready</span>
+  </div>
+  <div class="section-row">
+    <textarea id="scan-output" readonly>
+    </textarea>
+  </div>
+  <div class="section-row">
+    <h2>Scan Results</h2>
+    <div id="scan-results">No results yet.</div>
+  </div>
+  <div class="section-row">
+    <h2>Quiz URL</h2>
+    <div>
+      <div>
+        <label>Quiz Name</label><br />
+        <input type="text" id="input-quiz-name"></input>
+      </div>
+      <div>
+        <label>Quiz URL</label><br />
+        <input type="text" id="input-quiz-url"></input>
+      </div>
+      <div>
+        <label>Round Number</label><br />
+        <input type="number" value="1" min="1" max="10" id="input-round-number"></input>
+      </div>
+      <br />
+      <button id="button-save">Save</button><span class="status-text" id="saving-status">Ready</span>
+    </div>
+  </div>
+  <div class="section-row">
+    <textarea id="save-output" readonly>
+    </textarea>
+  </div>
+  <div style="height:500px">  </div>
+</body>
+
+</html>

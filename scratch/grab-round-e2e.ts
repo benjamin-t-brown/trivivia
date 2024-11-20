@@ -17,16 +17,25 @@ const execAsync = async command => {
   });
 };
 
-// npx tsx grab-round-e2e.ts
+// npx tsx grab-round-e2e.ts <quizName> <roundNumber> <url>
 
-const quizName = 'QUIZ-2024-11-15-TEST';
-const playerCode = '82841';
+const quizName = process.argv[2];
+const roundNumber = Number(process.argv[3]);
+const url = process.argv[4];
+const playerCode = '';
+
+// const quizName = 'ATEST1';
+// const playerCode = '82841';
 // const url =
-//   'https://b.play.geekswhodrink.com/livegame/098/play/?access=d7d0b993-937e-4e68-9b7f-b58ba3369aff';
-const url = 'file://C:/progs/trivivia/scratch/gwd.testround4.html';
-const roundNumber = 7;
+//   'https://a.play.geekswhodrink.com/livegame/097/play/?access=?access=d7d0b993-937e-4e68-9b7f-b58ba3369aff';
+// const url = 'file://C:/progs/trivivia/scratch/gwd.testround4.html';
+// const roundNumber = 7;
 
 const roundFile = quizName + '-round' + roundNumber;
+
+console.log('ARGS?', quizName, roundNumber, url);
+
+// process.exit(0);
 
 const main = async () => {
   const pathToConfigFile = path.resolve(

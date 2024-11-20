@@ -1,0 +1,75 @@
+{
+  "id": "8aa7ac65-2c57-4172-bd0b-b692b1c51bdc",
+  "roundName": "Random Knowledge",
+  "roundDescription": "(16 points) It's Random Knowledge! Beware: Some of these questions will require multiple answers!",
+  "questions": [
+    {
+      "id": "89a909a6-1b9b-4a48-8cb1-5c0efc9b30bd",
+      "questionImage": "https://www.geekswhodrink.com/wp-content/uploads/2024/11/GWD-111924-R7Q1.png",
+      "questionText": "This is Luce, the official mascot for the 2025 Jubilee of what organization that boasts about 1.4 billion members?",
+      "answerText": "Catholic Church",
+      "numAnswers": 1,
+      "isBonus": false
+    },
+    {
+      "id": "521e2f7b-6060-4811-a36a-bc434ed6350b",
+      "questionImage": null,
+      "questionText": "Two points on X-Men actors: Who played Juror #14 on the Amazon show \"Jury Duty\"? And who plays Juror #2 in the new film \"Juror #2\"?",
+      "answerText": "James Marsden|Nicholas Hoult",
+      "numAnswers": 2
+    },
+    {
+      "id": "853432ed-ac92-40e8-8b0d-fb621c1cbc73",
+      "questionImage": null,
+      "questionText": "Recently messing with radio signals all over the planet, what stellar phenomenon anagrams to FLORAL ARSE?",
+      "answerText": "Solar flare",
+      "numAnswers": 1,
+      "isBonus": false
+    },
+    {
+      "id": "9b7b6a1a-2d6c-478d-9e52-91e8a5d9564e",
+      "questionImage": null,
+      "questionText": "Three points: Is it a location in \"Fortnite,\" or a place mentioned in \"Wicked\"? Just write \"Fort\" or \"Oz\": Moisty Mire? Wailing Woods? Shiz University?",
+      "answerText": "Fort|Fort|Oz",
+      "numAnswers": 3
+    },
+    {
+      "id": "f406607a-424e-4e84-953a-ff5e11e6b470",
+      "questionImage": null,
+      "questionText": "Strike-slip, dip-slip, and oblique-slip are all different types of what cracks in the Earth's crust?",
+      "answerText": "Faults",
+      "numAnswers": 1,
+      "isBonus": false
+    },
+    {
+      "id": "73e54e0b-bdec-4857-a8b6-ff4b4781c6a6",
+      "questionImage": null,
+      "questionText": "Three points: Located right in the center of Central America, Honduras shares a border with what three other countries?",
+      "answerText": "Guatemala|Nicaragua|El Salvador",
+      "numAnswers": 3
+    },
+    {
+      "id": "377df965-076b-4310-b920-198f6073e527",
+      "questionImage": null,
+      "questionText": "Coined by an L.A. TV station in 1988, what term is listed under California law as a valid reason to suspend a driver's license?",
+      "answerText": "Road rage",
+      "numAnswers": 1,
+      "isBonus": false
+    },
+    {
+      "id": "fffb54da-0557-4525-9115-e41c7f904d04",
+      "questionImage": null,
+      "questionText": "Four non-consecutive points: What N.L. West team won the World Series in 2010, '12, and '14? Alan Shepard was a Mercury and Apollo astronaut, but skipped what program in between? What actor won Best Supporting Actor in 2017 and then again in 2019? What Asian country was called Siam before 1939, and then again from 1946 to 1949?",
+      "answerText": "San Francisco Giants|Gemini|Mahershala Ali|Thailand",
+      "numAnswers": 4
+    },
+    {
+      "id": "0eb6209e-6014-45c8-8058-daea3ea0f0cd",
+      "questionImage": null,
+      "questionText": "Bonus: In 1985, a Hasbro publicity stunt saw Mr. Potato Head run for mayor of what Northwestern state capital where he's got a strong support base?",
+      "answerText": "Boise",
+      "numAnswers": 1,
+      "isBonus": true
+    }
+  ]
+}

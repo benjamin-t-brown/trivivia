@@ -1,4 +1,5 @@
 import { test } from '@playwright/test';
+import { randomUUID } from 'crypto';
 import * as fs from 'fs';
 import path from 'path';
 
@@ -13,7 +14,7 @@ const TEST_RESULTS_OUTPUT = path.resolve(
 
 // npx playwright install
 // npx
-// npx playwright test test-browser/gwd.test.js --reporter=list
+// npx playwright test test-browser/gwd/gwd.test.js --reporter=list
 
 const { quizName, playerCode, url, roundFile } = JSON.parse(
   fs.readFileSync(__dirname + '/gwd.test.config.json', 'utf8')
@@ -23,6 +24,11 @@ const { quizName, playerCode, url, roundFile } = JSON.parse(
 // const url =
 //   'https://b.play.geekswhodrink.com/livegame/098/play/?access=d7d0b993-937e-4e68-9b7f-b58ba3369aff';
 // const roundFile = '2024-11-15-TEST'
+
+// const url =
+//   'https://a.play.geekswhodrink.com/livegame/097/play/?access=' + randomUUID();
+// const roundFile = 'ATEST1';
+// const playerCode = '008421';
 
 let ctr = 0;
 async function takeScreenshot(prefix, page) {
@@ -54,11 +60,42 @@ test('GWD Join Quiz', async ({ page }) => {
     await page.goto(url);
   }
 
-  // await takeScreenshot(prefix, page);
+  await takeScreenshot(prefix, page);
 
-  await new Promise(resolve => setTimeout(resolve, 1000));
+  await page.evaluate(() => {
+    window.onbeforeunload = function () {
+      return 'Are you sure you want to leave?';
+    };
+  });
 
-  await page.getByText('Just Watch').click();
+  await new Promise(resolve => setTimeout(resolve, 3000));
+
+  await takeScreenshot(prefix, page);
+
+  await page.evaluate(() => {
+    const element = document.querySelector('.modal-backdrop');
+    if (element) {
+      element.classList.remove('modal-backdrop');
+    }
+  });
+
+  await takeScreenshot(prefix, page);
+
+  await page.evaluate(() => {
+    var xpath = "//button[text()='Just Watch']";
+    /** @type {any} */
+    var button = document.evaluate(
+      xpath,
+      document,
+      null,
+      XPathResult.FIRST_ORDERED_NODE_TYPE,
+      null
+    ).singleNodeValue;
+    button.click();
+  });
+
+  // this stopped working
+  // await page.getByText('Just Watch').click();
 
   await new Promise(resolve => setTimeout(resolve, 500));
 

@@ -10,8 +10,8 @@ const TEST_RESULTS_OUTPUT = path.resolve(
   'test-results-output'
 );
 
-// This file goes to a gwd quiz and grabs the contents of the html, saving it into
-// 'test-results-output' directory.
+// This file progressively scans gwd nodes for a quiz, then tries to detect if it is
+// joinable.  If it finds one, it exits.
 
 // npx playwright install
 // npx
@@ -44,21 +44,72 @@ const padLeft = (str, num) => {
 
 test('GWD SCAN Quiz', async ({ page }) => {
   test.setTimeout(950_000);
-  const prefix = 'scan';
+  const prefix = 'SCAN_QUIZZES';
 
-  for (let i = 1; i < 200; i++) {
+  const activeQuizUrls = [];
+
+  for (let i = 0; i < 25; i++) {
     const num = padLeft(String(i), 3);
     const url = `https://a.play.geekswhodrink.com/livegame/${num}/play/?access=d7d0b993-937e-4e68-9b7f-b58ba3369aff`;
     await page.goto(url);
-    await page.screenshot({
-      path: `${TEST_RESULTS_OUTPUT}/${prefix + '_' + num}.png`,
-    });
     const title = await page.title();
     console.log('Title:', await page.title());
     if (title.includes('GWD Trivia')) {
-      // console.log('CHECK URL', url);
       console.log(' - FOUND POTENTIAL!', url);
+
+      await new Promise(resolve => setTimeout(resolve, 3000));
+
+      await takeScreenshot(prefix, page);
+
+      const modalBackdropRemoved = await page.evaluate(() => {
+        const element = document.querySelector('.modal-backdrop');
+        if (element) {
+          element.classList.remove('modal-backdrop');
+          console.log('join found!');
+          return true;
+        } else {
+          console.log('join not found :(');
+          return false;
+        }
+      });
+      await takeScreenshot(prefix, page);
+
+      console.log('modalBackdropRemoved', modalBackdropRemoved);
+      if (modalBackdropRemoved) {
+        const buttonFound = await page.evaluate(() => {
+          var xpath = "//button[text()='Just Watch']";
+          /** @type {any} */
+          var button = document.evaluate(
+            xpath,
+            document,
+            null,
+            XPathResult.FIRST_ORDERED_NODE_TYPE,
+            null
+          )?.singleNodeValue;
+          if (button) {
+            button.click();
+            return true;
+          }
+          return false;
+        });
+        if (buttonFound) {
+          console.log('Clicked join!');
+          await takeScreenshot(prefix, page);
+          activeQuizUrls.push(url);
+          i += 16;
+        } else {
+          console.log('Could not click watch button');
+        }
+      }
     }
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    await new Promise(resolve => setTimeout(resolve, 300));
   }
+
+  console.log('Active Quiz URLs:', activeQuizUrls.join('\n'));
+  console.log('OUTPUT:', `${TEST_RESULTS_OUTPUT}/active-quiz-urls.json`);
+
+  fs.writeFileSync(
+    `${TEST_RESULTS_OUTPUT}/active-quiz-urls.json`,
+    JSON.stringify(activeQuizUrls, null, 2)
+  );
 });
