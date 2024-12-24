@@ -2,7 +2,7 @@
 
 This is a web application for desktop and mobile to create and run real time "Geeks Who Drink"-like trivia quizzes.  An example of such a quiz can be found on the [GeeksWhoDrink Youtube Channel](https://www.youtube.com/@geekswhodrink)
 
-This application is deployed at [https://trivivia.twilightparadox.com](https://trivivia.twilightparadox.com)
+This application is deployed at [https://trivivia.net](https://trivivia.net)
 
 ## Does the quiz update in real time?
 

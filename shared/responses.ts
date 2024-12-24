@@ -139,8 +139,9 @@ export const getNumAnswers = (answerType: AnswerBoxType) => {
     case AnswerBoxType.INPUT8:
       return 8;
     case AnswerBoxType.INPUT16:
-    case AnswerBoxType.INPUT16_WITH_EXTRA:
       return 16;
+    case AnswerBoxType.INPUT16_WITH_EXTRA:
+      return 32;
   }
   return 1;
 };
