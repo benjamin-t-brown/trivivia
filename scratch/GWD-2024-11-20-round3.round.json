@@ -1,0 +1,22 @@
+{
+  "id": "716831e7-7b5b-4980-a35f-5603116d3016",
+  "roundName": "O Hi There",
+  "roundDescription": "(8 points) It's a speed round! I'm going to read you one question with multiple answers, and give you 3 minutes to finish your answers and the bonus question you'll see on your screen.",
+  "questions": [
+    {
+      "id": "9cba85b1-cb16-4c35-a1cf-7fe2aa49c23a",
+      "questionImage": null,
+      "questionText": "I'll give you 3 minutes to name any eight of the 12 most populous cities in Ohio, according to the 2020 Census. Here's a hint: Four of them start with \"C.\"",
+      "answerText": "Cleveland|Columbus|Cincinnati|Dayton|Toledo|Akron|Springfield|Canton|Youngstown|Parma|Lorain|Hamilton",
+      "numAnswers": 8
+    },
+    {
+      "id": "384f046e-f619-40c3-bd7d-1ccbdd6d691c",
+      "questionImage": null,
+      "questionText": "Bonus: Perfect for doing old-timey dances, the most populous cities South Carolina and West Virginia share what name?",
+      "answerText": "Charleston",
+      "numAnswers": 1,
+      "isBonus": true
+    }
+  ]
+}

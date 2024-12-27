@@ -1,0 +1,142 @@
+{
+  "quizTemplateName": "",
+  "id": "ba3cd208-dcb6-4bfe-93b0-8bc5808e88a6",
+  "title": "Tanks for Nothing",
+  "description": "(8 points) Yes, it's a whole round on tanks.",
+  "questionOrder": [
+    "37b17e18-9f70-4092-b299-088a5f78b189",
+    "a1ed2bc0-c996-4bac-ac65-7469f4458ccf",
+    "0c1b1ed4-a4fd-4458-ad3e-0be01a5d9986",
+    "0cfc7f2c-4801-455d-a3ed-dd28b547c795",
+    "f7876d08-0204-4b03-9796-cb0eccc43845",
+    "b766328f-c13b-4c51-9c22-8a0fae366621",
+    "bdaf3308-8a00-483f-af96-91c240327468",
+    "d42589b8-9134-41f4-af2c-4adf16d801b6",
+    "724344f0-9931-4a31-9b3b-93a6f2c99958"
+  ],
+  "notes": "",
+  "jokerDisabled": false,
+  "creationDate": "2024-11-21T02:36:00.529Z",
+  "updatedOn": "2024-11-21T02:36:00.529Z",
+  "questions": [
+    {
+      "id": "37b17e18-9f70-4092-b299-088a5f78b189",
+      "creationDate": "2024-11-21T02:36:00.530Z",
+      "roundTemplateId": "ba3cd208-dcb6-4bfe-93b0-8bc5808e88a6",
+      "notes": "",
+      "text": "To get in good with the Duke of Milan, what backwards-writing genius drew up designs for a turtle-shaped, tank-like fighting vehicle in 1487?",
+      "answerType": "input1",
+      "answers": {
+        "answer1": "Leonardo da Vinci"
+      },
+      "orderMatters": false,
+      "isBonus": false
+    },
+    {
+      "id": "a1ed2bc0-c996-4bac-ac65-7469f4458ccf",
+      "creationDate": "2024-11-21T02:36:00.530Z",
+      "roundTemplateId": "ba3cd208-dcb6-4bfe-93b0-8bc5808e88a6",
+      "notes": "",
+      "text": "Battling Nazis on the Eastern Front in a tank she paid for herself, Mariya Oktyabrskaya was justifiably named a \"Hero of\" what super-state?",
+      "answerType": "input1",
+      "answers": {
+        "answer1": "Soviet Union"
+      },
+      "orderMatters": false,
+      "isBonus": false
+    },
+    {
+      "id": "0c1b1ed4-a4fd-4458-ad3e-0be01a5d9986",
+      "creationDate": "2024-11-21T02:36:00.530Z",
+      "roundTemplateId": "ba3cd208-dcb6-4bfe-93b0-8bc5808e88a6",
+      "notes": "",
+      "text": "During one episode of \"Jay Leno's Garage,\" what actor-turned-politician crushed a limo with a tank he once drove in the Austrian army?",
+      "answerType": "input1",
+      "answers": {
+        "answer1": "Arnold Schwarzenegger"
+      },
+      "orderMatters": false,
+      "isBonus": false
+    },
+    {
+      "id": "0cfc7f2c-4801-455d-a3ed-dd28b547c795",
+      "creationDate": "2024-11-21T02:36:00.530Z",
+      "roundTemplateId": "ba3cd208-dcb6-4bfe-93b0-8bc5808e88a6",
+      "notes": "",
+      "text": "The boxy Scorpion is the go-to battle tank for the United Nations Space Command and their Spartans, as depicted in what flagship Xbox franchise?",
+      "answerType": "input1",
+      "answers": {
+        "answer1": "Halo"
+      },
+      "orderMatters": false,
+      "isBonus": false
+    },
+    {
+      "id": "f7876d08-0204-4b03-9796-cb0eccc43845",
+      "creationDate": "2024-11-21T02:36:00.530Z",
+      "roundTemplateId": "ba3cd208-dcb6-4bfe-93b0-8bc5808e88a6",
+      "notes": "",
+      "text": "The world's only operational Tiger tank was rolled out for an impressive cameo in what 2014 film where it almost sent Brad Pitt to a fiery grave?",
+      "answerType": "input1",
+      "answers": {
+        "answer1": "Fury"
+      },
+      "orderMatters": false,
+      "isBonus": false
+    },
+    {
+      "id": "b766328f-c13b-4c51-9c22-8a0fae366621",
+      "creationDate": "2024-11-21T02:36:00.530Z",
+      "roundTemplateId": "ba3cd208-dcb6-4bfe-93b0-8bc5808e88a6",
+      "notes": "",
+      "text": "When a military magazine told an A.I. to reimagine famous paintings with tanks, what artwork got turned into this... thing?",
+      "answerType": "input1",
+      "answers": {
+        "answer1": "Girl With a Pearl Earring"
+      },
+      "orderMatters": false,
+      "isBonus": false,
+      "imageLink": "https://www.geekswhodrink.com/wp-content/uploads/2024/11/GWD-112024-R4Q6.png"
+    },
+    {
+      "id": "bdaf3308-8a00-483f-af96-91c240327468",
+      "creationDate": "2024-11-21T02:36:00.530Z",
+      "roundTemplateId": "ba3cd208-dcb6-4bfe-93b0-8bc5808e88a6",
+      "notes": "",
+      "text": "Named for General Creighton Something, America's main battle tanks since the '80s have all been variations on the M1 WHAT?",
+      "answerType": "input1",
+      "answers": {
+        "answer1": "Abrams"
+      },
+      "orderMatters": false,
+      "isBonus": false
+    },
+    {
+      "id": "d42589b8-9134-41f4-af2c-4adf16d801b6",
+      "creationDate": "2024-11-21T02:36:00.530Z",
+      "roundTemplateId": "ba3cd208-dcb6-4bfe-93b0-8bc5808e88a6",
+      "notes": "",
+      "text": "Last year a teenager kept it weird by renting a tank and the services of a unicycling bagpiper dressed as Darth Vader, for his prom in what West Coast city?",
+      "answerType": "input1",
+      "answers": {
+        "answer1": "Portland"
+      },
+      "orderMatters": false,
+      "isBonus": false
+    },
+    {
+      "id": "724344f0-9931-4a31-9b3b-93a6f2c99958",
+      "creationDate": "2024-11-21T02:36:00.530Z",
+      "roundTemplateId": "ba3cd208-dcb6-4bfe-93b0-8bc5808e88a6",
+      "notes": "",
+      "text": "Bonus: In a memorable scene from \"The Interview,\" fake Kim Jong Un blew stuff up in a tank, while cranking what Katy Perry tune about happier explosions?",
+      "answerType": "input1",
+      "answers": {
+        "answer1": "Firework"
+      },
+      "orderMatters": false,
+      "isBonus": true
+    }
+  ],
+  "quizTemplateId": ""
+}

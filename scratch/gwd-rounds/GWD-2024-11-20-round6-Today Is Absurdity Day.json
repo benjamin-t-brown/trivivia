@@ -1,0 +1,159 @@
+{
+  "quizTemplateName": "",
+  "id": "eaabdc33-62fe-4564-b60c-6c14e5e392f1",
+  "title": "Today Is Absurdity Day",
+  "description": "(16 points) Today is Absurdity Day.",
+  "questionOrder": [
+    "4d8626c2-b7f5-4b00-9f76-8fa6abef67d9",
+    "db387a6d-f4e6-4541-8e13-15d3c71d61de",
+    "94d69d5a-6388-4abe-ae3e-358614bc07c0",
+    "b63c89a9-aee6-48e4-a649-8a9e48ec261e",
+    "b388367b-b52d-4958-8ed9-4eecf445294f",
+    "f23eaa1a-3c2b-4bcf-aeed-13265261ae5e",
+    "99748405-0125-4460-8288-ce902a1977bb",
+    "d921509b-ca1c-4738-b9f0-fe900af0cf77",
+    "ad1e8e4f-3faa-4fbf-8b60-0c463b495925",
+    "22c59228-6b5d-4943-8372-44286f4a0889"
+  ],
+  "notes": "",
+  "jokerDisabled": false,
+  "creationDate": "2024-11-21T03:18:17.325Z",
+  "updatedOn": "2024-11-21T03:18:17.325Z",
+  "questions": [
+    {
+      "id": "4d8626c2-b7f5-4b00-9f76-8fa6abef67d9",
+      "creationDate": "2024-11-21T03:18:17.326Z",
+      "roundTemplateId": "eaabdc33-62fe-4564-b60c-6c14e5e392f1",
+      "notes": "",
+      "text": "One point: If two trains leave Des Moines going opposite directions, and someone on the first train is reading Britney Spears's 2023 autobiography, then what is the name of that book?",
+      "answerType": "input1",
+      "answers": {
+        "answer1": "The Woman in Me"
+      },
+      "orderMatters": false,
+      "isBonus": false
+    },
+    {
+      "id": "db387a6d-f4e6-4541-8e13-15d3c71d61de",
+      "creationDate": "2024-11-21T03:18:17.326Z",
+      "roundTemplateId": "eaabdc33-62fe-4564-b60c-6c14e5e392f1",
+      "notes": "",
+      "text": "Three points: We'll give you three movie stills, you name the film they each come from.",
+      "answerType": "input3",
+      "answers": {
+        "answer1": "The Lord of the Rings: The Fellowship of the Ring",
+        "answer2": "The Lord of the Rings: The Return of the King",
+        "answer3": "The Room"
+      },
+      "orderMatters": false,
+      "imageLink": "https://www.geekswhodrink.com/wp-content/uploads/2024/11/GWD-112024-R6Q2.png"
+    },
+    {
+      "id": "94d69d5a-6388-4abe-ae3e-358614bc07c0",
+      "creationDate": "2024-11-21T03:18:17.326Z",
+      "roundTemplateId": "eaabdc33-62fe-4564-b60c-6c14e5e392f1",
+      "notes": "",
+      "text": "Two points: As of 1996, how many LPGA players have served aboard the ISS? As of 1986, what is the southernmost state in the continental U.S. that's not Vermont?",
+      "answerType": "input2",
+      "answers": {
+        "answer1": "",
+        "answer2": "Florida"
+      },
+      "orderMatters": false
+    },
+    {
+      "id": "b63c89a9-aee6-48e4-a649-8a9e48ec261e",
+      "creationDate": "2024-11-21T03:18:17.326Z",
+      "roundTemplateId": "eaabdc33-62fe-4564-b60c-6c14e5e392f1",
+      "notes": "",
+      "text": "One point: When Samuel L. Jackson dies in 2111, what Norwegian will have been the first person to have reached the South Pole 200 years prior?",
+      "answerType": "input1",
+      "answers": {
+        "answer1": "Roald Amundsen"
+      },
+      "orderMatters": false,
+      "isBonus": false
+    },
+    {
+      "id": "b388367b-b52d-4958-8ed9-4eecf445294f",
+      "creationDate": "2024-11-21T03:18:17.326Z",
+      "roundTemplateId": "eaabdc33-62fe-4564-b60c-6c14e5e392f1",
+      "notes": "",
+      "text": "Three points: Leading the Dodgers to a World Series title, Shohei Ohtani had 54 home runs last year, none of which occurred in what three most populous Italian cities?",
+      "answerType": "input3",
+      "answers": {
+        "answer1": "Rome",
+        "answer2": "Milan",
+        "answer3": "Naples"
+      },
+      "orderMatters": false
+    },
+    {
+      "id": "f23eaa1a-3c2b-4bcf-aeed-13265261ae5e",
+      "creationDate": "2024-11-21T03:18:17.326Z",
+      "roundTemplateId": "eaabdc33-62fe-4564-b60c-6c14e5e392f1",
+      "notes": "",
+      "text": "Two points: In the new live-action \"Lilo & Stitch\" movie, Stitch will not be voiced by what current host of \"Wheel of Fortune\"? Former \"Wheel\" host Pat Sajak recently retired and did not move to what massive world capital whose name means \"Good Air\"?",
+      "answerType": "input2",
+      "answers": {
+        "answer1": "Ryan Seacrest",
+        "answer2": "Buenos Aires"
+      },
+      "orderMatters": false
+    },
+    {
+      "id": "99748405-0125-4460-8288-ce902a1977bb",
+      "creationDate": "2024-11-21T03:18:17.326Z",
+      "roundTemplateId": "eaabdc33-62fe-4564-b60c-6c14e5e392f1",
+      "notes": "",
+      "text": "One point: Taco Bell's Nacho Cheese Doritos Locos Tacos contain cheese and lettuce, but do NOT contain any meat from Harriet, the pet tortoise adopted by what British naturalist in 1835?",
+      "answerType": "input1",
+      "answers": {
+        "answer1": "Charles Darwin"
+      },
+      "orderMatters": false,
+      "isBonus": false
+    },
+    {
+      "id": "d921509b-ca1c-4738-b9f0-fe900af0cf77",
+      "creationDate": "2024-11-21T03:18:17.326Z",
+      "roundTemplateId": "eaabdc33-62fe-4564-b60c-6c14e5e392f1",
+      "notes": "",
+      "text": "Three points: The son of Colin Jost and Scarlett Johansson, 3-year-old Cosmo Jost was born in 2021. Who were the first three American vice presidents?",
+      "answerType": "input3",
+      "answers": {
+        "answer1": "John Adams",
+        "answer2": "Thomas Jefferson",
+        "answer3": "Aaron Burr"
+      },
+      "orderMatters": false
+    },
+    {
+      "id": "ad1e8e4f-3faa-4fbf-8b60-0c463b495925",
+      "creationDate": "2024-11-21T03:18:17.326Z",
+      "roundTemplateId": "eaabdc33-62fe-4564-b60c-6c14e5e392f1",
+      "notes": "",
+      "text": "Zero points: Ruling the Mayan city of Copán from 738 to 749, what ruler came after Uaxaclajuun Ub'aah K'awiil, but before K'ak' Yipyaj Chan K'awiil?",
+      "answerType": "input1",
+      "answers": {
+        "answer1": "K'ak' Joplaj Chan K'awiil"
+      },
+      "orderMatters": false,
+      "isBonus": false
+    },
+    {
+      "id": "22c59228-6b5d-4943-8372-44286f4a0889",
+      "creationDate": "2024-11-21T03:18:17.326Z",
+      "roundTemplateId": "eaabdc33-62fe-4564-b60c-6c14e5e392f1",
+      "notes": "",
+      "text": "Bonus: What is a word that does not mean \"green\" in Spanish?",
+      "answerType": "input1",
+      "answers": {
+        "answer1": "Hamstring"
+      },
+      "orderMatters": false,
+      "isBonus": true
+    }
+  ],
+  "quizTemplateId": ""
+}

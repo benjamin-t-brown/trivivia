@@ -1,0 +1,127 @@
+{
+  "quizTemplateName": "",
+  "id": "a797a904-f2bf-43c9-83bc-4f92791e9167",
+  "title": "We Are Young",
+  "description": "(16 points) It's National Children's Day, so we found a bunch of songs with kids' voices in them. Name the titles and artists as usual!",
+  "questionOrder": [
+    "cef1c70f-a8b9-4cf7-bc0b-6426f9c42da8",
+    "88062b2f-d742-4f28-8a8a-409c456409f4",
+    "65dc6026-ab6b-4bae-ba91-1b8bdb65c774",
+    "7eb2fdde-117c-486d-956d-c7fd7714e334",
+    "4f4fd2fd-53e9-4d34-913b-4af359ef14bf",
+    "4270791d-542a-4b58-9d3f-f132d024ace4",
+    "c71317cf-d02f-4949-b101-ec0a933163ad",
+    "a37ab81f-30be-4ab9-b293-d03d12b5826c"
+  ],
+  "notes": "",
+  "jokerDisabled": false,
+  "creationDate": "2024-11-21T02:04:27.387Z",
+  "updatedOn": "2024-11-21T02:04:27.388Z",
+  "questions": [
+    {
+      "id": "cef1c70f-a8b9-4cf7-bc0b-6426f9c42da8",
+      "creationDate": "2024-11-21T02:04:27.388Z",
+      "roundTemplateId": "a797a904-f2bf-43c9-83bc-4f92791e9167",
+      "notes": "",
+      "text": "Transcription: Baby, I don't need dollar bills to have fun tonight (I love...) / Baby, I don't need dollar bills to have fun tonight (I love...) / I don't need no money / As long as I can feel the beat",
+      "answerType": "input2",
+      "answers": {
+        "answer1": "Sia",
+        "answer2": "Cheap Thrills"
+      },
+      "orderMatters": false
+    },
+    {
+      "id": "88062b2f-d742-4f28-8a8a-409c456409f4",
+      "creationDate": "2024-11-21T02:04:27.388Z",
+      "roundTemplateId": "a797a904-f2bf-43c9-83bc-4f92791e9167",
+      "notes": "",
+      "text": "Transcription: Sometimes I think sittin' on trains / Every stop I get to, I'm clocking that game / Everyone's a winner, we're making our fame / Bona fide hustler making my name / All I wanna do is boom, boom, boom, boom / And a boom, boom, boom / And take your money",
+      "answerType": "input2",
+      "answers": {
+        "answer1": "M.I.A.",
+        "answer2": "Paper Planes"
+      },
+      "orderMatters": false
+    },
+    {
+      "id": "65dc6026-ab6b-4bae-ba91-1b8bdb65c774",
+      "creationDate": "2024-11-21T02:04:27.388Z",
+      "roundTemplateId": "a797a904-f2bf-43c9-83bc-4f92791e9167",
+      "notes": "",
+      "text": "Transcription: [SPOKEN] We want to say goodnight to you! / [SUNG] Holdin' me back / Gravity's holdin' me back / I want you to hold out the palm of your hand / Why don't we leave it at that?",
+      "answerType": "input2",
+      "answers": {
+        "answer1": "Harry Styles",
+        "answer2": "As It Was"
+      },
+      "orderMatters": false
+    },
+    {
+      "id": "7eb2fdde-117c-486d-956d-c7fd7714e334",
+      "creationDate": "2024-11-21T02:04:27.388Z",
+      "roundTemplateId": "a797a904-f2bf-43c9-83bc-4f92791e9167",
+      "notes": "",
+      "text": "Transcription: And I need you now tonight / And I need you more than ever / And if you only hold me tight / We'll be holding on forever",
+      "answerType": "input2",
+      "answers": {
+        "answer1": "Total Eclipse of the Heart",
+        "answer2": "Bonnie Tyler"
+      },
+      "orderMatters": false
+    },
+    {
+      "id": "4f4fd2fd-53e9-4d34-913b-4af359ef14bf",
+      "creationDate": "2024-11-21T02:04:27.388Z",
+      "roundTemplateId": "a797a904-f2bf-43c9-83bc-4f92791e9167",
+      "notes": "",
+      "text": "Transcription: (...tryin' to keep me down) They been tryin' to keep me down / (All this time) All this time / (Never thought I would make it out) Never thought I'd make it out / (They couldn't break me, they couldn't break me) No, no / (They couldn't take me, they couldn't take me) / No",
+      "answerType": "input2",
+      "answers": {
+        "answer1": "All My Life",
+        "answer2": "Lil Durk ft. J. Cole"
+      },
+      "orderMatters": false
+    },
+    {
+      "id": "4270791d-542a-4b58-9d3f-f132d024ace4",
+      "creationDate": "2024-11-21T02:04:27.388Z",
+      "roundTemplateId": "a797a904-f2bf-43c9-83bc-4f92791e9167",
+      "notes": "",
+      "text": "Transcription: We don't need no education / We don't need no thought control / No dark sarcasm in the classroom",
+      "answerType": "input2",
+      "answers": {
+        "answer1": "Pink Floyd",
+        "answer2": "Another Brick in the Wall"
+      },
+      "orderMatters": false
+    },
+    {
+      "id": "c71317cf-d02f-4949-b101-ec0a933163ad",
+      "creationDate": "2024-11-21T02:04:27.388Z",
+      "roundTemplateId": "a797a904-f2bf-43c9-83bc-4f92791e9167",
+      "notes": "",
+      "text": "Transcription: It's your heart that takes / Takes the fall / (Won't you come out and play with me?) / Step by step, heart to heart (Heart to heart) / Left, right, left, we all fall down (All fall down) / Like...",
+      "answerType": "input2",
+      "answers": {
+        "answer1": "Toy Soldiers",
+        "answer2": "Martika"
+      },
+      "orderMatters": false
+    },
+    {
+      "id": "a37ab81f-30be-4ab9-b293-d03d12b5826c",
+      "creationDate": "2024-11-21T02:04:27.388Z",
+      "roundTemplateId": "a797a904-f2bf-43c9-83bc-4f92791e9167",
+      "notes": "",
+      "text": "Transcription: ...and bumpin' and pumpin', movin' all around, G / In the mix, I made MCs step back / They try to step to the Mac then they got jacked / To the back you'll be sportin' the gear, is that coincidental? / Act like you know it, don't be claiming that it's mental / Two lil' kids with a flow you ain't ever heard / And nothin' fake, you can understand every word",
+      "answerType": "input2",
+      "answers": {
+        "answer1": "Kris Kross",
+        "answer2": "Jump"
+      },
+      "orderMatters": false
+    }
+  ],
+  "quizTemplateId": ""
+}

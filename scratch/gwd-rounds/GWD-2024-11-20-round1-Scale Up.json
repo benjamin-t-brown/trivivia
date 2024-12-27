@@ -1,0 +1,141 @@
+{
+  "quizTemplateName": "",
+  "id": "4f11d233-b8e6-4ecd-bc7e-7096f5510aee",
+  "title": "Scale Up",
+  "description": "(8 points) The first answer in this round will start with \"D-O,\" the second with \"R-E,\" then \"M-I,\" and so forth.",
+  "questionOrder": [
+    "fad473c7-687c-4ec4-8af6-53be4229b9e5",
+    "57e50985-4eb4-4c73-a3a5-21bde12f3638",
+    "364a2c27-d91c-4bdb-8073-b9c193c4cbb5",
+    "35accba2-29c4-4b6c-8764-7b7b1cc6b5e9",
+    "071578e7-e2a8-40cb-8ab5-c7599b8b9aff",
+    "dcb5af06-fd03-4e31-8274-2e38c20974b9",
+    "55dc83c1-e79a-4817-8614-5050cea40c55",
+    "e7028b11-b75c-41d8-a7d3-4ac23c6e6af0",
+    "bfa7157c-c362-442c-ba4c-2db23b7eed18"
+  ],
+  "notes": "",
+  "jokerDisabled": false,
+  "creationDate": "2024-11-21T01:47:50.338Z",
+  "updatedOn": "2024-11-21T01:47:50.339Z",
+  "questions": [
+    {
+      "id": "fad473c7-687c-4ec4-8af6-53be4229b9e5",
+      "creationDate": "2024-11-21T01:47:50.339Z",
+      "roundTemplateId": "4f11d233-b8e6-4ecd-bc7e-7096f5510aee",
+      "notes": "",
+      "text": "\"Dalek,\" \"TARDIS,\" and \"Sonic screwdriver\" are all in the Oxford English Dictionary thanks to what sci-fi show?",
+      "answerType": "input1",
+      "answers": {
+        "answer1": "Doctor Who"
+      },
+      "orderMatters": false,
+      "isBonus": false
+    },
+    {
+      "id": "57e50985-4eb4-4c73-a3a5-21bde12f3638",
+      "creationDate": "2024-11-21T01:47:50.339Z",
+      "roundTemplateId": "4f11d233-b8e6-4ecd-bc7e-7096f5510aee",
+      "notes": "",
+      "text": "\"The six-week cure\" was 1950s slang for briefly moving to what Nevada city to secure a divorce?",
+      "answerType": "input1",
+      "answers": {
+        "answer1": "Reno"
+      },
+      "orderMatters": false,
+      "isBonus": false
+    },
+    {
+      "id": "364a2c27-d91c-4bdb-8073-b9c193c4cbb5",
+      "creationDate": "2024-11-21T01:47:50.339Z",
+      "roundTemplateId": "4f11d233-b8e6-4ecd-bc7e-7096f5510aee",
+      "notes": "",
+      "text": "Like an even worse \"Blood and Honey,\" the 2024 horror film \"The Mouse Trap\" uses the no-longer-copyrighted Steamboat Willie version of what character?",
+      "answerType": "input1",
+      "answers": {
+        "answer1": "Mickey"
+      },
+      "orderMatters": false,
+      "isBonus": false
+    },
+    {
+      "id": "35accba2-29c4-4b6c-8764-7b7b1cc6b5e9",
+      "creationDate": "2024-11-21T01:47:50.339Z",
+      "roundTemplateId": "4f11d233-b8e6-4ecd-bc7e-7096f5510aee",
+      "notes": "",
+      "text": "Mark Shakman went out to the desert to find rocks to use as a model for The Thing, for his upcoming film about what super quartet?",
+      "answerType": "input1",
+      "answers": {
+        "answer1": "Fantastic Four"
+      },
+      "orderMatters": false,
+      "isBonus": false
+    },
+    {
+      "id": "071578e7-e2a8-40cb-8ab5-c7599b8b9aff",
+      "creationDate": "2024-11-21T01:47:50.339Z",
+      "roundTemplateId": "4f11d233-b8e6-4ecd-bc7e-7096f5510aee",
+      "notes": "",
+      "text": "Though it doesn't sound all that wise, what baby-dividing Biblical king supposedly had 700 wives?",
+      "answerType": "input1",
+      "answers": {
+        "answer1": "Solomon"
+      },
+      "orderMatters": false,
+      "isBonus": false
+    },
+    {
+      "id": "dcb5af06-fd03-4e31-8274-2e38c20974b9",
+      "creationDate": "2024-11-21T01:47:50.339Z",
+      "roundTemplateId": "4f11d233-b8e6-4ecd-bc7e-7096f5510aee",
+      "notes": "",
+      "text": "The ATMs in Vatican City cheekily give their instructions in what language that's still sort of alive there?",
+      "answerType": "input1",
+      "answers": {
+        "answer1": "Latin"
+      },
+      "orderMatters": false,
+      "isBonus": false
+    },
+    {
+      "id": "55dc83c1-e79a-4817-8614-5050cea40c55",
+      "creationDate": "2024-11-21T01:47:50.340Z",
+      "roundTemplateId": "4f11d233-b8e6-4ecd-bc7e-7096f5510aee",
+      "notes": "",
+      "text": "Bad Bunny's aunt asks him whether he has a bunch of girlfriends, in what 2022 Spanish-language song?",
+      "answerType": "input1",
+      "answers": {
+        "answer1": "Tití Me Preguntó"
+      },
+      "orderMatters": false,
+      "isBonus": false
+    },
+    {
+      "id": "e7028b11-b75c-41d8-a7d3-4ac23c6e6af0",
+      "creationDate": "2024-11-21T01:47:50.340Z",
+      "roundTemplateId": "4f11d233-b8e6-4ecd-bc7e-7096f5510aee",
+      "notes": "",
+      "text": "A cave painting with the oldest known depiction of people swimming has them doing what canine-inspired stroke?",
+      "answerType": "input1",
+      "answers": {
+        "answer1": "Dog paddle"
+      },
+      "orderMatters": false,
+      "isBonus": false
+    },
+    {
+      "id": "bfa7157c-c362-442c-ba4c-2db23b7eed18",
+      "creationDate": "2024-11-21T01:47:50.340Z",
+      "roundTemplateId": "4f11d233-b8e6-4ecd-bc7e-7096f5510aee",
+      "notes": "",
+      "text": "Bonus: After establishing his superhero cred with three \"Spider-Man\" films, \"Doctor Strange in the Multiverse of Madness\" was the first MCU film for Sam WHO?",
+      "answerType": "input1",
+      "answers": {
+        "answer1": "Raimi"
+      },
+      "orderMatters": false,
+      "isBonus": true
+    }
+  ],
+  "quizTemplateId": ""
+}

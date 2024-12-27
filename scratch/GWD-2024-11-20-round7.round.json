@@ -1,0 +1,75 @@
+{
+  "id": "2943cf95-d5fd-42e8-91d9-11d6cdcc6271",
+  "roundName": "Random Knowledge",
+  "roundDescription": "(16 points) It's Random Knowledge! Beware: Some of these questions will require multiple answers!",
+  "questions": [
+    {
+      "id": "2b4f8a14-517d-43b3-88a2-ab5ad00afc5d",
+      "questionImage": null,
+      "questionText": "Though named for a very French city, what specific variety of condiment requires the French to import tons of Canadian seeds?",
+      "answerText": "Dijon mustard",
+      "numAnswers": 1,
+      "isBonus": false
+    },
+    {
+      "id": "d4536994-99eb-47c2-aaf9-41c8798a81f2",
+      "questionImage": "https://www.geekswhodrink.com/wp-content/uploads/2024/11/GWD-112024-R7Q2.png",
+      "questionText": "Two measured points: This artifact from Winchester Castle is a recreation of the probably-mythical Round WHAT? \"Create the right arm placement\" and \"Leave the cuddling position if necessary\" are two tips from the wikiHow article \"How to WHAT Someone\"?",
+      "answerText": "Table|Spoon",
+      "numAnswers": 2
+    },
+    {
+      "id": "ea13848e-3587-43ee-b93a-ceec26a1d5f5",
+      "questionImage": null,
+      "questionText": "Turning 30 years old this month — though we think it hasn't aged a day — what Kirsten Dunst career-launcher anagrams to VIEW WITH INTERPRETIVE HAM?",
+      "answerText": "Interview With the Vampire",
+      "numAnswers": 1,
+      "isBonus": false
+    },
+    {
+      "id": "1403e2a1-78ba-452f-b2af-b654e3795b5c",
+      "questionImage": null,
+      "questionText": "Three points: What Sabrina Carpenter song is also... the sense at the heart of the human gustatory system? The screenwriting debut of Diablo Cody? The drink that Weird Al's \"Word Crimes\" reminds us is NOT spelled with an \"X\"?",
+      "answerText": "Taste|Juno|Espresso",
+      "numAnswers": 3
+    },
+    {
+      "id": "1ce3dcce-9685-4e84-9656-1e4095118c5f",
+      "questionImage": null,
+      "questionText": "With its second season coming out in three different chunks this month, TheGamer.com says that what Netflix show is worth watching \"even if you don't play 'League of Legends'\"?",
+      "answerText": "Arcane",
+      "numAnswers": 1,
+      "isBonus": false
+    },
+    {
+      "id": "25e693ed-dbc0-470b-8b44-daf288a7e816",
+      "questionImage": null,
+      "questionText": "Three points: Within each set, which is the largest? An alpaca, axolotl, or an aye-aye? Algeria, Austria, or Azerbaijan? Acadia, American Samoa, or Arches National Parks?",
+      "answerText": "Alpaca|Algeria|Arches",
+      "numAnswers": 3
+    },
+    {
+      "id": "a0edeb2a-5d98-4672-9ca1-40fe6c303012",
+      "questionImage": null,
+      "questionText": "\"Instant,\" \"Mirrorless,\" and \"Dash\" are some of the subcategories on Wirecutter's guides to what gadget invented in 1816?",
+      "answerText": "Camera",
+      "numAnswers": 1,
+      "isBonus": false
+    },
+    {
+      "id": "0948f0a2-19d6-4dbb-bbb3-bc2926c3da81",
+      "questionImage": null,
+      "questionText": "Four points: Which four NFL teams have five-letter team names? And hell no, numbers don't count as letters.",
+      "answerText": "Bears|Lions|Bills|Colts",
+      "numAnswers": 4
+    },
+    {
+      "id": "f605eeef-018e-48bf-971d-aa9ab2e9d8df",
+      "questionImage": null,
+      "questionText": "Bonus: Disney created a new production company called Blue Koala Pictures, specifically for the upcoming live-actioning of what film set on the island of Kaua'i?",
+      "answerText": "Lilo & Stitch",
+      "numAnswers": 1,
+      "isBonus": true
+    }
+  ]
+}

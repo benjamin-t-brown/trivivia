@@ -1,0 +1,79 @@
+{
+  "id": "4f11d233-b8e6-4ecd-bc7e-7096f5510aee",
+  "roundName": "Scale Up",
+  "roundDescription": "(8 points) The first answer in this round will start with \"D-O,\" the second with \"R-E,\" then \"M-I,\" and so forth.",
+  "questions": [
+    {
+      "id": "fad473c7-687c-4ec4-8af6-53be4229b9e5",
+      "questionImage": null,
+      "questionText": "\"Dalek,\" \"TARDIS,\" and \"Sonic screwdriver\" are all in the Oxford English Dictionary thanks to what sci-fi show?",
+      "answerText": "Doctor Who",
+      "numAnswers": 1,
+      "isBonus": false
+    },
+    {
+      "id": "57e50985-4eb4-4c73-a3a5-21bde12f3638",
+      "questionImage": null,
+      "questionText": "\"The six-week cure\" was 1950s slang for briefly moving to what Nevada city to secure a divorce?",
+      "answerText": "Reno",
+      "numAnswers": 1,
+      "isBonus": false
+    },
+    {
+      "id": "364a2c27-d91c-4bdb-8073-b9c193c4cbb5",
+      "questionImage": null,
+      "questionText": "Like an even worse \"Blood and Honey,\" the 2024 horror film \"The Mouse Trap\" uses the no-longer-copyrighted Steamboat Willie version of what character?",
+      "answerText": "Mickey",
+      "numAnswers": 1,
+      "isBonus": false
+    },
+    {
+      "id": "35accba2-29c4-4b6c-8764-7b7b1cc6b5e9",
+      "questionImage": null,
+      "questionText": "Mark Shakman went out to the desert to find rocks to use as a model for The Thing, for his upcoming film about what super quartet?",
+      "answerText": "Fantastic Four",
+      "numAnswers": 1,
+      "isBonus": false
+    },
+    {
+      "id": "071578e7-e2a8-40cb-8ab5-c7599b8b9aff",
+      "questionImage": null,
+      "questionText": "Though it doesn't sound all that wise, what baby-dividing Biblical king supposedly had 700 wives?",
+      "answerText": "Solomon",
+      "numAnswers": 1,
+      "isBonus": false
+    },
+    {
+      "id": "dcb5af06-fd03-4e31-8274-2e38c20974b9",
+      "questionImage": null,
+      "questionText": "The ATMs in Vatican City cheekily give their instructions in what language that's still sort of alive there?",
+      "answerText": "Latin",
+      "numAnswers": 1,
+      "isBonus": false
+    },
+    {
+      "id": "55dc83c1-e79a-4817-8614-5050cea40c55",
+      "questionImage": null,
+      "questionText": "Bad Bunny's aunt asks him whether he has a bunch of girlfriends, in what 2022 Spanish-language song?",
+      "answerText": "Tití Me Preguntó",
+      "numAnswers": 1,
+      "isBonus": false
+    },
+    {
+      "id": "e7028b11-b75c-41d8-a7d3-4ac23c6e6af0",
+      "questionImage": null,
+      "questionText": "A cave painting with the oldest known depiction of people swimming has them doing what canine-inspired stroke?",
+      "answerText": "Dog paddle",
+      "numAnswers": 1,
+      "isBonus": false
+    },
+    {
+      "id": "bfa7157c-c362-442c-ba4c-2db23b7eed18",
+      "questionImage": null,
+      "questionText": "Bonus: After establishing his superhero cred with three \"Spider-Man\" films, \"Doctor Strange in the Multiverse of Madness\" was the first MCU film for Sam WHO?",
+      "answerText": "Raimi",
+      "numAnswers": 1,
+      "isBonus": true
+    }
+  ]
+}

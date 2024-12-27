@@ -1,0 +1,49 @@
+{
+  "quizTemplateName": "",
+  "id": "716831e7-7b5b-4980-a35f-5603116d3016",
+  "title": "O Hi There",
+  "description": "(8 points) It's a speed round! I'm going to read you one question with multiple answers, and give you 3 minutes to finish your answers and the bonus question you'll see on your screen.",
+  "questionOrder": [
+    "9cba85b1-cb16-4c35-a1cf-7fe2aa49c23a",
+    "384f046e-f619-40c3-bd7d-1ccbdd6d691c"
+  ],
+  "notes": "",
+  "jokerDisabled": false,
+  "creationDate": "2024-11-21T02:15:55.004Z",
+  "updatedOn": "2024-11-21T02:15:55.005Z",
+  "questions": [
+    {
+      "id": "9cba85b1-cb16-4c35-a1cf-7fe2aa49c23a",
+      "creationDate": "2024-11-21T02:15:55.006Z",
+      "roundTemplateId": "716831e7-7b5b-4980-a35f-5603116d3016",
+      "notes": "",
+      "text": "I'll give you 3 minutes to name any eight of the 12 most populous cities in Ohio, according to the 2020 Census. Here's a hint: Four of them start with \"C.\"",
+      "answerType": "input8",
+      "answers": {
+        "answer1": "Cleveland",
+        "answer2": "Columbus",
+        "answer3": "Cincinnati",
+        "answer4": "Dayton",
+        "answer5": "Toledo",
+        "answer6": "Akron",
+        "answer7": "Springfield",
+        "answer8": "Canton"
+      },
+      "orderMatters": false
+    },
+    {
+      "id": "384f046e-f619-40c3-bd7d-1ccbdd6d691c",
+      "creationDate": "2024-11-21T02:15:55.006Z",
+      "roundTemplateId": "716831e7-7b5b-4980-a35f-5603116d3016",
+      "notes": "",
+      "text": "Bonus: Perfect for doing old-timey dances, the most populous cities South Carolina and West Virginia share what name?",
+      "answerType": "input1",
+      "answers": {
+        "answer1": "Charleston"
+      },
+      "orderMatters": false,
+      "isBonus": true
+    }
+  ],
+  "quizTemplateId": ""
+}
