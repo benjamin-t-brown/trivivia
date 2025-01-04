@@ -123,7 +123,9 @@ export const useFormPristine = (
     const form = document.getElementById(formId) as HTMLFormElement | null;
     if (form) {
       for (const i in initialValues) {
-        form.elements[i].value = initialValues[i];
+        if (form.elements[i]) {
+          form.elements[i].value = initialValues[i];
+        }
       }
     }
   }, []);
@@ -459,8 +461,6 @@ export const useSocketIoRefreshState = (
       const gameId = params.userFriendlyQuizId;
       const spectateTeamId = getLiveQuizSpectateId() ?? '';
 
-      console.log('check for join', teamId, gameId, spectateTeamId);
-
       if ((teamId || spectateTeamId) && gameId) {
         sendJoinRequest({
           teamId,
@@ -476,4 +476,42 @@ export const useSocketIoRefreshState = (
     joined,
     requireReconnected,
   };
+};
+
+export const useResizeRender = () => {
+  const reRender = useReRender();
+
+  useEffect(() => {
+    let debounceResizeId: any;
+    window.addEventListener('resize', () => {
+      if (debounceResizeId !== false) {
+        clearTimeout(debounceResizeId);
+        debounceResizeId = false;
+      }
+      debounceResizeId = setTimeout(() => {
+        reRender();
+        debounceResizeId = false;
+      }, 100);
+    });
+  }, []);
+};
+
+export const useKeyboardEventListener = (
+  cb: (ev: KeyboardEvent) => void,
+  captures?: any[]
+) => {
+  useEffect(() => {
+    const handleKeyDown = (ev: KeyboardEvent) => {
+      if (!ev.repeat) {
+        cb(ev);
+      }
+    };
+    const handleMouseDown = (ev: MouseEvent) => {};
+    window.addEventListener('keydown', handleKeyDown);
+    window.addEventListener('mousedown', handleMouseDown);
+    return () => {
+      window.addEventListener('keydown', handleKeyDown);
+      window.removeEventListener('mousedown', handleMouseDown);
+    };
+  }, captures);
 };

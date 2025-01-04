@@ -9,6 +9,7 @@ import {
   AnswerStateStats,
   LiveQuizPublicQuestionResponse,
   LiveQuizPublicStateResponse,
+  LiveQuizResponse,
   LiveQuizRoundAnswersResponse,
   LiveQuizState,
   LiveQuizTeamResponse,
@@ -71,7 +72,7 @@ export class LiveQuizService {
     args?: {
       includeCompleted: boolean;
     }
-  ): Promise<LiveQuiz[]> {
+  ): Promise<LiveQuizResponse[] | undefined> {
     const include: Record<string, any>[] = [
       {
         model: LiveQuiz,
@@ -91,8 +92,13 @@ export class LiveQuizService {
       include,
       order: [[{ model: LiveQuiz, as: 'liveQuizzes' }, 'updatedOn', 'DESC']],
     });
+    if (!account) {
+      return [];
+    }
 
-    return account?.liveQuizzes ?? [];
+    const accJson = account.getResponseJson();
+
+    return accJson.liveQuizzes;
   }
 
   async findLiveQuizByUserFriendlyId(

@@ -93,22 +93,6 @@ export const init = () => {
   ]);
 
   const App = () => {
-    const reRender = useReRender();
-
-    useEffect(() => {
-      let debounceResizeId: any;
-      window.addEventListener('resize', () => {
-        if (debounceResizeId !== false) {
-          clearTimeout(debounceResizeId);
-          debounceResizeId = false;
-        }
-        debounceResizeId = setTimeout(() => {
-          reRender();
-          debounceResizeId = false;
-        }, 50);
-      });
-    }, []);
-
     return (
       <React.StrictMode>
         <RouterProvider router={router} />

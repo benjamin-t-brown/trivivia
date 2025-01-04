@@ -1,3 +1,4 @@
+import { useResizeRender } from 'hooks';
 import React from 'react';
 import { useActionData, useNavigation } from 'react-router-dom';
 import styled from 'styled-components';
@@ -34,6 +35,7 @@ const MobileLayout = (
   }
 ) => {
   const navigation = useNavigation();
+  useResizeRender();
 
   return (
     <Root

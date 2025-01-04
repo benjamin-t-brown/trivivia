@@ -12,6 +12,7 @@ export interface AccountResponse extends CreateUpdateDelete {
   id: string;
   email: string;
   quizTemplates?: QuizTemplateResponse[];
+  liveQuizzes?: LiveQuizResponse[];
 }
 
 export interface QuizTemplateResponse extends CreateUpdateDelete {
@@ -55,6 +56,8 @@ export enum AnswerBoxType {
   INPUT2_LIST = 'input2_list',
   INPUT3_LIST = 'input3_list',
   INPUT4_LIST = 'input4_list',
+  INPUT8_LIST = 'input8_list',
+  INPUT16_LIST = 'input16_list',
 }
 
 export interface QuestionTemplateResponse extends CreateUpdateDelete {
@@ -137,8 +140,10 @@ export const getNumAnswers = (answerType: AnswerBoxType) => {
     case AnswerBoxType.INPUT4_LIST:
       return 4;
     case AnswerBoxType.INPUT8:
+    case AnswerBoxType.INPUT8_LIST:
       return 8;
     case AnswerBoxType.INPUT16:
+    case AnswerBoxType.INPUT16_LIST:
       return 16;
     case AnswerBoxType.INPUT16_WITH_EXTRA:
       return 32;
@@ -180,7 +185,9 @@ export const getNumCorrectAnswers = (answerType: AnswerBoxType) => {
     case AnswerBoxType.INPUT1_LIST:
     case AnswerBoxType.INPUT2_LIST:
     case AnswerBoxType.INPUT4_LIST:
-      return 16;
+    case AnswerBoxType.INPUT8_LIST:
+    case AnswerBoxType.INPUT16_LIST:
+      return 32;
   }
   return 1;
 };

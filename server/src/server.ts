@@ -43,7 +43,7 @@ const main = async () => {
   });
   app.use(
     cookieSession({
-      name: 'tivivia-session',
+      name: 'trivivia-session',
       secret: env.cookieSecret,
       httpOnly: true,
       maxAge: 24 * 60 * 60 * 1000,

@@ -24,7 +24,7 @@ function PaginatedListFiltered<T>(
           onChange={e => setFilter(e.target.value)}
           style={{
             width: '33%',
-            minWidth: '100px',
+            minWidth: '160px',
           }}
         />
       </div>

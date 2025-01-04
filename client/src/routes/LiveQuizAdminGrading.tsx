@@ -11,7 +11,7 @@ import {
 } from 'react-router-dom';
 import styled from 'styled-components';
 import { colorsDark, getColors } from 'style';
-import { throwValidationError, useTypedLoaderData } from 'hooks';
+import { throwValidationError, useConfirmNav, useTypedLoaderData } from 'hooks';
 import DefaultTopBar from 'components/DefaultTopBar';
 import { updateCacheLiveQuizAdmin } from 'cache';
 import {
@@ -435,6 +435,7 @@ const LiveQuizAdminGrading = (props: EditLiveQuizProps) => {
   const isLoading = fetcher.state === 'submitting';
   const initialState = getInitialGradeState(liveQuiz);
   const [validationError, setValidationError] = React.useState('');
+  const confirmDialog = useConfirmNav(false); // TODO: Implement this
 
   const [state, dispatch]: [GradeInputState, any] = React.useReducer<any>(
     (
@@ -734,6 +735,7 @@ const LiveQuizAdminGrading = (props: EditLiveQuizProps) => {
         </fetcher.Form>
       </MobileLayout>
       <Loading visible={isLoading}>Loading...</Loading>
+      {confirmDialog}
     </>
   );
 };
