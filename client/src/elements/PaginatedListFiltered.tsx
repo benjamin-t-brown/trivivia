@@ -2,6 +2,12 @@ import React from 'react';
 import PaginatedList, { PaginatedListProps } from './PaginatedList';
 import Input from './Input';
 import InputLabel from './InputLabel';
+import { debounce, updateUrlParams } from 'utils';
+import { useSearchParams } from 'react-router-dom';
+
+const debounceUpdateUrlParams = debounce((filter: string, page: string) => {
+  updateUrlParams({ filter, page });
+}, 500);
 
 function PaginatedListFiltered<T>(
   props: PaginatedListProps<T> & {
@@ -10,7 +16,15 @@ function PaginatedListFiltered<T>(
     isFiltered: (item: T, filter: string) => boolean;
   }
 ) {
-  const [filter, setFilter] = React.useState('');
+  const [searchParams] = useSearchParams();
+  const paramsFilter = searchParams.get('filter') ?? '';
+  let paramsPage = parseInt(searchParams.get('page') ?? '0');
+  if (isNaN(paramsPage)) {
+    paramsPage = 0;
+  }
+  const [filter, setFilter] = React.useState(paramsFilter);
+  const [defaultPage, setDefaultPage] = React.useState(paramsPage);
+
   return (
     <div>
       <div>
@@ -21,7 +35,10 @@ function PaginatedListFiltered<T>(
           value={filter}
           id={props.id + '-filter'}
           name={props.id + '-filter'}
-          onChange={e => setFilter(e.target.value)}
+          onChange={e => {
+            setFilter(e.target.value);
+            debounceUpdateUrlParams(e.target.value, String(defaultPage));
+          }}
           style={{
             width: '33%',
             minWidth: '160px',
@@ -32,6 +49,11 @@ function PaginatedListFiltered<T>(
         items={props.items.filter(item => props.isFiltered(item, filter))}
         renderItem={props.renderItem}
         maxItemsPerPage={props.maxItemsPerPage}
+        startingPage={defaultPage}
+        onPageChange={page => {
+          setDefaultPage(page);
+          updateUrlParams({ filter, page: String(page) });
+        }}
       />
     </div>
   );

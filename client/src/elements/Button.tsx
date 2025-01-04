@@ -1,4 +1,4 @@
-import { colorsDark, getColors } from 'style';
+import { colorsDark, colorsLight, getColors } from 'style';
 import styled from 'styled-components';
 
 export interface IButtonProps {
@@ -7,6 +7,27 @@ export interface IButtonProps {
   center?: boolean;
   disabled?: boolean;
 }
+
+// export const isButtonDark = (color?: IButtonProps['color']) => {
+//   const backgroundColor = getColors()[color ?? 'primary'];
+//   if (backgroundColor && getContrastYIQ(backgroundColor) === 'light') {
+//     return true;
+//   }
+//   return false;
+// };
+
+// function getContrastYIQ(hexColor: string): 'light' | 'dark' {
+//   hexColor = hexColor.replace(/^#/, '');
+
+//   const r = parseInt(hexColor.substr(0, 2), 16);
+//   const g = parseInt(hexColor.substr(2, 2), 16);
+//   const b = parseInt(hexColor.substr(4, 2), 16);
+
+//   const yiq = (r * 299 + g * 587 + b * 114) / 1000;
+
+//   return yiq >= 128 ? 'dark' : 'light';
+// }
+
 const Button = styled.button<IButtonProps>(props => {
   const obj = {
     primary: getColors().PRIMARY,

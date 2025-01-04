@@ -65,10 +65,12 @@ export interface PaginatedListProps<T> {
   items: T[];
   renderItem: (item: T) => React.ReactNode;
   maxItemsPerPage: number;
+  startingPage?: number;
+  onPageChange?: (page: number) => void;
 }
 
 function PaginatedList<T>(props: PaginatedListProps<T>) {
-  const [page, setPage] = React.useState(0);
+  const [page, setPage] = React.useState(props.startingPage ?? 0);
   const items = props.items.slice(
     page * props.maxItemsPerPage,
     (page + 1) * props.maxItemsPerPage
@@ -87,14 +89,24 @@ function PaginatedList<T>(props: PaginatedListProps<T>) {
       }}
     >
       <NextPrevArea
-        setPage={setPage}
+        setPage={p => {
+          setPage(p);
+          if (props.onPageChange) {
+            props.onPageChange(p);
+          }
+        }}
         page={page}
         items={props.items}
         maxItemsPerPage={props.maxItemsPerPage}
       />
       <div>{items.map(props.renderItem)}</div>
       <NextPrevArea
-        setPage={setPage}
+        setPage={p => {
+          setPage(p);
+          if (props.onPageChange) {
+            props.onPageChange(p);
+          }
+        }}
         page={page}
         items={props.items}
         maxItemsPerPage={props.maxItemsPerPage}

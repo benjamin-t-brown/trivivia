@@ -127,7 +127,7 @@ const AdminLiveQuizStart = (props: EditLiveQuizProps) => {
     <>
       <DefaultTopBar useBackConfirm={false} />
       <MobileLayout topBar>
-        <Form method="post" id={formId}>
+        <Form method="post" id={formId} autoComplete="off">
           <InnerRoot>
             <p
               style={{
@@ -158,7 +158,6 @@ const AdminLiveQuizStart = (props: EditLiveQuizProps) => {
                 width: '100%',
               }}
               setValue={value => {
-                console.log('set value', value);
                 initialValues.quizTemplateId = value;
 
                 const form = document.getElementById(

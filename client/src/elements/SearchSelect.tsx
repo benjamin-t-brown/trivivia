@@ -5,13 +5,11 @@ import { getColors } from 'style';
 import { useKeyboardEventListener } from 'hooks';
 
 interface SearchSelectProps<T> {
-  // options: SearchSelectOption<T>[];
   id: string;
   value?: T;
   setValue: (value: T) => void;
   label: string;
   inputStyle?: React.CSSProperties;
-  // defaultValues?: T[];
   getSuggestions: (filter: string) => SearchSelectOption<T>[];
 }
 
@@ -20,76 +18,154 @@ interface SearchSelectOption<T> {
   label: string;
 }
 
-export function SearchSelect<T>(props: SearchSelectProps<T>) {
-  const [filter, setFilter] = React.useState('');
-  const [suggestionsVisible, setSuggestionsVisible] = React.useState(false);
-  const [selIndex, setSelIndex] = React.useState(0);
+interface SearchSelectState {
+  filter: string;
+  suggestionsVisible: boolean;
+  selIndex: number;
+}
 
-  console.log('re');
+type SearchSelectActionType =
+  | 'showSuggestions'
+  | 'hideSuggestions'
+  | 'setFilter'
+  | 'confirmSuggestion'
+  | 'selectSuggestion';
+
+export function SearchSelect<T>(props: SearchSelectProps<T>) {
+  const [state, dispatch] = React.useReducer(
+    (
+      state: SearchSelectState,
+      action: {
+        type: SearchSelectActionType;
+        filter?: string;
+        suggestionIndex?: number;
+        suggestionValue?: T;
+      }
+    ) => {
+      const nextState = { ...state };
+      switch (action.type) {
+        case 'showSuggestions':
+          nextState.suggestionsVisible = true;
+          const ind = props
+            .getSuggestions(state.filter)
+            .findIndex(s => s.value === props.value);
+          if (ind > -1) {
+            nextState.selIndex = ind;
+          } else {
+            nextState.selIndex = 0;
+          }
+          const elem = document.getElementById(props.id + '-suggestions');
+          if (elem) {
+            elem.scrollTop = 32 * (nextState.selIndex - 1);
+          }
+          break;
+        case 'hideSuggestions': {
+          nextState.suggestionsVisible = false;
+          nextState.filter = '';
+          nextState.selIndex = 0;
+          const elem = document.getElementById(props.id + '-suggestions');
+          if (elem) {
+            elem.scrollTop = 0;
+          }
+          break;
+        }
+        case 'setFilter':
+          nextState.filter = action.filter ?? '';
+          break;
+        case 'confirmSuggestion':
+          setTimeout(() => {
+            if (
+              state.suggestionsVisible &&
+              action.suggestionValue !== undefined
+            ) {
+              props.setValue(action.suggestionValue);
+            }
+          }, 20);
+          nextState.suggestionsVisible = false;
+          nextState.filter = '';
+          nextState.selIndex = 0;
+
+          break;
+        case 'selectSuggestion': {
+          nextState.selIndex = action.suggestionIndex ?? 0;
+          const elem = document.getElementById(props.id + '-suggestions');
+          if (elem) {
+            elem.scrollTop = 32 * (nextState.selIndex - 1);
+          }
+          break;
+        }
+      }
+
+      return nextState;
+    },
+    {
+      filter: '',
+      suggestionsVisible: false,
+      selIndex: 0,
+    }
+  );
 
   const handleFocus = (e: React.FocusEvent<HTMLInputElement>) => {
-    setSuggestionsVisible(true);
+    e.stopPropagation();
+    e.preventDefault();
+    dispatch({ type: 'showSuggestions' });
   };
   const handleInputClick = (e: React.MouseEvent<HTMLInputElement>) => {
-    setSuggestionsVisible(true);
+    e.stopPropagation();
+    e.preventDefault();
+    dispatch({ type: 'showSuggestions' });
   };
 
   const closeSuggestionBox = () => {
-    setFilter('');
-    setSelIndex(0);
-    setSuggestionsVisible(false);
-    const elem = document.getElementById(props.id + '-suggestions');
-    if (elem) {
-      elem.scrollTop = 0;
-    }
+    dispatch({ type: 'hideSuggestions' });
   };
 
-  const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
+  const handleBlur = () => {
     closeSuggestionBox();
   };
 
   const handleSuggestionClick = (i: number) => {
-    setSelIndex(i);
-    props.setValue(suggestions[i].value);
-    setTimeout(() => {
-      closeSuggestionBox();
-    }, 100);
+    dispatch({
+      type: 'confirmSuggestion',
+      suggestionIndex: i,
+      suggestionValue: suggestions[i].value,
+    });
   };
 
   useKeyboardEventListener(
     e => {
-      if (!suggestionsVisible) {
+      if (!state.suggestionsVisible) {
         return;
       }
 
-      let nextSelIndex = selIndex;
+      let nextSelIndex = state.selIndex;
       if (e.key === 'ArrowDown') {
-        nextSelIndex = Math.min(selIndex + 1, suggestions.length - 1);
+        nextSelIndex = Math.min(state.selIndex + 1, suggestions.length - 1);
         e.preventDefault();
         e.stopPropagation();
       }
       if (e.key === 'ArrowUp') {
-        nextSelIndex = Math.max(selIndex - 1, 0);
+        nextSelIndex = Math.max(state.selIndex - 1, 0);
         e.preventDefault();
         e.stopPropagation();
       }
       if (e.key === 'Enter') {
-        props.setValue(suggestions[selIndex].value);
-        closeSuggestionBox();
+        props.setValue(suggestions[state.selIndex].value);
         e.preventDefault();
         e.stopPropagation();
+        dispatch({
+          type: 'confirmSuggestion',
+          suggestionIndex: state.selIndex,
+          suggestionValue: suggestions[state.selIndex].value,
+        });
+        return;
       }
-
-      const elem = document.getElementById(props.id + '-suggestions');
-      if (elem) {
-        elem.scrollTop = 32 * nextSelIndex;
-      }
-      setSelIndex(nextSelIndex);
+      dispatch({ type: 'selectSuggestion', suggestionIndex: nextSelIndex });
     },
-    [selIndex, setSelIndex, suggestionsVisible]
+    [state, dispatch]
   );
 
-  const suggestions = props.getSuggestions(filter);
+  const suggestions = props.getSuggestions(state.filter);
   const obj = suggestions.find(s => s.value === props.value);
 
   return (
@@ -99,20 +175,23 @@ export function SearchSelect<T>(props: SearchSelectProps<T>) {
           {props.label ?? 'Search'}
         </InputLabel>
         <Input
-          value={suggestionsVisible ? filter : String(obj?.label)}
+          value={state.suggestionsVisible ? state.filter : String(obj?.label)}
           id={props.id}
           name={props.id}
-          onChange={e => setFilter(e.target.value)}
+          onChange={e =>
+            dispatch({ type: 'setFilter', filter: e.target.value })
+          }
           onFocus={handleFocus}
           onBlur={handleBlur}
           onClick={handleInputClick}
           style={props.inputStyle}
+          autoComplete="off"
         />
       </div>
       <div
         id={props.id + '-suggestions'}
         style={{
-          display: suggestionsVisible ? 'block' : 'none',
+          display: state.suggestionsVisible ? 'block' : 'none',
           width: '100%',
           background: getColors().BACKGROUND2,
           maxHeight: '124px',
@@ -130,11 +209,15 @@ export function SearchSelect<T>(props: SearchSelectProps<T>) {
               display: 'flex',
               justifyContent: 'flex-start',
               background:
-                i === selIndex ? getColors().PRIMARY : getColors().BACKGROUND2,
+                i === state.selIndex
+                  ? getColors().PRIMARY
+                  : getColors().BACKGROUND2,
               alignItems: 'center',
               border:
                 '1px solid ' +
-                (i === selIndex ? getColors().PRIMARY : getColors().BACKGROUND),
+                (i === state.selIndex
+                  ? getColors().PRIMARY
+                  : getColors().BACKGROUND),
             }}
             // onMouseDown={() => handleSuggestionClick(i)  () => {
             //   console.log('set suggestion', suggestion.label);
