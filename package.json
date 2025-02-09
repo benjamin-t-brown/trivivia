@@ -4,13 +4,12 @@
   "description": "",
   "main": "start.sh",
   "scripts": {
-    "start": "yarn start:dev",
-    "start:dev": "concurrently -n srv,client \"yarn start:server\" \"yarn start:client\"",
-    "start:client": "yarn --cwd client start",
-    "start:server": "yarn --cwd server start",
-    "install-playwright": "yarn --cwd test-browser && npx playwright install",
-    "postinstall": "yarn --cwd client && yarn --cwd server",
-    "build": "yarn --cwd client build"
+    "start": "npm run start:dev",
+    "start:dev": "concurrently -n srv,client \"npm run start:server\" \"npm run start:client\"",
+    "start:client": "cd client && npm run start",
+    "start:server": "cd server && npm run start",
+    "install-playwright": "npm run --cwd test-browser && npx playwright install",
+    "build": "(cd client && npm run build)"
   },
   "author": "",
   "license": "ISC",

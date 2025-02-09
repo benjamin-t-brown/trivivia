@@ -3,14 +3,16 @@ import { Sequelize } from 'sequelize-typescript';
 import env from './env';
 import logger from './logger';
 
+const dbLocation = __dirname + '/../../db/database.sqlite';
+
 class Db {
   sequelize: Sequelize;
   constructor() {
-    logger.debug('Connecting to db...');
+    logger.debug('Connecting to db...', dbLocation);
     const sequelize = new Sequelize('database', env.db.user, env.db.pw, {
       host: '0.0.0.0',
       dialect: 'sqlite',
-      storage: 'database.sqlite',
+      storage: dbLocation,
       logging: false,
     });
     sequelize.addModels([path.resolve(__dirname, 'models')]);

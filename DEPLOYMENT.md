@@ -1,7 +1,7 @@
 ## Requirements
 
 node 18.7.0^
-yarn 1.22.11^
+npm
 
 ## Deployment on ec2
 
@@ -17,8 +17,8 @@ git pull
 
 # test and build client
 cd client
-yarn test:prod
-yarn build
+npm run test:prod
+npm run build
 
 # Since it is static site, client code doesn't require a server restart.
 
@@ -27,7 +27,7 @@ yarn build
 
 # test server
 cd ../server
-yarn test:prod
+npm run test:prod
 forever list
 
 # use the trivivia index from the forever list command
@@ -46,7 +46,7 @@ source ~/trivivia_config_vars.sh
 
 # when the server is not running anymore you can re-start it with this
 cd server
-forever start --uid "trivivia" --minUptime 1000 --spinSleepTime 1000 --append -c "yarn start:prod" ./
+forever start --uid "trivivia" --minUptime 1000 --spinSleepTime 1000 --append -c "npm run start:prod" ./
 
 # to check if it's running correctly
 forever list

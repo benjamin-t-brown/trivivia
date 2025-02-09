@@ -1,17 +1,16 @@
 {
   "name": "trivivia-server",
   "version": "1.0.1",
-  "description": "",
+  "description": "Primary backend server for trivivia",
   "main": "src/server.ts",
   "scripts": {
     "test": "vitest --coverage",
     "test:prod": "tsc --project ./tsconfig.json && vitest --run",
     "start": "tsx watch --tsconfig ./tsconfig.json ./src/server.ts",
-    "start:dev": "yarn start",
+    "start:dev": "npm run start",
     "start:prod": "tsx --no-cache --tsconfig ./tsconfig.json ./src/server.ts",
-    "create-initial-migration": "ts-node --project ./tsconfig.json scripts/createMigration.ts",
     "migrate": "sequelize db:migrate",
-    "setup-db": "cp -n database.example.json database.json && yarn migrate"
+    "setup-db": "cp -n database.example.json database.json && npm run migrate"
   },
   "author": "",
   "license": "ISC",
