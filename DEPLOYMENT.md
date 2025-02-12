@@ -101,18 +101,49 @@ docker tag revirtualis/trivivia:latest 442979135069.dkr.ecr.us-east-1.amazonaws.
 docker push 442979135069.dkr.ecr.us-east-1.amazonaws.com/revirtualis/trivivia:latest
 ```
 
+Pull the image
+```
+# ensure you ran aws configure first and used the get-login-password command
+docker pull 442979135069.dkr.ecr.us-east-1.amazonaws.com/revirtualis/trivivia:latest
+```
+
 Running the image
 ```
 # debug msys
 docker run --rm -it -p 3006:3006 --mount type=bind,source="$(cygpath -w "$(pwd)")/db",target=/app/db --entrypoint bash revirtualis/trivivia:latest
 
 # debug bash
-docker run --rm -it -p 3006:3006 --mount type=bind,source="$(pwd)/db",target=/app/db --entrypoint bash revirtualis/trivivia:latest
+docker run --rm -it -p 3006:3006 --mount type=bind,source="$(cygpath -w "$(pwd)")/db",target=/app/db --entrypoint bash revirtualis/trivivia:latest
+docker run --rm -it -p 3006:3006 --mount type=bind,source="$(pwd)/db",target=/app/db --entrypoint bash  442979135069.dkr.ecr.us-east-1.amazonaws.com/revirtualis/trivivia:latest
+
+
 
 # local (from root of repo)
 docker run -it -p 3006:3006 --mount type=bind,source="$(cygpath -w "$(pwd)")/db",target=/app/db revirtualis/trivivia:latest
 
 # server (from root of repo)
-docker run -it -p 3006:3006 --mount type=bind,source="$(pwd)/db",target=/app/db revirtualis/trivivia:latest
+docker run -it -p 3006:3006 --mount type=bind,source="$(pwd)/db",target=/app/db 442979135069.dkr.ecr.us-east-1.amazonaws.com/revirtualis/trivivia:latest
+
+# detached mode
+docker run -d -p 3006:3006 --mount type=bind,source="$(pwd)/db",target=/app/db 442979135069.dkr.ecr.us-east-1.amazonaws.com/revirtualis/trivivia:latest
+
+```
+
+Monitoring the image
+```
+docker ps --all
+
+# remove containers
+docker rm -vf $(docker ps -aq)
+```
+
+Quick Deploy
+```
+aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 442979135069.dkr.ecr.us-east-1.amazonaws.com
+docker pull 442979135069.dkr.ecr.us-east-1.amazonaws.com/revirtualis/trivivia:latest
+docker ps
+- stop the image from this command
+docker rm -vf $(docker ps -aq)
+docker run -d -p 3006:3006 --mount type=bind,source="$(pwd)/db",target=/app/db 442979135069.dkr.ecr.us-east-1.amazonaws.com/revirtualis/trivivia:latest
 ```
 

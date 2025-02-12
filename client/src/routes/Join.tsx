@@ -443,13 +443,14 @@ const JoinQuiz = (props: { error?: boolean }) => {
                     <InputLabel htmlFor="code">Quiz Code</InputLabel>
                     <Input
                       fullWidth
-                      placeholder="Quiz Code"
+                      placeholder="Code"
                       aria-label="Quiz Code"
                       type="text"
                       name="code"
                       style={{
                         padding: '24px',
                         fontSize: '2rem',
+                        maxWidth: '700px',
                       }}
                     />
                   </div>

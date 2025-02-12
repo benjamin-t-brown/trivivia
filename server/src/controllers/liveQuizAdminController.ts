@@ -21,9 +21,14 @@ export const initLiveQuizAdminControllers = (router: Router) => {
     router,
     '/api/live-quiz-admin/all',
     async function getLiveQuizTemplateList(_, __, context) {
-      return await liveQuizService.findAllLiveQuizzesByAccountId(
+      const quizzes = await liveQuizService.findAllLiveQuizzesByAccountId(
         context.userId
       );
+
+      return quizzes?.map(q => {
+        delete (q as any).quizTemplateJson;
+        return q;
+      });
     }
   );
 
