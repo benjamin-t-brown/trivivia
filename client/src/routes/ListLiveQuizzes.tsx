@@ -94,8 +94,7 @@ const renderLiveQuizButton = (
                 marginLeft: '12px',
               }}
             >
-              Current Round: {t.currentRoundNumber} /{' '}
-              {t.quizTemplateJson.numRounds}
+              Current Round: {t.currentRoundNumber}
             </span>
           </div>
         </div>

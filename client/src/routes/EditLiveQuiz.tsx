@@ -27,7 +27,6 @@ import { LiveQuizResponse } from 'shared/responses';
 import InputLabel from 'elements/InputLabel';
 import FormErrorText from 'components/FormErrorText';
 import TextCenter from 'elements/TextCenter';
-import IconLeft from 'elements/IconLeft';
 import { ButtonAction } from 'elements/ButtonAction';
 import { JustifyContentDiv } from 'elements/JustifyContentDiv';
 import { IconButton } from 'elements/IconButton';
@@ -38,6 +37,7 @@ const InnerRoot = styled.div<Object>(() => {
     width: '100%',
     display: 'flex',
     flexDirection: 'column',
+    alignItems: 'center',
   };
 });
 
@@ -186,7 +186,7 @@ const AdminEditLiveQuiz = (props: EditLiveQuizProps) => {
       <DefaultTopBar useBackConfirm={false} upTo={'/live-quizzes'} />
       <MobileLayout topBar>
         <Form method="post" id={formId}>
-          <InnerRoot>
+          <InnerRoot id="edit-live-quiz-form">
             <p
               style={{
                 color: getColors().TEXT_DESCRIPTION,

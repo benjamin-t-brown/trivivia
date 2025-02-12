@@ -158,7 +158,7 @@ const ListQuizTemplates = () => {
         <InnerRoot>
           <p></p>
           <ButtonAction onClick={handleCreateQuizTemplateClick}>
-            + Create New Quiz Template
+            + New Quiz Template
           </ButtonAction>
           <p>Quiz Templates</p>
           <PaginatedListFiltered

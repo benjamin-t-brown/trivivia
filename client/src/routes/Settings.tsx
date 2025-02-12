@@ -99,8 +99,6 @@ const Settings = (props: { error?: boolean; admin?: boolean }) => {
     setPassword('');
   }
 
-  console.log('PARAMS', params);
-
   return (
     <>
       <DefaultTopBar useBackConfirm={false} disableHome={!props.admin} />

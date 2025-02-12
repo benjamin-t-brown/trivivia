@@ -1,12 +1,14 @@
 #!/bin/bash
 
 echo "Installing dependencies..."
-npm i
+yarn
 
 echo "Installing server..."
 cd server
-npm i
+yarn
 
 echo "Installing client..."
 cd ../client
-npm i
+yarn
+
+

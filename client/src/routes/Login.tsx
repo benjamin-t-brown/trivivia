@@ -20,6 +20,7 @@ const InnerRoot = styled.div<Object>(() => {
     width: '100%',
     display: 'flex',
     flexDirection: 'column',
+    alignItems: 'center',
   };
 });
 
@@ -79,21 +80,39 @@ const Login = (props: { error?: boolean }) => {
       <MobileLayout topBar>
         <Form method="post" id="login-form">
           <InnerRoot>
+            <img
+              src="/res/sign-in.png"
+              alt="Sign In Banner"
+              style={{
+                width: '33%',
+                margin: '32px',
+              }}
+            />
             <p>Login to a Trivivia quiz admin account.</p>
             <Input
               placeholder="Email"
               aria-label="Email"
               type="text"
               name="email"
+              fullWidth
             />
             <Input
               placeholder="Password"
               aria-label="Password"
               type="password"
               name="password"
+              fullWidth
             />
             {navigation.state === 'idle' ? (
-              <Button type="submit">Login</Button>
+              <Button
+                type="submit"
+                style={{
+                  width: '100%',
+                  maxWidth: '500px',
+                }}
+              >
+                Login
+              </Button>
             ) : (
               <div>Loading...</div>
             )}
@@ -113,6 +132,7 @@ const Login = (props: { error?: boolean }) => {
               color="secondary"
               style={{
                 width: '100%',
+                maxWidth: '500px',
               }}
               onClick={handleToSignup}
             >

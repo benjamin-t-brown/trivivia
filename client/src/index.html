@@ -1,79 +1,92 @@
 <html>
-  <head>
-    <link rel="icon" type="image/png" href="/res/favicon_c2.svg?v=7" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1, maximum-scale=3, user-scalable=yes"
-    />
-    <meta name="apple-mobile-web-app-capable" content="yes" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Noto+Sans:ital,wght@0,100..900;1,100..900&family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap"
-      rel="stylesheet"
-    />
-    <style>
-      body {
-        margin: 0;
-        /* overflow: hidden; */
-        background: rgb(11, 11, 11);
-        background: linear-gradient(
-          90deg,
+
+<head>
+  <link rel="icon" type="image/png" href="/res/favicon.png?v2=true" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, user-scalable=yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Noto+Sans:ital,wght@0,100..900;1,100..900&family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap"
+    rel="stylesheet" />
+  <style>
+    body {
+      margin: 0;
+      /* overflow: hidden; */
+      background: rgb(11, 11, 11);
+      background: linear-gradient(90deg,
           rgba(11, 11, 11, 1) 0%,
           rgba(31, 31, 31, 1) 3%,
           rgba(31, 31, 31, 1) 97%,
-          rgba(11, 11, 11, 1) 100%
-        );
-        font-family: 'Noto Sans', sans-serif;
-        font-optical-sizing: auto;
-        font-style: normal;
-        font-variation-settings: 'wdth' 100;
-        color: #eee;
-        /* user-select: none; */
-        font-size: 16px;
-      }
-      a:link {
-        color: #a3a6ff;
-      }
-      a:visited {
-        color: #b6b7d1;
-      }
-      a:active {
-        color: #eee;
-      }
-      .animated-ellipsis {
-        font-size: 24px;
-        display: inline-block;
+          rgba(11, 11, 11, 1) 100%);
+      font-family: 'Noto Sans', sans-serif;
+      font-optical-sizing: auto;
+      font-style: normal;
+      font-variation-settings: 'wdth' 100;
+      color: #eee;
+      /* user-select: none; */
+      font-size: 16px;
+    }
+
+    a:link {
+      color: #a3a6ff;
+    }
+
+    a:visited {
+      color: #b6b7d1;
+    }
+
+    a:active {
+      color: #eee;
+    }
+
+    .animated-ellipsis {
+      font-size: 24px;
+      display: inline-block;
+    }
+
+    .animated-ellipsis span {
+      animation: blink 1.4s infinite both;
+    }
+
+    .animated-ellipsis span:nth-child(2) {
+      animation-delay: 0.2s;
+    }
+
+    .animated-ellipsis span:nth-child(3) {
+      animation-delay: 0.4s;
+    }
+
+    input:disabled {
+      cursor: default;
+      background-color: light-dark(rgb(255 255 255 / 69%), rgb(255 255 255 / 30%));
+      color: light-dark(rgb(84, 84, 84), rgb(170, 170, 170));
+    }
+
+    input[type=checkbox][disabled][checked] {
+      filter: invert(100%) hue-rotate(18deg) brightness(5);
+    }
+
+    @keyframes blink {
+      0% {
+        opacity: 0;
       }
 
-      .animated-ellipsis span {
-        animation: blink 1.4s infinite both;
+      50% {
+        opacity: 1;
       }
 
-      .animated-ellipsis span:nth-child(2) {
-        animation-delay: 0.2s;
+      100% {
+        opacity: 0;
       }
+    }
+  </style>
+  <title>Trivivia</title>
+</head>
 
-      .animated-ellipsis span:nth-child(3) {
-        animation-delay: 0.4s;
-      }
+<body>
+  <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+  <script type="module" src="./main.ts"></script>
+</body>
 
-      @keyframes blink {
-        0% {
-          opacity: 0;
-        }
-        50% {
-          opacity: 1;
-        }
-        100% {
-          opacity: 0;
-        }
-      }
-    </style>
-    <title>Trivivia</title>
-  </head>
-  <body>
-    <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
-    <script type="module" src="./main.ts"></script>
-  </body>
 </html>

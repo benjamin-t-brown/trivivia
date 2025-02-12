@@ -1,49 +1,62 @@
 import React from 'react';
-import { AnswerState, LiveQuizPublicStateResponse } from 'shared/responses';
+import {
+  AnswerState,
+  extractAnswerBoxType,
+  isLegacyAnswerBoxType,
+  LiveQuizPublicStateResponse,
+} from 'shared/responses';
 import { getColors } from 'style';
 
 export const SubmittedAnswersForRound = (props: {
   submittedAnswersRound: Record<string, AnswerState>;
   quizState: LiveQuizPublicStateResponse;
 }) => {
-  const aggAnswers: Record<string, string> = {};
-  const maxAnswers = Object.keys(props.submittedAnswersRound).reduce(
-    (prev, curr) => {
-      const n = Number(curr);
-      return Math.max(n, prev);
-    },
-    16
-  );
-  for (let questionI = 1; questionI <= maxAnswers; questionI++) {
-    const answers = props.submittedAnswersRound[questionI];
+  const concatStr = (str1: string, str2: string, sep: string) => {
+    return str1 + (str1 === '' ? '' : sep) + str2;
+  };
+
+  const round = props.quizState.round;
+  if (!round || Object.keys(props.submittedAnswersRound).length === 0) {
+    return <div></div>;
+  }
+  const numQuestions = round.totalNumberOfQuestions;
+
+  // populate answerList strings with concatenated answers
+  const answerStrings: string[] = [];
+  for (let i = 0; i < numQuestions; i++) {
+    const answers = props.submittedAnswersRound[i + 1];
     if (!answers) {
+      answerStrings.push('');
       continue;
     }
-    aggAnswers[questionI] = '';
-    for (let answerI = 1; answerI <= maxAnswers; answerI++) {
-      const answerText = answers['answer' + answerI];
-      if (answerText) {
-        aggAnswers[questionI] +=
-          (aggAnswers[questionI] === '' ? '' : ', ') + answerText;
+    let submittedAnswer = '';
+    const question = round.questions[i];
+    const [type, numInputs] = extractAnswerBoxType(question.answerType);
+    if (type === 'input') {
+      for (let j = 0; j < numInputs; j++) {
+        const answerText = answers['answer' + (j + 1)] ?? '';
+        submittedAnswer = concatStr(submittedAnswer, answerText, ', ');
+      }
+    } else if (type === 'radio') {
+      const answerText = answers['answer1'] ?? '';
+      submittedAnswer = answerText;
+    } else if (type === 'checkbox') {
+      for (let j = 0; j < numInputs; j++) {
+        const didPickThisAnswer = answers['answer' + (j + 1)] === 'true';
+        if (didPickThisAnswer) {
+          const answerText = question.answers?.['radio' + (j + 1)] ?? '';
+          submittedAnswer = concatStr(submittedAnswer, answerText, ', ');
+        }
       }
     }
+    answerStrings.push(submittedAnswer);
   }
 
-  const numQuestions = props?.quizState?.round?.totalNumberOfQuestions ?? 0;
-
-  const answerList: string[] = [];
-  for (let i = 0; i < numQuestions; i++) {
-    if (aggAnswers[i + 1]) {
-      answerList.push(aggAnswers[i + 1]);
-    } else {
-      answerList.push('');
-    }
-  }
   return (
     <div
       style={{
         textAlign: 'left',
-        display: Object.keys(aggAnswers).length === 0 ? 'none' : 'block',
+        display: !answerStrings.length ? 'none' : 'block',
       }}
     >
       <div
@@ -55,7 +68,7 @@ export const SubmittedAnswersForRound = (props: {
       >
         Submitted Answers:
       </div>
-      {answerList.map((answer, i) => {
+      {answerStrings.map((concatenatedAnswer, i) => {
         return (
           <div
             key={i + 1}
@@ -63,7 +76,7 @@ export const SubmittedAnswersForRound = (props: {
               width: '75%',
             }}
           >
-            {Number(i + 1)}. {answer}
+            {Number(i + 1)}. {concatenatedAnswer}
           </div>
         );
       })}

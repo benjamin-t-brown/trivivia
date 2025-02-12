@@ -24,6 +24,9 @@ import {
   AnswerStateGraded,
   ANSWER_DELIMITER,
   getRoundAnswersArrays,
+  isLegacyAnswerBoxType,
+  getNumCorrectAnswers,
+  extractAnswerBoxType,
 } from 'shared/responses';
 import FormErrorText from 'components/FormErrorText';
 import SectionTitle from 'elements/SectionTitle';
@@ -143,9 +146,27 @@ const RoundAnswer = (props: {
   const gradeState =
     props.state[props.team.id][props.roundId][props.questionNumber] ?? {};
 
-  const numCorrectAnswers = props.questionTemplate?.answerType
-    ? getNumAnswers(props.questionTemplate?.answerType)
-    : individualAnswersCorrect.length;
+  let numCorrectAnswers = 0;
+
+  if (
+    isLegacyAnswerBoxType(props.questionTemplate?.answerType as AnswerBoxType)
+  ) {
+    numCorrectAnswers = props.questionTemplate?.answerType
+      ? getNumAnswers(props.questionTemplate?.answerType)
+      : individualAnswersCorrect.length;
+  } else {
+    numCorrectAnswers = getNumCorrectAnswers(
+      props.questionTemplate?.answerType as AnswerBoxType
+    );
+    const [type, numInputs, numCorrectAns] = extractAnswerBoxType(
+      props.questionTemplate?.answerType as AnswerBoxType
+    );
+    if (type === 'input') {
+      if (numInputs < numCorrectAns) {
+        numCorrectAnswers = numInputs;
+      }
+    }
+  }
 
   const handleAnswerGradeChange: (
     i: number,
@@ -403,17 +424,51 @@ const areAllAnswersGradedForTeamRound = (args: {
       return false;
     }
 
-    const numAnswers = getNumAnswers(questionTemplate.answerType);
+    if (isLegacyAnswerBoxType(questionTemplate.answerType)) {
+      const numAnswers = getNumAnswers(questionTemplate.answerType);
 
-    const questionGradeState = roundGradeState[i + 1];
+      const questionGradeState = roundGradeState[i + 1];
 
-    if (!questionGradeState) {
-      return false;
-    }
-
-    for (let j = 0; j < numAnswers; j++) {
-      if (questionGradeState['answer' + (j + 1)] === undefined) {
+      if (!questionGradeState) {
         return false;
+      }
+
+      for (let j = 0; j < numAnswers; j++) {
+        if (questionGradeState['answer' + (j + 1)] === undefined) {
+          return false;
+        }
+      }
+    } else {
+      const [type, numInputs, numCorrectAnswers] = extractAnswerBoxType(
+        questionTemplate.answerType
+      );
+
+      const questionGradeState = roundGradeState[i + 1];
+
+      if (!questionGradeState) {
+        return false;
+      }
+
+      if (type === 'input') {
+        if (numCorrectAnswers > numInputs) {
+          for (let j = 0; j < numInputs; j++) {
+            if (questionGradeState['answer' + (j + 1)] === undefined) {
+              return false;
+            }
+          }
+        } else {
+          for (let j = 0; j < numCorrectAnswers; j++) {
+            if (questionGradeState['answer' + (j + 1)] === undefined) {
+              return false;
+            }
+          }
+        }
+      } else {
+        for (let j = 0; j < numCorrectAnswers; j++) {
+          if (questionGradeState['answer' + (j + 1)] === undefined) {
+            return false;
+          }
+        }
       }
     }
   }
@@ -437,7 +492,7 @@ const LiveQuizAdminGrading = (props: EditLiveQuizProps) => {
   const [validationError, setValidationError] = React.useState('');
   const confirmDialog = useConfirmNav(false); // TODO: Implement this
 
-  const [state, dispatch]: [GradeInputState, any] = React.useReducer<any>(
+  const [state, dispatch]: [GradeInputState, any] = React.useReducer(
     (
       state: GradeInputState,
       action: {

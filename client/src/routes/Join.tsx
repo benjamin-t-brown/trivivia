@@ -245,17 +245,13 @@ const JoinQuiz = (props: { error?: boolean }) => {
             window.location.href = '/login';
           }}
         >
-          {' '}
-          <>
-            Trivivia
-            {/* <IconLeft
-              verticalAdjust={-2}
-              style={{
-                verticalAlign: 'middle',
-              }}
-              src="/res/favicon_c2.svg"
-            /> */}
-          </>
+          <img
+            src="/res/logo-text.png"
+            alt="Trivivia"
+            style={{
+              height: '80%',
+            }}
+          />
         </CardTitle>
         <CardTitleZone align="right">
           <Button
@@ -337,16 +333,26 @@ const JoinQuiz = (props: { error?: boolean }) => {
                     style={{
                       width: '50%',
                       minWidth: '164px',
+                      display: 'flex',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      flexDirection: 'column',
                     }}
                   >
-                    <InputLabel htmlFor="code">Team Name</InputLabel>
+                    <InputLabel
+                      style={{
+                        width: '100%',
+                        maxWidth: '500px',
+                      }}
+                      htmlFor="code"
+                    >
+                      Team Name
+                    </InputLabel>
                     <Input
                       placeholder="Team Name"
                       aria-label="Team Name"
                       type="text"
                       name="teamName"
-                      // maxLength={20}
-                      // minLength={3}
                       fullWidth
                     />
                   </div>

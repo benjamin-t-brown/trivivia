@@ -1,12 +1,10 @@
 import React from 'react';
-import { colorsDark, getColors } from 'style';
+import { colorsDark, getColors, LAYOUT_MAX_WIDTH } from 'style';
 import styled from 'styled-components';
 
 const Root = styled.div<Object>(() => {
   return {
     width: '100%',
-    // background: colorsDark.PRIMARY,
-    // background: 'rgb(11,11,11)',
     height: '54px',
     background: getColors().TOP_BAR_BACKGROUND,
     color: colorsDark.TEXT_DEFAULT,
@@ -18,10 +16,10 @@ const Root = styled.div<Object>(() => {
 
 const InnerRoot = styled.div<Object>(() => {
   return {
-    maxWidth: '800px',
-    margin: '4px',
+    // maxWidth: LAYOUT_MAX_WIDTH,
+    margin: '0 4px',
     boxSizing: 'border-box',
-    width: window.innerWidth,
+    width: LAYOUT_MAX_WIDTH,
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',

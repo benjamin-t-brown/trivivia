@@ -1,0 +1,15 @@
+.git
+npm-debug.log
+.coverage
+.coverage.*
+.env
+.aws
+.vscode
+db/database.sqlite
+node_modules
+server/node_modules
+client/node_modules
+quizzes
+scratch
+test-browser
+test-results

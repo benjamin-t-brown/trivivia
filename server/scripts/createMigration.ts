@@ -11,7 +11,7 @@
 //   const migrationName = process.argv[2];
 //   if (!migrationName) {
 //     console.error('No migration name, specify migration name in command');
-//     console.error(' `npm run create-migration <migrationName>`');
+//     console.error(' `yarn create-migration <migrationName>`');
 //     return;
 //   }
 

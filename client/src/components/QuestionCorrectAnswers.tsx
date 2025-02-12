@@ -97,10 +97,15 @@ export const QuestionCorrectAnswers = (props: {
     background = background.slice(0, -2) + ')';
 
     return (
-      <div>
+      <div
+        style={{
+          marginTop: '8px',
+        }}
+      >
         <div
           style={{
-            background: getColors().BACKGROUND2,
+            // background: getColors().BACKGROUND2,
+            background: 'rgba(0, 0, 0, 0.1)',
             padding: '8px 16px 16px 10px',
             border: '1px solid ' + getColors().TEXT_DESCRIPTION,
           }}

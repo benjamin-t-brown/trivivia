@@ -25,7 +25,7 @@ import {
   RoundTemplateResponse,
 } from 'shared/responses';
 import TextCenter from 'elements/TextCenter';
-import { getColors } from 'style';
+import { getColors, LAYOUT_MAX_WIDTH } from 'style';
 import InlineIconButton from 'elements/InlineIconButton';
 import IconLeft from 'elements/IconLeft';
 import HiddenTextField from 'components/HiddenTextField';
@@ -185,7 +185,7 @@ const renderRoundTemplateButton = (props: {
         color="secondary"
         style={{
           width: '100%',
-          maxWidth: '800px',
+          maxWidth: LAYOUT_MAX_WIDTH,
           border: '1px solid',
           borderColor: props.isSelected
             ? getColors().SUCCESS_TEXT

@@ -39,6 +39,7 @@ const InnerRoot = styled.div<Object>(() => {
     width: '100%',
     display: 'flex',
     flexDirection: 'column',
+    alignItems: 'center',
   };
 });
 
@@ -145,6 +146,7 @@ const AdminLiveQuizStart = (props: EditLiveQuizProps) => {
               onChange={() => {
                 render();
               }}
+              fullWidth
             />
             <HiddenTextField
               name="quizTemplateId"
@@ -157,6 +159,7 @@ const AdminLiveQuizStart = (props: EditLiveQuizProps) => {
               inputStyle={{
                 width: '100%',
               }}
+              fullWidth
               setValue={value => {
                 initialValues.quizTemplateId = value;
 

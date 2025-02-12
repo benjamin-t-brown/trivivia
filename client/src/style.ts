@@ -1,5 +1,7 @@
 import { getSettingsFromLs } from 'utils';
 
+export const LAYOUT_MAX_WIDTH = '1200px';
+
 export const colorsDark = {
   PRIMARY: '#005278',
   SECONDARY: '#303030',
@@ -20,6 +22,7 @@ export const colorsDark = {
   SUCCESS_BACKGROUND: '#005f1b',
   PRIMARY_TEXT: '#8cdaff',
   WARNING_TEXT: '#dd9251',
+  WARNING_BACKGROUND: '#9d560a',
 };
 
 export const colorsLight = {
@@ -40,6 +43,7 @@ export const colorsLight = {
   SUCCESS_BACKGROUND: '#005f1b',
   PRIMARY_TEXT: '#005278',
   WARNING_TEXT: '#884312',
+  WARNING_BACKGROUND: '#9d560a',
 };
 
 export const getColors = () => {

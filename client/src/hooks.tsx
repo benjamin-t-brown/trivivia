@@ -217,6 +217,7 @@ export interface DragState {
   id: string;
   dragging: boolean;
   clientY: number;
+  hoveredId?: string;
   elem?: HTMLElement;
 }
 
@@ -224,17 +225,26 @@ const getClientYFromClickBasedEvent = (ev: MouseEvent | TouchEvent) => {
   let clientY = 0;
   if ((ev as TouchEvent).touches) {
     const touch = (ev as TouchEvent).touches[0];
-    clientY = touch.clientY;
+    if (touch) {
+      clientY = touch.clientY;
+    } else {
+      const changedTouch = (ev as TouchEvent).changedTouches[0];
+      if (changedTouch) {
+        clientY = changedTouch.clientY;
+      }
+    }
   } else {
     clientY = (ev as MouseEvent).clientY;
   }
   return clientY;
 };
 
-// This hook handles the drag and drop logic for a list of items with a fixed itemHeight
+// TODO: This has really bad perf issues with lists longer than like 20 items on a phone from
+// maybe 5 years ago.
 export const useDnDListHandlers = (args: {
   itemHeight: number;
   clickOffset: number;
+  dragPlaceholderId: string;
   arr: string[];
   setArr: (arr: string[]) => void;
 }) => {
@@ -268,6 +278,74 @@ export const useDnDListHandlers = (args: {
     }
   };
 
+  const calculateOffset = (
+    currentMouseY: number,
+    startingIndex: number,
+    startingY0: number
+  ) => {
+    const y = currentMouseY;
+    let currentOffsetInd = 0;
+    let nextInd = startingIndex;
+    let nextDir: undefined | number = undefined;
+
+    const getElemY = (index: number, orElse: number) => {
+      if (index === startingIndex) {
+        return startingY0;
+      } else {
+        const elem = document.getElementById(args.arr[index]);
+        if (elem) {
+          return elem.getBoundingClientRect().top;
+        }
+        return orElse;
+      }
+    };
+
+    while (nextInd >= 0 && nextInd < args.arr.length) {
+      const currentElem = document.getElementById(args.arr[nextInd]);
+      if (!currentElem) {
+        break;
+      }
+      const nextInd2 = nextInd + 1;
+
+      if (nextInd2 < 0) {
+        return -startingIndex;
+      }
+
+      const y0 = getElemY(nextInd, 0);
+      const y1 = getElemY(nextInd2, Infinity);
+
+      if (y >= y0 && y <= y1) {
+        return currentOffsetInd;
+      }
+
+      if (nextDir === undefined) {
+        if (y < y0) {
+          nextDir = -1;
+        } else {
+          nextDir = 1;
+        }
+      }
+      currentOffsetInd += nextDir;
+      nextInd += nextDir;
+    }
+    return startingIndex;
+  };
+
+  // return the relative index offset in the arr for how far the mouse moved since starting
+  // to drag.
+  const getOffsetForEvent = (ev: MouseEvent | TouchEvent) => {
+    const currentMouseY = getClientYFromClickBasedEvent(ev);
+    const dragPlaceholderElem = document.getElementById(args.dragPlaceholderId);
+    if (dragPlaceholderElem) {
+      const { top } = dragPlaceholderElem.getBoundingClientRect();
+      const y0 = top;
+      const elemIndex = args.arr.indexOf(dragState.id);
+      const offsetInd = calculateOffset(currentMouseY, elemIndex, y0);
+      return offsetInd;
+    }
+    return 0;
+  };
+
   React.useEffect(() => {
     const handleDragMove = (ev: MouseEvent | TouchEvent) => {
       if (dragState.dragging && dragState.elem) {
@@ -275,6 +353,16 @@ export const useDnDListHandlers = (args: {
         dragState.elem.style.transform = `translateY(${
           newClientY - dragState.clientY - args.clickOffset
         }px)`;
+
+        const elemIndex = args.arr.indexOf(dragState.id);
+        const offsetInd = getOffsetForEvent(ev);
+        const nextIndId = args.arr[elemIndex + offsetInd];
+        if (nextIndId && dragState.hoveredId !== nextIndId) {
+          setDragState({
+            ...dragState,
+            hoveredId: nextIndId,
+          });
+        }
       }
     };
 
@@ -285,15 +373,7 @@ export const useDnDListHandlers = (args: {
           root.style.overflow = 'auto';
         }
 
-        let offset = Math.floor(
-          (parseInt(dragState.elem.style.transform.slice(11)) +
-            args.itemHeight -
-            (args.clickOffset > 0 ? 0 : 50)) /
-            args.itemHeight
-        );
-        if (offset < 0) {
-          offset++;
-        }
+        const offsetInd = getOffsetForEvent(ev);
 
         const reorder = (arr: string[], ind: number, offset: number) => {
           arr = [...arr];
@@ -321,7 +401,7 @@ export const useDnDListHandlers = (args: {
         const newArr = reorder(
           args.arr,
           args.arr.indexOf(dragState.id),
-          offset
+          offsetInd
         );
         args.setArr(newArr);
 
@@ -333,6 +413,7 @@ export const useDnDListHandlers = (args: {
           dragging: true,
           clientY: 0,
           elem: undefined,
+          hoveredId: undefined,
         });
         setTimeout(() => {
           setDragState({
@@ -340,6 +421,7 @@ export const useDnDListHandlers = (args: {
             dragging: false,
             clientY: 0,
             elem: undefined,
+            hoveredId: undefined,
           });
         }, 100);
       }

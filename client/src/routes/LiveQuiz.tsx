@@ -78,7 +78,8 @@ const action = createAction(async (values: SubmitAnswersValues, params) => {
   for (const i in submittedAnswers) {
     const answers = submittedAnswers[i];
     for (const j in answers) {
-      answers[j] = answers[j].trim();
+      answers[j] =
+        typeof answers[j] === 'string' ? answers[j].trim() : answers[j];
       const answer = answers[j];
       if (answer.length > 255) {
         throwValidationError(
@@ -210,7 +211,7 @@ const QuizInRound = (props: { quizState: LiveQuizPublicStateResponse }) => {
   }
 
   const [state, dispatch]: [Record<string, AnswerState>, any] =
-    React.useReducer<any>(
+    React.useReducer(
       (
         state: AnswerState,
         action: {
@@ -397,6 +398,9 @@ const QuizInRound = (props: { quizState: LiveQuizPublicStateResponse }) => {
                     width: '100%',
                     textAlign: 'center',
                     justifyContent: 'center',
+                    filter: !isRoundAcceptingSubmissions
+                      ? 'grayscale(0.75)'
+                      : undefined,
                   }}
                   disabled={!isRoundAcceptingSubmissions}
                   type="submit"
@@ -503,7 +507,13 @@ const LiveQuiz = (props: { error?: boolean }) => {
           </Button>
         </CardTitleZone>
         <CardTitle>
-          <>Trivivia</>
+          <img
+            src="/res/logo-text.png"
+            alt="Trivivia"
+            style={{
+              height: '80%',
+            }}
+          />
         </CardTitle>
         <CardTitleZone align="right">
           <Button
@@ -576,6 +586,11 @@ const LiveQuiz = (props: { error?: boolean }) => {
                     }}
                   >
                     You are spectating this quiz.
+                  </span>{' '}
+                  <span>
+                    <Link to={`/join/${params.userFriendlyQuizId}`}>
+                      Join instead?
+                    </Link>
                   </span>
                 </>
               ) : null}

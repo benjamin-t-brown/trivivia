@@ -5,7 +5,6 @@ import React from 'react';
 import BackButton from './BackButton';
 import HomeButton from './HomeButton';
 import UpButton from './UpButton';
-import IconLeft from 'elements/IconLeft';
 
 const DefaultTopBar = (props: {
   title?: string;
@@ -30,17 +29,13 @@ const DefaultTopBar = (props: {
         }}
       >
         {props.title ?? (
-          <>
-            Trivivia
-            {/* <IconLeft
-              style={{
-                verticalAlign: 'middle',
-                visibility: 'hidden',
-              }}
-              verticalAdjust={-2}
-              src="/res/favicon_c2.svg"
-            /> */}
-          </>
+          <img
+            src="/res/logo-text.png"
+            alt="Trivivia"
+            style={{
+              height: '80%',
+            }}
+          />
         )}
       </CardTitle>
       <CardTitleZone align="right">

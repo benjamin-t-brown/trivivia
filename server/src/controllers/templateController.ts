@@ -57,12 +57,9 @@ export const initTemplateControllers = (router: Router) => {
     router,
     '/api/template/quiz',
     async function createQuizTemplate(_, body: QuizTemplateRequest, context) {
-      const { name, numRounds, notes } = body;
+      const { name, notes } = body;
       if (!validateString(name)) {
         throw new InvalidInputError('Not a valid name.');
-      }
-      if (!validateInt(numRounds, 1, 100)) {
-        throw new InvalidInputError('Not a number of rounds.');
       }
       if (notes && !validateString(notes, 0, BIG_TEXT_MAX_LENGTH)) {
         throw new InvalidInputError('Not valid notes.');
@@ -70,7 +67,6 @@ export const initTemplateControllers = (router: Router) => {
       const quizTemplate = await templateService.createQuizTemplate(
         {
           name,
-          numRounds,
           notes,
         },
         context
@@ -96,12 +92,9 @@ export const initTemplateControllers = (router: Router) => {
     router,
     '/api/template/quiz/:id',
     async function updateQuizTemplate(params, body: QuizTemplateRequest) {
-      const { name, numRounds, notes } = body;
+      const { name, notes } = body;
       if (!validateString(name)) {
         throw new InvalidInputError('Not a valid name.');
-      }
-      if (!validateInt(numRounds, 1, 100)) {
-        throw new InvalidInputError('Not a number of rounds.');
       }
       if (notes && !validateString(notes, 0, BIG_TEXT_MAX_LENGTH)) {
         throw new InvalidInputError('Not valid notes.');
@@ -110,7 +103,6 @@ export const initTemplateControllers = (router: Router) => {
       const quizTemplate = await templateService.updateQuizTemplate({
         id: params.id,
         name,
-        numRounds,
         notes,
       });
       if (!quizTemplate) {
@@ -374,7 +366,7 @@ export const initTemplateControllers = (router: Router) => {
         throw new InvalidInputError('Not valid answers.');
       }
       if (!validateAnswerType(answerType)) {
-        throw new InvalidInputError('Not valid answers.');
+        throw new InvalidInputError('Not valid answerType.');
       }
       if (notes && !validateString(notes, 0, BIG_TEXT_MAX_LENGTH)) {
         throw new InvalidInputError('Not valid notes.');

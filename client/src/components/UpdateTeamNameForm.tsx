@@ -38,6 +38,8 @@ export const UpdateTeamNameForm = () => {
           style={{
             width: '50%',
             minWidth: '164px',
+            display: 'flex',
+            justifyContent: 'center',
           }}
         >
           <InputLabel htmlFor="code">Update Team Name</InputLabel>

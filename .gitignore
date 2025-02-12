@@ -11,3 +11,4 @@ playwright-report/
 yarn-error.log
 test-browser/gwd
 scratch/gwd-rounds/
+db/database.sqlite

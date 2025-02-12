@@ -14,7 +14,6 @@ import Button from 'elements/Button';
 import { LiveQuizStartRoute } from './LiveQuizStart';
 import { ListQuizTemplatesRoute } from './ListQuizTemplates';
 import Img from 'elements/Img';
-import IconLeft from 'elements/IconLeft';
 
 const InnerRoot = styled.div<Object>(() => {
   return {
@@ -57,17 +56,13 @@ const AdminLanding = () => {
           <BackButton useConfirm={false} />
         </CardTitleZone>
         <CardTitle>
-          {' '}
-          <>
-            Trivivia
-            {/* <IconLeft
-              verticalAdjust={-2}
-              style={{
-                verticalAlign: 'middle',
-              }}
-              src="/res/favicon_c2.svg"
-            /> */}
-          </>
+          <img
+            src="/res/logo-text.png"
+            alt="Trivivia"
+            style={{
+              height: '80%',
+            }}
+          />
         </CardTitle>
         <CardTitleZone align="right">
           <Button

@@ -1,5 +1,5 @@
 import React from 'react';
-import { getColors } from 'style';
+import { getColors, LAYOUT_MAX_WIDTH } from 'style';
 import styled from 'styled-components';
 import Button from './Button';
 
@@ -31,7 +31,7 @@ const Root = styled.div<{ visible: boolean }>(props => {
 
 const InnerRoot = styled.div<Object>(() => {
   return {
-    maxWidth: '800px',
+    maxWidth: LAYOUT_MAX_WIDTH,
     width: '100%',
     boxSizing: 'border-box',
     padding: '8px 16px',

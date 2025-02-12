@@ -26,9 +26,13 @@ import {
   AnswerBoxType,
   AnswerState,
   answerStateToString,
+  buildAnswerBoxType,
+  extractAnswerBoxType,
+  getGenericAnswerType,
   getNumAnswers,
   getNumCorrectAnswers,
   getNumRadioBoxes,
+  isLegacyAnswerBoxType,
   QuestionTemplateResponse,
   stringToAnswerState,
 } from 'shared/responses';
@@ -43,6 +47,7 @@ import { ButtonAction } from 'elements/ButtonAction';
 import { HSpace } from 'elements/HSpace';
 import { IconButton } from 'elements/IconButton';
 import { JustifyContentDiv } from 'elements/JustifyContentDiv';
+import HiddenTextField from 'components/HiddenTextField';
 
 const InnerRoot = styled.div<Object>(() => {
   return {
@@ -57,6 +62,7 @@ interface EditQuestionValues {
   text: string;
   answers: string;
   answerType: AnswerBoxType;
+  storedAnswerType: AnswerBoxType; // this one contains the actual values of number of inputs and answers
   orderMatters: boolean;
   isBonus: boolean;
   imageLink?: string;
@@ -70,35 +76,62 @@ const action = createAction(async (values: EditQuestionValues, params) => {
     } as FormError;
   }
 
+  values.answerType = values.storedAnswerType;
   const valuesCopy = { ...values };
 
   values.orderMatters = Boolean(values.orderMatters);
   values.isBonus = Boolean(values.isBonus);
 
+  const answerType = values.storedAnswerType;
   const answerState = stringToAnswerState(values.answers);
-  const numAnswers = getNumAnswers(values.answerType);
-  const numCorrectAnswers = getNumCorrectAnswers(values.answerType);
-  const numRadioBoxes = getNumRadioBoxes(values.answerType);
+  const numAnswers = getNumAnswers(answerType);
+  const numCorrectAnswers = getNumCorrectAnswers(answerType);
+  const numRadioBoxes = getNumRadioBoxes(answerType);
   const newAnswerState: AnswerState = {};
-  if (numCorrectAnswers !== numAnswers) {
-    for (let i = 0; i < 8; i++) {
-      const key = 'answer' + (i + 1);
+  if (isLegacyAnswerBoxType(answerType)) {
+    if (numCorrectAnswers !== numAnswers) {
+      for (let i = 0; i < 8; i++) {
+        const key = 'answer' + (i + 1);
+        if (answerState[key]) {
+          newAnswerState[key] = answerState[key];
+        }
+      }
+    } else {
+      for (let i = 0; i < numAnswers; i++) {
+        const key = 'answer' + (i + 1);
+        if (answerState[key]) {
+          newAnswerState[key] = answerState[key];
+        }
+      }
+    }
+    for (let i = 0; i < numRadioBoxes; i++) {
+      const key = 'radio' + (i + 1);
       if (answerState[key]) {
         newAnswerState[key] = answerState[key];
       }
     }
   } else {
-    for (let i = 0; i < numAnswers; i++) {
+    for (let i = 0; i < Math.max(numAnswers, numCorrectAnswers); i++) {
       const key = 'answer' + (i + 1);
       if (answerState[key]) {
         newAnswerState[key] = answerState[key];
       }
     }
-  }
-  for (let i = 0; i < numRadioBoxes; i++) {
-    const key = 'radio' + (i + 1);
-    if (answerState[key]) {
-      newAnswerState[key] = answerState[key];
+    const [type] = extractAnswerBoxType(answerType);
+    if (type === 'checkbox') {
+      for (let i = 0; i < numAnswers; i++) {
+        const key = 'radio' + (i + 1);
+        if (answerState[key]) {
+          newAnswerState[key] = answerState[key];
+        }
+      }
+    } else {
+      for (let i = 0; i < numRadioBoxes; i++) {
+        const key = 'radio' + (i + 1);
+        if (answerState[key]) {
+          newAnswerState[key] = answerState[key];
+        }
+      }
     }
   }
 
@@ -119,6 +152,7 @@ const action = createAction(async (values: EditQuestionValues, params) => {
       '/api/template/question',
       {
         ...values,
+        answerType,
         roundTemplateId: params.roundTemplateId,
       }
     );
@@ -128,6 +162,7 @@ const action = createAction(async (values: EditQuestionValues, params) => {
       '/api/template/question/' + params.questionTemplateId,
       {
         ...values,
+        answerType,
         roundTemplateId: params.roundTemplateId,
       }
     );
@@ -188,6 +223,14 @@ const loader = async ({ params }) => {
   }
   return json(response);
 };
+
+type AutofillAction =
+  | 'audio'
+  | 'visual'
+  | 'video'
+  | 'basic'
+  | 'quad-radio'
+  | 'pick-2';
 
 const DeleteQuestionTemplate = () => {
   const navigate = useNavigate();
@@ -257,8 +300,11 @@ const EditQuestionTemplate = (props: EditQuestionProps) => {
     answers: questionTemplateResponse?.data?.answers
       ? answerStateToString(questionTemplateResponse?.data?.answers)
       : '{}',
-    answerType:
-      questionTemplateResponse?.data?.answerType ?? AnswerBoxType.INPUT1,
+    answerType: getGenericAnswerType(
+      questionTemplateResponse?.data?.answerType ?? AnswerBoxType.INPUT_LIST
+    ),
+    storedAnswerType:
+      questionTemplateResponse?.data?.answerType ?? AnswerBoxType.INPUT_LIST,
     orderMatters: questionTemplateResponse?.data?.orderMatters ?? false,
     isBonus: questionTemplateResponse?.data?.isBonus ?? false,
     imageLink: questionTemplateResponse?.data?.imageLink ?? '',
@@ -267,9 +313,22 @@ const EditQuestionTemplate = (props: EditQuestionProps) => {
   const formIsPristine = useFormPristine('edit-question-form', initialValues);
   const confirmDialog = useConfirmNav(!formIsPristine);
   useFormResetValues('edit-question-form');
-  const [answerType, setAnswerType] = React.useState(
-    initialValues.answerType ?? AnswerBoxType.INPUT1
+  const [answerType, _setAnswerType] = React.useState(
+    initialValues.storedAnswerType ?? AnswerBoxType.INPUT_LIST
   );
+
+  const setAnswerType = (newAnswerType: AnswerBoxType) => {
+    const form = document.getElementById(
+      'edit-question-form'
+    ) as HTMLFormElement | null;
+    if (form) {
+      const storedAnswerType = form.elements[
+        'storedAnswerType'
+      ] as HTMLTextAreaElement;
+      storedAnswerType.value = newAnswerType;
+    }
+    _setAnswerType(newAnswerType);
+  };
 
   const handleCancelClick = (ev: React.MouseEvent) => {
     ev.preventDefault();
@@ -290,7 +349,7 @@ const EditQuestionTemplate = (props: EditQuestionProps) => {
   };
 
   const handleAutofillClick =
-    (type: 'audio' | 'visual') => (ev: React.MouseEvent) => {
+    (type: AutofillAction) => (ev: React.MouseEvent) => {
       ev.preventDefault();
       const form = document.getElementById(
         'edit-question-form'
@@ -302,13 +361,35 @@ const EditQuestionTemplate = (props: EditQuestionProps) => {
         if (type === 'audio') {
           text.value = '(audio)';
           notes.value = 'This is an audio question.';
-          answerType.value = AnswerBoxType.INPUT2;
-        } else {
+          answerType.value = AnswerBoxType.INPUT_LIST;
+          setAnswerType(buildAnswerBoxType('input', 2, 2));
+        } else if (type === 'visual') {
           text.value = '(visual)';
           notes.value = 'This is a visual question.';
-          answerType.value = AnswerBoxType.INPUT1;
+          answerType.value = AnswerBoxType.INPUT_LIST;
+          setAnswerType(buildAnswerBoxType('input', 1, 1));
+        } else if (type === 'video') {
+          text.value = '(video)';
+          notes.value = 'This is a video question.';
+          answerType.value = AnswerBoxType.INPUT_LIST;
+          setAnswerType(buildAnswerBoxType('input', 1, 1));
+        } else if (type === 'basic') {
+          text.value = '';
+          notes.value = '';
+          answerType.value = AnswerBoxType.INPUT_LIST;
+          setAnswerType(buildAnswerBoxType('input', 1, 1));
+        } else if (type === 'quad-radio') {
+          text.value = '';
+          notes.value = '';
+          answerType.value = AnswerBoxType.RADIO_LIST;
+          setAnswerType(buildAnswerBoxType('radio', 4, 1));
+        } else if (type === 'pick-2') {
+          text.value = '';
+          notes.value = '';
+          answerType.value = AnswerBoxType.CHECKBOX_LIST;
+          setAnswerType(buildAnswerBoxType('checkbox', 4, 2));
         }
-        setAnswerType(answerType.value as AnswerBoxType);
+
         render();
       }
     };
@@ -335,26 +416,55 @@ const EditQuestionTemplate = (props: EditQuestionProps) => {
                 color: getColors().TEXT_DESCRIPTION,
               }}
             >
-              Autofill
+              Quick Presets
             </p>
             <div
               style={{
                 display: 'flex',
+                flexWrap: 'wrap',
                 marginBottom: '16px',
               }}
             >
               <ButtonAction
                 color="secondary"
+                onClick={handleAutofillClick('basic')}
+              >
+                Basic
+              </ButtonAction>
+              <HSpace />
+              <ButtonAction
+                color="secondary"
                 onClick={handleAutofillClick('audio')}
               >
-                Audio Question
+                Audio
               </ButtonAction>
               <HSpace />
               <ButtonAction
                 color="secondary"
                 onClick={handleAutofillClick('visual')}
               >
-                Visual Question
+                Visual
+              </ButtonAction>
+              <HSpace />
+              <ButtonAction
+                color="secondary"
+                onClick={handleAutofillClick('video')}
+              >
+                Video
+              </ButtonAction>
+              <HSpace />
+              <ButtonAction
+                color="secondary"
+                onClick={handleAutofillClick('quad-radio')}
+              >
+                Pick 1 of 4
+              </ButtonAction>
+              <HSpace />
+              <ButtonAction
+                color="secondary"
+                onClick={handleAutofillClick('pick-2')}
+              >
+                Pick 2 of 4
               </ButtonAction>
             </div>
             <InputLabel htmlFor="text">Question Text</InputLabel>
@@ -399,9 +509,10 @@ const EditQuestionTemplate = (props: EditQuestionProps) => {
                 render();
               }}
             />
+            <HiddenTextField name="storedAnswerType" value={answerType} />
             <FormErrorText />
             <p></p>
-            <JustifyContentDiv justifyContent="left">
+            <JustifyContentDiv justifyContent="center">
               <ButtonAction color="primary" type="submit">
                 <IconButton src="/res/check-mark.svg" />
                 Save

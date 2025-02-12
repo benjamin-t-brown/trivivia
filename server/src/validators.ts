@@ -1,5 +1,9 @@
 import * as emailValidator from 'email-validator';
-import { AnswerBoxType, AnswerState } from 'shared/responses';
+import {
+  AnswerBoxType,
+  AnswerState,
+  extractAnswerBoxType,
+} from 'shared/responses';
 import logger from './logger';
 
 export const validateEmail = (email: string) => {
@@ -32,6 +36,10 @@ export const validateAnswerType = (answerType: string) => {
     if (answerType === AnswerBoxType[t]) {
       return true;
     }
+  }
+  const [type] = extractAnswerBoxType(answerType as AnswerBoxType);
+  if (['radio', 'checkbox', 'input'].includes(type)) {
+    return true;
   }
   return false;
 };

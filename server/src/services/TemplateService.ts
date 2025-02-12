@@ -118,7 +118,7 @@ export class TemplateService {
     }
 
     return ret.sort((a, b) => {
-      return a.updatedAt < b.updatedAt ? -1 : 1;
+      return a.updatedAt ?? '' < (b.updatedAt ?? '') ? -1 : 1;
     });
   }
 
@@ -192,13 +192,13 @@ export class TemplateService {
   }
 
   async createQuizTemplate(
-    params: { name: string; numRounds: number; notes?: string },
+    params: { name: string; notes?: string },
     context: RouteContext
   ) {
     const quizTemplate = new QuizTemplate({
       id: randomUUID(),
       accountId: context.userId,
-      numRounds: params.numRounds,
+      numRounds: 99,
       name: params.name,
       roundOrder: '[]',
       notes: params.notes ?? '',
@@ -210,7 +210,6 @@ export class TemplateService {
   async updateQuizTemplate(params: {
     id: string;
     name: string;
-    numRounds: number;
     notes?: string;
   }) {
     const quizTemplate = await this.findQuizById(params.id);
@@ -220,7 +219,7 @@ export class TemplateService {
     }
 
     quizTemplate.name = params.name;
-    quizTemplate.numRounds = params.numRounds;
+    quizTemplate.numRounds = 99;
     quizTemplate.notes = params.notes ?? '';
     return quizTemplate.save();
   }

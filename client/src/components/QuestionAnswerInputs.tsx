@@ -5,12 +5,165 @@ import {
   AnswerState,
   AnswerStateGraded,
   AnswerStateStats,
+  extractAnswerBoxType,
   getNumAnswers,
+  getNumCorrectAnswers,
   getNumRadioBoxes,
+  isLegacyAnswerBoxType,
   LiveQuizPublicQuestionResponse,
 } from 'shared/responses';
 import { getColors } from 'style';
 import { QuestionCorrectAnswers } from './QuestionCorrectAnswers';
+import InputLabel from 'elements/InputLabel';
+
+type GradeResult = 'UNSET' | 'CORRECT' | 'INCORRECT' | 'MIXED';
+
+interface SingleAnswerProps {
+  i: number;
+  disabled?: boolean;
+  gradeResult: GradeResult;
+  value: string;
+}
+
+const InputAnswer = (
+  props: SingleAnswerProps & {
+    handleChange: (
+      answerNumber: number
+    ) => React.ChangeEventHandler<HTMLInputElement>;
+  }
+) => {
+  const style: Record<string, string> = {
+    maxWidth: '500px',
+  };
+  let icon;
+  if (props.gradeResult !== 'UNSET') {
+    const isCorrectAnswer = props.gradeResult === 'CORRECT';
+    const isMixedAnswer = props.gradeResult === 'MIXED';
+
+    icon = (
+      <Img
+        style={{
+          width: '22px',
+          marginRight: '16px',
+          background: isMixedAnswer
+            ? getColors().WARNING_BACKGROUND
+            : isCorrectAnswer
+            ? getColors().SUCCESS_BACKGROUND
+            : getColors().ERROR_BACKGROUND,
+        }}
+        alt="Answer"
+        src={
+          isMixedAnswer
+            ? '/res/warning.svg'
+            : isCorrectAnswer
+            ? '/res/check-mark.svg'
+            : '/res/cancel.svg'
+        }
+      />
+    );
+    style.border = isMixedAnswer
+      ? '1px solid ' + getColors().WARNING_TEXT
+      : isCorrectAnswer
+      ? '1px solid ' + getColors().SUCCESS_TEXT
+      : '1px solid ' + getColors().ERROR_TEXT;
+  }
+
+  return (
+    <div
+      key={props.i}
+      style={{
+        display: 'flex',
+        alignItems: 'center',
+      }}
+    >
+      {icon}
+      <Input
+        disabled={props.disabled}
+        aria-label="Answer"
+        type="text"
+        value={props.value}
+        onChange={props.handleChange(props.i + 1)}
+        maxLength={255}
+        fullWidth
+        style={style}
+      />
+    </div>
+  );
+};
+
+const RadioAnswer = (props: SingleAnswerProps) => {};
+
+const CheckboxAnswer = (
+  props: SingleAnswerProps & {
+    text: string;
+    checked: boolean;
+    otherAnswers: AnswerState;
+    maxNumsToCheck: number;
+    handleChange: (
+      answerNumber: number,
+      maxNumsToCheck: number,
+      otherAnswers: AnswerState
+    ) => React.ChangeEventHandler<HTMLInputElement>;
+  }
+) => {
+  const style: Record<string, string> = {
+    maxWidth: '500px',
+    transform: 'scale(1.5)',
+    marginRight: '16px',
+  };
+  let border = 'unset';
+  let icon;
+  if (props.gradeResult !== 'UNSET') {
+    const isCorrectAnswer = props.gradeResult === 'CORRECT';
+
+    icon = (
+      <Img
+        style={{
+          width: '22px',
+          marginRight: '16px',
+          background: isCorrectAnswer
+            ? getColors().SUCCESS_BACKGROUND
+            : getColors().ERROR_BACKGROUND,
+        }}
+        alt="Answer"
+        src={isCorrectAnswer ? '/res/check-mark.svg' : '/res/cancel.svg'}
+      />
+    );
+    border = isCorrectAnswer
+      ? '1px solid ' + getColors().SUCCESS_TEXT
+      : '1px solid ' + getColors().ERROR_TEXT;
+  }
+
+  return (
+    <div
+      key={props.i}
+      style={{
+        display: 'flex',
+        alignItems: 'center',
+        width: '75%',
+        padding: '8px',
+        border: border,
+        fontSize: '16px',
+      }}
+    >
+      <input
+        type="checkbox"
+        disabled={props.disabled}
+        checked={Boolean(props.checked)}
+        onChange={props.handleChange(
+          props.i + 1,
+          props.maxNumsToCheck,
+          props.otherAnswers
+        )}
+        style={style}
+        id={props.i + props.text}
+        name={props.i + props.text}
+      />
+      {icon}
+      <InputLabel htmlFor={props.i + props.text}>{props.text}</InputLabel>
+    </div>
+  );
+};
 
 export const QuestionAnswerInputs = (props: {
   question: LiveQuizPublicQuestionResponse;
@@ -43,75 +196,268 @@ export const QuestionAnswerInputs = (props: {
     });
   };
 
+  const handleCheckboxChange: (
+    answerNumber: number,
+    maxNumsToCheck: number,
+    otherAnswers: AnswerState
+  ) => React.ChangeEventHandler<HTMLInputElement> =
+    (answerNumber, maxNumsToCheck, otherAnswers) => ev => {
+      const isChecked = Boolean(ev.target.checked);
+      let numAnswersAlreadyChecked = 0;
+      for (let i = 0; i < 16; i++) {
+        const key = 'answer' + (i + 1);
+        if (otherAnswers[key] === 'true') {
+          numAnswersAlreadyChecked++;
+        }
+      }
+      if (isChecked && numAnswersAlreadyChecked >= maxNumsToCheck) {
+        props.dispatch({
+          questionNumber: props.questionNumber,
+          type: 'answer',
+          i: answerNumber,
+          value: 'false',
+        });
+      } else {
+        props.dispatch({
+          questionNumber: props.questionNumber,
+          type: 'answer',
+          i: answerNumber,
+          value: isChecked ? 'true' : 'false',
+        });
+      }
+    };
+
   const numAnswers = getNumAnswers(props.question.answerType);
   const numRadioBoxes = getNumRadioBoxes(props.question.answerType);
 
   const answerBoxes: ReactNode[] = [];
 
-  for (let i = 0; i < numAnswers; i++) {
-    const answerKey = 'answer' + (i + 1);
+  if (isLegacyAnswerBoxType(props.question.answerType)) {
+    for (let i = 0; i < numAnswers; i++) {
+      const answerKey = 'answer' + (i + 1);
 
-    const style: Record<string, string> = {
-      width: '75%',
-    };
+      const style: Record<string, string> = {
+        maxWidth: '500px',
+      };
 
-    let icon;
-    if (props.answersGraded || props.answersQuestion) {
-      const isCorrectAnswer = props.answersGraded?.[answerKey] === 'true';
+      let icon;
+      if (props.answersGraded || props.answersQuestion) {
+        const isCorrectAnswer = props.answersGraded?.[answerKey] === 'true';
 
-      icon = (
-        <Img
+        icon = (
+          <Img
+            style={{
+              width: '22px',
+              marginRight: '16px',
+              background: isCorrectAnswer
+                ? getColors().SUCCESS_BACKGROUND
+                : getColors().ERROR_BACKGROUND,
+            }}
+            alt="Answer"
+            src={isCorrectAnswer ? '/res/check-mark.svg' : '/res/cancel.svg'}
+          />
+        );
+        style.border = isCorrectAnswer
+          ? '1px solid ' + getColors().SUCCESS_TEXT
+          : '1px solid ' + getColors().ERROR_TEXT;
+      }
+
+      answerBoxes.push(
+        <div
+          key={i}
           style={{
-            width: '22px',
-            marginRight: '16px',
-            background: isCorrectAnswer
-              ? getColors().SUCCESS_BACKGROUND
-              : getColors().ERROR_BACKGROUND,
+            display: 'flex',
+            alignItems: 'center',
           }}
-          alt="Answer"
-          src={isCorrectAnswer ? '/res/check-mark.svg' : '/res/cancel.svg'}
+        >
+          {icon}
+          <Input
+            disabled={props.disabled}
+            aria-label="Answer"
+            type="text"
+            value={props.answersSaved[answerKey] ?? ''}
+            onChange={handleAnswerChange(i + 1)}
+            maxLength={255}
+            fullWidth
+            style={style}
+          />
+        </div>
+      );
+    }
+    if (answerBoxes.length && props.answersQuestion) {
+      answerBoxes.push(
+        <QuestionCorrectAnswers
+          key={'answer' + props.questionNumber}
+          correctAnswers={
+            Object.keys(props.question.answers ?? {})
+              .sort()
+              .map(i => props.question?.answers?.[i]) ?? []
+          }
+          answersStats={props.answersStats}
+          numTeams={props.numTeams}
         />
       );
-      style.border = isCorrectAnswer
-        ? '1px solid ' + getColors().SUCCESS_TEXT
-        : '1px solid ' + getColors().ERROR_TEXT;
     }
-
-    answerBoxes.push(
-      <div
-        key={i}
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-        }}
-      >
-        {icon}
-        <Input
-          disabled={props.disabled}
-          aria-label="Answer"
-          type="text"
-          value={props.answersSaved[answerKey] ?? ''}
-          onChange={handleAnswerChange(i + 1)}
-          maxLength={255}
-          style={style}
-        />
-      </div>
-    );
-  }
-
-  if (answerBoxes.length && props.answersQuestion) {
-    answerBoxes.push(
-      <QuestionCorrectAnswers
-        key={'answer' + props.questionNumber}
-        correctAnswers={
-          Object.keys(props.question.answers ?? {})
-            .sort()
-            .map(i => props.question?.answers?.[i]) ?? []
+  } else {
+    const [extractedAnswerType, numInputs, numCorrectAnswers] =
+      extractAnswerBoxType(props.question.answerType);
+    if (extractedAnswerType === 'input') {
+      if (numCorrectAnswers < numInputs && props.answersQuestion) {
+        let numberOfGradedCorrectAnswers = 0;
+        for (let i = 0; i < numCorrectAnswers; i++) {
+          if (props.answersGraded?.['answer' + (i + 1)] === 'true') {
+            numberOfGradedCorrectAnswers++;
+          }
         }
-        answersStats={props.answersStats}
-        numTeams={props.numTeams}
-      />
-    );
+        answerBoxes.push(
+          <div key={'answer-info-' + props.questionNumber}>
+            You got{' '}
+            <span
+              style={{
+                color:
+                  numberOfGradedCorrectAnswers < numCorrectAnswers
+                    ? getColors().WARNING_TEXT
+                    : getColors().SUCCESS_TEXT,
+              }}
+            >
+              {numberOfGradedCorrectAnswers}
+            </span>{' '}
+            of <span>{numCorrectAnswers}</span> correct.
+          </div>
+        );
+      }
+      for (let i = 0; i < numAnswers; i++) {
+        const answerKey = 'answer' + (i + 1);
+        let gradeResult = 'UNSET' as GradeResult;
+        if (props.answersGraded || props.answersQuestion) {
+          gradeResult =
+            props.answersGraded?.[answerKey] === 'true'
+              ? 'CORRECT'
+              : 'INCORRECT';
+          if (numCorrectAnswers < numInputs) {
+            let numAnswersGradedAsCorrect = 0;
+            for (let i = 0; i < numAnswers; i++) {
+              if (props.answersGraded?.['answer' + (i + 1)] === 'true') {
+                numAnswersGradedAsCorrect++;
+              }
+            }
+            if (numAnswersGradedAsCorrect === numCorrectAnswers) {
+              gradeResult = 'CORRECT';
+            } else if (numAnswersGradedAsCorrect < numCorrectAnswers) {
+              gradeResult = 'MIXED';
+            } else {
+              gradeResult = 'INCORRECT';
+            }
+          }
+        }
+
+        answerBoxes.push(
+          <InputAnswer
+            i={i}
+            key={i}
+            disabled={props.disabled}
+            gradeResult={gradeResult}
+            value={props.answersSaved[answerKey] ?? ''}
+            handleChange={handleAnswerChange}
+          />
+        );
+      }
+      if (answerBoxes.length && props.answersQuestion) {
+        answerBoxes.push(
+          <QuestionCorrectAnswers
+            key={'answer' + props.questionNumber}
+            correctAnswers={
+              Object.keys(props.question.answers ?? {})
+                .sort()
+                .map(i => props.question?.answers?.[i]) ?? []
+            }
+            answersStats={props.answersStats}
+            numTeams={props.numTeams}
+          />
+        );
+      }
+    } else if (extractedAnswerType === 'checkbox') {
+      const maxNumsToCheck = getNumCorrectAnswers(props.question.answerType);
+
+      // graded answers have keys which go from answer1-answerN where N is the number of
+      // correct answers, but checkbox fields could have more than N fields checked, so this
+      // function maps those 1-N to the keys which were checked by the team that submitted
+      const mapGradedAnswersToSubmittedAnswers = (
+        graded?: Partial<AnswerStateGraded>,
+        submitted?: AnswerState
+      ) => {
+        if (!graded || !submitted) {
+          return undefined;
+        }
+
+        const obj: Partial<AnswerStateGraded> = {};
+        let numChoicesChecked = 0;
+        const [, numInputs] = extractAnswerBoxType(props.question.answerType);
+        for (let i = 0; i < numInputs; i++) {
+          const didTeamChooseThisField =
+            submitted['answer' + (i + 1)] === 'true';
+          if (didTeamChooseThisField) {
+            const wasGradedCorrectAnswer =
+              graded['answer' + (numChoicesChecked + 1)] === 'true';
+            if (wasGradedCorrectAnswer) {
+              obj['answer' + (i + 1)] = 'true';
+            } else {
+              obj['answer' + (i + 1)] = 'false';
+            }
+            numChoicesChecked++;
+          }
+        }
+        return obj;
+      };
+
+      const mappedGraded = mapGradedAnswersToSubmittedAnswers(
+        props.answersGraded,
+        props.answersSaved
+      );
+
+      for (let i = 0; i < numAnswers; i++) {
+        const radioKey = 'radio' + (i + 1);
+        const answerKey = 'answer' + (i + 1);
+        let gradeResult = 'UNSET' as GradeResult;
+        if (mappedGraded?.[answerKey] !== undefined) {
+          gradeResult =
+            mappedGraded?.[answerKey] === 'true' ? 'CORRECT' : 'INCORRECT';
+        }
+        answerBoxes.push(
+          <CheckboxAnswer
+            i={i}
+            key={i}
+            checked={props.answersSaved[answerKey] === 'true'}
+            text={props.question.answers?.[radioKey] ?? ''}
+            disabled={props.disabled}
+            gradeResult={gradeResult}
+            value={props.answersSaved[answerKey] ?? ''}
+            handleChange={handleCheckboxChange}
+            otherAnswers={props.answersSaved}
+            maxNumsToCheck={maxNumsToCheck}
+          />
+        );
+      }
+
+      if (mappedGraded) {
+        const numCorrectAnswers = getNumCorrectAnswers(
+          props.question.answerType
+        );
+        const correctAnswers: string[] = [];
+        for (let i = 0; i < numCorrectAnswers; i++) {
+          const answerValue = props.question.answers?.['answer' + (i + 1)];
+          correctAnswers.push(answerValue ?? '');
+        }
+        answerBoxes.push(
+          <QuestionCorrectAnswers
+            key={'radio-answer' + props.questionNumber}
+            correctAnswers={correctAnswers}
+            answersStats={props.answersStats}
+            numTeams={props.numTeams}
+          />
+        );
+      }
+    }
   }
 
   const radioBoxes: ReactNode[] = [];
@@ -174,7 +520,6 @@ export const QuestionAnswerInputs = (props: {
           ...style,
         }}
       >
-        {icon}
         <Input
           type="radio"
           checked={checked}
@@ -185,21 +530,22 @@ export const QuestionAnswerInputs = (props: {
           style={{
             transform: 'scale(1.5)',
             pointerEvents: props.disabled ? 'none' : 'auto',
+            marginRight: '16px',
           }}
         />
-        <label
-          htmlFor={id}
-          style={{
-            marginLeft: '16px',
-          }}
-        >
+        {icon}
+        <label htmlFor={id} style={{}}>
           {value}
         </label>
       </div>
     );
   }
 
-  if (radioBoxes.length && props.question.answers?.[radioAnswerKey]) {
+  if (
+    numRadioBoxes &&
+    radioBoxes.length &&
+    props.question.answers?.[radioAnswerKey]
+  ) {
     radioBoxes.push(
       <QuestionCorrectAnswers
         key={'radio-answer' + props.questionNumber}

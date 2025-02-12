@@ -7,10 +7,10 @@
     "test": "vitest --coverage",
     "test:prod": "tsc --project ./tsconfig.json && vitest --run",
     "start": "tsx watch --tsconfig ./tsconfig.json ./src/server.ts",
-    "start:dev": "npm run start",
+    "start:dev": "yarn start",
     "start:prod": "tsx --no-cache --tsconfig ./tsconfig.json ./src/server.ts",
     "migrate": "sequelize db:migrate",
-    "setup-db": "cp -n database.example.json database.json && npm run migrate"
+    "setup-db": "cp -n database.example.json database.json && yarn migrate"
   },
   "author": "",
   "license": "ISC",

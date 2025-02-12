@@ -56,7 +56,6 @@ const InnerRoot = styled.div<Object>(() => {
 export interface EditQuizValues {
   isNew: boolean;
   name: string;
-  numRounds: number;
   notes: string;
   importedQuizTemplate?: string;
   'import-quiz'?: string;
@@ -64,10 +63,6 @@ export interface EditQuizValues {
 const action = createAction(async (values: EditQuizValues, params) => {
   if (!values.name) {
     throwValidationError('Please fill out the form.', values);
-  }
-  const numRounds = Number(values.numRounds);
-  if (isNaN(numRounds) || numRounds <= 0) {
-    throwValidationError('Please specify a valid number of rounds.', values);
   }
 
   let quizTemplate: QuizTemplateResponse | undefined = undefined;
@@ -208,7 +203,6 @@ const EditQuizTemplate = (props: EditQuizProps) => {
   const initialValues: EditQuizValues = {
     isNew: Boolean(props.isNew),
     name: quizTemplateResponse?.data.name ?? '',
-    numRounds: quizTemplateResponse?.data?.numRounds ?? 7,
     notes: quizTemplateResponse?.data?.notes ?? '',
   };
   const formIsPristine = useFormPristine('edit-quiz-form', initialValues, [
@@ -261,7 +255,7 @@ const EditQuizTemplate = (props: EditQuizProps) => {
           ) as HTMLFormElement | null;
           if (form) {
             form.elements['name'].value = parsedData.name;
-            form.elements['numRounds'].value = parsedData.numRounds;
+            // form.elements['numRounds'].value = parsedData.numRounds;
             form.elements['notes'].value = parsedData.notes;
           }
           setQuizTemplateImport(parsedData);
@@ -314,18 +308,6 @@ const EditQuizTemplate = (props: EditQuizProps) => {
               name="name"
               onChange={() => {
                 render();
-              }}
-            />
-            <InputLabel htmlFor="numRounds">Number of Rounds</InputLabel>
-            <Input
-              aria-label="Number of Rounds"
-              type="number"
-              name="numRounds"
-              onChange={() => {
-                render();
-              }}
-              style={{
-                width: '60px',
               }}
             />
             <InputLabel
@@ -395,7 +377,7 @@ const EditQuizTemplate = (props: EditQuizProps) => {
             </div>
             <FormErrorText />
             <div style={{ height: '16px' }}></div>
-            <JustifyContentDiv justifyContent="left">
+            <JustifyContentDiv justifyContent="center">
               <ButtonAction color="primary" type="submit">
                 <IconButton src="/res/check-mark.svg" />
                 Save

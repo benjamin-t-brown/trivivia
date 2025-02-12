@@ -49,7 +49,6 @@ describe('TemplateService', () => {
     const quizTemplate: any = await templateService.createQuizTemplate(
       {
         name: 'testQuiz',
-        numRounds: 1,
       },
       context
     );
@@ -71,7 +70,6 @@ describe('TemplateService', () => {
     const quizTemplate = await templateService.updateQuizTemplate({
       id: 'abcd',
       name: 'testQuiz2',
-      numRounds: 2,
     });
 
     expect(quizTemplate?.id).toBeDefined();

@@ -25,7 +25,7 @@ import {
   RoundTemplateResponse,
 } from 'shared/responses';
 import TextCenter from 'elements/TextCenter';
-import { getColors } from 'style';
+import { getColors, LAYOUT_MAX_WIDTH } from 'style';
 import InlineIconButton from 'elements/InlineIconButton';
 import IconLeft from 'elements/IconLeft';
 import HiddenTextField from 'components/HiddenTextField';
@@ -45,8 +45,8 @@ const InnerButton = styled.div<{ isDragging: boolean }>(props => {
     textAlign: 'left',
     display: 'flex',
     alignItems: 'center',
-    whiteSpace: props.isDragging ? 'pre' : 'unset',
-    overflow: props.isDragging ? 'hidden' : 'unset',
+    // whiteSpace: props.isDragging ? 'pre' : 'unset',
+    // overflow: props.isDragging ? 'hidden' : 'unset',
     width: '100%',
   };
 });
@@ -187,6 +187,7 @@ const ListQuestionTemplates = () => {
   const { dragWasEdited, dragState, handleDragStart, resetDragState } =
     useDnDListHandlers({
       itemHeight: ITEM_HEIGHT,
+      dragPlaceholderId: 'drag-placeholder',
       arr: orderedQuestionTemplates,
       setArr: setOrderedQuestionTemplates,
       clickOffset: 50,
@@ -261,8 +262,26 @@ const ListQuestionTemplates = () => {
             color="primary"
             onClick={handleCreateQuestionTemplateClick}
           >
-            + Create New Question Template
+            + New Question Template
           </ButtonAction>
+          <div
+            style={{
+              margin: '16px 0',
+            }}
+          >
+            {loaderResponse?.data.questionTemplates.length === 0 ? (
+              <TextCenter>(none)</TextCenter>
+            ) : (
+              <a
+                href={
+                  '/api/template/export/round/' +
+                  loaderResponse?.data?.roundTemplate?.id
+                }
+              >
+                Download as JSON
+              </a>
+            )}
+          </div>
           <p>
             Question Templates ({loaderResponse?.data.questionTemplates?.length}
             )
@@ -272,7 +291,7 @@ const ListQuestionTemplates = () => {
               margin: '0px',
             }}
           >
-            {orderedQuestionTemplates.map((questionId, i) => {
+            {orderedQuestionTemplates.slice().map(questionId => {
               const t = loaderResponse?.data.questionTemplates.find(
                 t => t.id === questionId
               );
@@ -282,14 +301,21 @@ const ListQuestionTemplates = () => {
 
               const isDraggingThis =
                 dragState.dragging && t.id === dragState.id;
+              const isHoveredOverThis =
+                dragState.dragging &&
+                t.id === dragState.hoveredId &&
+                !isDraggingThis;
 
               return (
                 <div key={t.id}>
                   {isDraggingThis ? (
                     <div
+                      id="drag-placeholder"
                       style={{
                         width: '100%',
-                        height: '52px',
+                        height:
+                          document.getElementById(t.id)?.getBoundingClientRect()
+                            .height ?? '52px',
                         border: '1px solid ' + getColors().PRIMARY,
                         boxSizing: 'border-box',
                       }}
@@ -300,9 +326,12 @@ const ListQuestionTemplates = () => {
                     id={t.id}
                     color="secondary"
                     style={{
-                      width: isDraggingThis ? 'calc(100% - 50px)' : '100%',
-                      maxWidth: '800px',
+                      width: isDraggingThis ? 'calc(100% - 64px)' : '100%',
+                      maxWidth: LAYOUT_MAX_WIDTH,
                       position: isDraggingThis ? 'absolute' : 'unset',
+                      filter: isHoveredOverThis ? 'brightness(1.3)' : 'unset',
+                      zIndex: isDraggingThis ? 100 : 0,
+                      opacity: isDraggingThis ? 0.25 : 1,
                       border: t.isBonus
                         ? '1px solid ' + getColors().SUCCESS_BACKGROUND
                         : 'unset',
@@ -331,26 +360,13 @@ const ListQuestionTemplates = () => {
                             ev.preventDefault();
                           }}
                         ></InlineIconButton>
-                        <span
-                          style={{
-                            marginTop: '2px',
-                            marginRight: '16px',
-                          }}
-                        >
-                          {i + 1}.
-                        </span>
                         <div
                           style={{
-                            marginTop: '2px',
-                            width: 'calc(100% - 100px)',
-                            overflow: 'hidden',
-                            whiteSpace: 'pre',
-                            textOverflow: 'ellipsis',
                             marginRight: '16px',
-                            lineHeight: '22px',
+                            width: 'calc(100% - 64px)',
                           }}
                         >
-                          <span key={i}>{getQuestionButtonText(t)}</span>
+                          {getQuestionButtonText(t)}
                         </div>
                         <InlineIconButton
                           imgSrc="/res/clone.svg"
@@ -365,51 +381,65 @@ const ListQuestionTemplates = () => {
           </fetcher.Form>
           <Form method="post" id="reorder-questions-form">
             {dragWasEdited ? (
-              <p>
+              <div>
                 <HiddenTextField
                   name="questionOrder"
                   value={orderedQuestionTemplates.join(',')}
                 />
-                <Button
-                  type="submit"
-                  color="primary"
+                <div
                   style={{
-                    width: '100%',
+                    margin: '16px 0',
                     display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                  }}
-                  onClick={ev => {
-                    ev.preventDefault();
-                    ev.stopPropagation();
-                    resetDragState();
-                    const form = document.getElementById(
-                      'reorder-questions-form'
-                    ) as any;
-                    if (form) {
-                      form.elements['questionOrder'].value =
-                        orderedQuestionTemplates.join(',');
-                      submit(form);
-                    }
                   }}
                 >
-                  <IconLeft src="/res/check-mark.svg" /> Save
-                </Button>
-              </p>
+                  <Button
+                    type="submit"
+                    color="primary"
+                    style={{
+                      width: '100%',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                    }}
+                    onClick={ev => {
+                      ev.preventDefault();
+                      ev.stopPropagation();
+                      resetDragState();
+                      const form = document.getElementById(
+                        'reorder-questions-form'
+                      ) as any;
+                      if (form) {
+                        form.elements['questionOrder'].value =
+                          orderedQuestionTemplates.join(',');
+                        submit(form);
+                      }
+                    }}
+                  >
+                    <IconLeft src="/res/check-mark.svg" /> Save
+                  </Button>
+                  <Button
+                    color="cancel"
+                    style={{
+                      width: '100%',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                    }}
+                    onClick={ev => {
+                      ev.preventDefault();
+                      ev.stopPropagation();
+                      resetDragState();
+                      setOrderedQuestionTemplates(
+                        loaderResponse?.data?.roundTemplate?.questionOrder ?? []
+                      );
+                    }}
+                  >
+                    <IconLeft src="/res/cancel.svg" /> Cancel
+                  </Button>
+                </div>
+              </div>
             ) : null}
           </Form>
-          {loaderResponse?.data.questionTemplates.length === 0 ? (
-            <TextCenter>(none)</TextCenter>
-          ) : (
-            <a
-              href={
-                '/api/template/export/round/' +
-                loaderResponse?.data?.roundTemplate?.id
-              }
-            >
-              Download as JSON
-            </a>
-          )}
         </InnerRoot>
       </MobileLayout>
       {confirmDialog}

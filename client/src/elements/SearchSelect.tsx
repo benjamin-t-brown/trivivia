@@ -11,6 +11,7 @@ interface SearchSelectProps<T> {
   label: string;
   inputStyle?: React.CSSProperties;
   getSuggestions: (filter: string) => SearchSelectOption<T>[];
+  fullWidth?: boolean;
 }
 
 interface SearchSelectOption<T> {
@@ -169,7 +170,12 @@ export function SearchSelect<T>(props: SearchSelectProps<T>) {
   const obj = suggestions.find(s => s.value === props.value);
 
   return (
-    <div>
+    <div
+      style={{
+        width: '100%',
+        maxWidth: '500px',
+      }}
+    >
       <div>
         <InputLabel htmlFor={props.id + '-filter'}>
           {props.label ?? 'Search'}
@@ -181,6 +187,7 @@ export function SearchSelect<T>(props: SearchSelectProps<T>) {
           onChange={e =>
             dispatch({ type: 'setFilter', filter: e.target.value })
           }
+          fullWidth={props.fullWidth}
           onFocus={handleFocus}
           onBlur={handleBlur}
           onClick={handleInputClick}
@@ -198,44 +205,46 @@ export function SearchSelect<T>(props: SearchSelectProps<T>) {
           overflow: 'auto',
         }}
       >
-        {suggestions.map((suggestion, i) => (
-          <div
-            key={suggestion.label}
-            style={{
-              cursor: 'pointer',
-              padding: '8px',
-              height: '32px',
-              boxSizing: 'border-box',
-              display: 'flex',
-              justifyContent: 'flex-start',
-              background:
-                i === state.selIndex
-                  ? getColors().PRIMARY
-                  : getColors().BACKGROUND2,
-              alignItems: 'center',
-              border:
-                '1px solid ' +
-                (i === state.selIndex
-                  ? getColors().PRIMARY
-                  : getColors().BACKGROUND),
-            }}
-            // onMouseDown={() => handleSuggestionClick(i)  () => {
-            //   console.log('set suggestion', suggestion.label);
-            //   props.setValue(suggestion.value);
-            //   setSuggestionsVisible(false);
-            // }}
-            onMouseDown={e => {
-              e.preventDefault();
-              e.stopPropagation();
-              handleSuggestionClick(i);
-            }}
-            // onTouchStart={e => {
-            //   handleSuggestionClick(i);
-            // }}
-          >
-            {suggestion.label}
-          </div>
-        ))}
+        {suggestions.map((suggestion, i) => {
+          return (
+            <div
+              key={(suggestion.value as string) ?? suggestion.label}
+              style={{
+                cursor: 'pointer',
+                padding: '8px',
+                height: '32px',
+                boxSizing: 'border-box',
+                display: 'flex',
+                justifyContent: 'flex-start',
+                background:
+                  i === state.selIndex
+                    ? getColors().PRIMARY
+                    : getColors().BACKGROUND2,
+                alignItems: 'center',
+                border:
+                  '1px solid ' +
+                  (i === state.selIndex
+                    ? getColors().PRIMARY
+                    : getColors().BACKGROUND),
+              }}
+              // onMouseDown={() => handleSuggestionClick(i)  () => {
+              //   console.log('set suggestion', suggestion.label);
+              //   props.setValue(suggestion.value);
+              //   setSuggestionsVisible(false);
+              // }}
+              onMouseDown={e => {
+                e.preventDefault();
+                e.stopPropagation();
+                handleSuggestionClick(i);
+              }}
+              // onTouchStart={e => {
+              //   handleSuggestionClick(i);
+              // }}
+            >
+              {suggestion.label}
+            </div>
+          );
+        })}
       </div>
     </div>
   );

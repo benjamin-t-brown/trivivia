@@ -40,6 +40,7 @@ export interface RoundTemplateResponse extends CreateUpdateDelete {
   jokerDisabled?: boolean;
 }
 
+// <type>_<numAnswers>_<numCorrectAnswers>
 export enum AnswerBoxType {
   INPUT1 = 'input1',
   INPUT2 = 'input2',
@@ -58,7 +59,68 @@ export enum AnswerBoxType {
   INPUT4_LIST = 'input4_list',
   INPUT8_LIST = 'input8_list',
   INPUT16_LIST = 'input16_list',
+  INPUT_LIST = 'input_N_N',
+  RADIO_LIST = 'radio_N_N',
+  CHECKBOX_LIST = 'checkbox_N_N',
 }
+
+export const isLegacyAnswerBoxType = (answerType: AnswerBoxType) => {
+  return [
+    AnswerBoxType.INPUT1,
+    AnswerBoxType.INPUT2,
+    AnswerBoxType.INPUT3,
+    AnswerBoxType.INPUT4,
+    AnswerBoxType.INPUT8,
+    AnswerBoxType.INPUT16,
+    AnswerBoxType.RADIO2,
+    AnswerBoxType.RADIO3,
+    AnswerBoxType.RADIO4,
+    AnswerBoxType.RADIO8,
+    AnswerBoxType.INPUT1_LIST,
+    AnswerBoxType.INPUT2_LIST,
+    AnswerBoxType.INPUT3_LIST,
+    AnswerBoxType.INPUT4_LIST,
+    AnswerBoxType.INPUT8_LIST,
+    AnswerBoxType.INPUT16_LIST,
+    AnswerBoxType.INPUT16_WITH_EXTRA,
+  ].includes(answerType);
+};
+
+export const getGenericAnswerType = (answerType: AnswerBoxType) => {
+  if (isLegacyAnswerBoxType(answerType)) {
+    return answerType;
+  }
+  const [type] = answerType.split('_');
+  return (type + '_' + 'N' + '_' + 'N') as AnswerBoxType;
+};
+
+export const buildAnswerBoxType = (
+  type: 'input' | 'radio' | 'checkbox',
+  numAnswers: number,
+  numCorrectAnswers: number
+) => {
+  return (type + '_' + numAnswers + '_' + numCorrectAnswers) as AnswerBoxType;
+};
+
+export const extractAnswerBoxType = (
+  answerType: AnswerBoxType
+): ['input' | 'radio' | 'checkbox', number, number] => {
+  if (isLegacyAnswerBoxType(answerType)) {
+    return [
+      'input',
+      getNumAnswers(answerType),
+      getNumCorrectAnswers(answerType),
+    ];
+  }
+  const [type, numAnswersStr, numCorrectAnswersStr] = answerType.split('_');
+  const numAnswers = parseInt(numAnswersStr, 10);
+  const numCorrectAnswers = parseInt(numCorrectAnswersStr, 10);
+  return [
+    type as 'input' | 'radio' | 'checkbox',
+    isNaN(numAnswers) ? 1 : numAnswers,
+    isNaN(numCorrectAnswers) ? 1 : numCorrectAnswers,
+  ];
+};
 
 export interface QuestionTemplateResponse extends CreateUpdateDelete {
   id: string;
@@ -148,7 +210,10 @@ export const getNumAnswers = (answerType: AnswerBoxType) => {
     case AnswerBoxType.INPUT16_WITH_EXTRA:
       return 32;
   }
-  return 1;
+
+  const [, numAnswersStr] = answerType.split('_');
+  const numAnswers = parseInt(numAnswersStr ?? '1', 10);
+  return isNaN(numAnswers) ? 1 : numAnswers;
 };
 
 export const getNumRadioBoxes = (answerType: AnswerBoxType) => {
@@ -161,9 +226,14 @@ export const getNumRadioBoxes = (answerType: AnswerBoxType) => {
       return 4;
     case AnswerBoxType.RADIO8:
       return 8;
-    default:
-      return 0;
   }
+
+  const [type, numAnswersStr] = answerType.split('_');
+  if (type === 'radio') {
+    const numAnswers = parseInt(numAnswersStr ?? '1', 10);
+    return isNaN(numAnswers) ? 1 : numAnswers;
+  }
+
   return 0;
 };
 
@@ -189,7 +259,10 @@ export const getNumCorrectAnswers = (answerType: AnswerBoxType) => {
     case AnswerBoxType.INPUT16_LIST:
       return 32;
   }
-  return 1;
+
+  const [, , numCorrectAnswersStr] = answerType.split('_');
+  const numCorrectAnswers = parseInt(numCorrectAnswersStr ?? '1', 10);
+  return isNaN(numCorrectAnswers) ? 1 : numCorrectAnswers;
 };
 
 export const ANSWER_DELIMITER = ' | ';
@@ -224,23 +297,77 @@ export const getRoundAnswersArrays = (
 
     const qArr: string[] = [];
     const qTeamArr: string[] = [];
-    if (numCorrectAnswers !== numAnswers) {
-      for (let k = 0; k < 8; k++) {
-        const key = 'answer' + (k + 1);
-        const answers = questionTemplate.answers[key];
-        if (answers) {
+    if (isLegacyAnswerBoxType(questionTemplate.answerType)) {
+      if (numCorrectAnswers !== numAnswers) {
+        for (let k = 0; k < 8; k++) {
+          const key = 'answer' + (k + 1);
+          const answers = questionTemplate.answers[key];
+          if (answers) {
+            const teamAnswers = submittedAnswers[j + 1]?.[key];
+            qArr.push(answers);
+            qTeamArr.push(teamAnswers);
+          }
+        }
+      } else {
+        for (let k = 0; k < numAnswers; k++) {
+          const key = 'answer' + (k + 1);
+          const answers = questionTemplate.answers[key];
           const teamAnswers = submittedAnswers[j + 1]?.[key];
           qArr.push(answers);
           qTeamArr.push(teamAnswers);
         }
       }
     } else {
-      for (let k = 0; k < numAnswers; k++) {
+      const [type] = extractAnswerBoxType(questionTemplate.answerType);
+      for (let k = 0; k < Math.max(numAnswers, numCorrectAnswers); k++) {
         const key = 'answer' + (k + 1);
         const answers = questionTemplate.answers[key];
-        const teamAnswers = submittedAnswers[j + 1]?.[key];
-        qArr.push(answers);
-        qTeamArr.push(teamAnswers);
+        let teamAnswers = submittedAnswers[j + 1]?.[key];
+        if (type === 'checkbox') {
+          const radioKey = 'radio' + (k + 1);
+          if (teamAnswers === 'true') {
+            teamAnswers = questionTemplate.answers[radioKey];
+          } else {
+            teamAnswers = '';
+          }
+          if (answers) {
+            qArr.push(answers);
+          }
+          if (teamAnswers) {
+            qTeamArr.push(teamAnswers);
+          }
+        } else if (type === 'radio') {
+          if (answers) {
+            qArr.push(answers);
+          }
+          if (teamAnswers) {
+            qTeamArr.push(teamAnswers);
+          }
+        } else {
+          if (answers) {
+            qArr.push(answers);
+          }
+          if (numCorrectAnswers > numAnswers) {
+            if (k < numAnswers) {
+              qTeamArr.push(teamAnswers);
+            }
+          }
+          // in this case, assume the question is 'you have N guesses to get M correct'
+          // Then the grader has to look at each input as a group
+          else if (numCorrectAnswers < numAnswers) {
+            // concatenate the extra answers
+            if (k < numCorrectAnswers) {
+              let concatAnswer = '';
+              for (let m = 0; m < numAnswers; m++) {
+                const ans = submittedAnswers[j + 1]?.['answer' + (m + 1)] ?? '';
+                concatAnswer += (concatAnswer.length ? ', ' : '') + ans;
+              }
+              qTeamArr.push(concatAnswer);
+            }
+          } else {
+            qTeamArr.push(teamAnswers);
+          }
+        }
       }
     }
     answersArr.push(qArr.join(ANSWER_DELIMITER));

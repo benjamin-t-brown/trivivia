@@ -20,7 +20,7 @@ import {
 import DefaultTopBar from 'components/DefaultTopBar';
 import { QuizTemplateResponse, RoundTemplateResponse } from 'shared/responses';
 import TextCenter from 'elements/TextCenter';
-import { getColors } from 'style';
+import { getColors, LAYOUT_MAX_WIDTH } from 'style';
 import InlineIconButton from 'elements/InlineIconButton';
 import IconLeft from 'elements/IconLeft';
 import HiddenTextField from 'components/HiddenTextField';
@@ -131,7 +131,8 @@ const ListRoundTemplates = () => {
     itemHeight: ITEM_HEIGHT,
     arr: orderedRoundTemplates,
     setArr: setOrderedRoundTemplates,
-    clickOffset: 0,
+    clickOffset: 50,
+    dragPlaceholderId: 'drag-placeholder',
   });
   const { dragWasEdited, dragState, handleDragStart, resetDragState } = {
     dragWasEdited: drag.dragWasEdited,
@@ -177,7 +178,6 @@ const ListRoundTemplates = () => {
 
   const numRoundsCreated =
     loaderResponse?.data.quizTemplate.rounds?.length ?? 0;
-  const numRoundsTotal = loaderResponse?.data.quizTemplate.numRounds ?? 0;
 
   return (
     <>
@@ -205,30 +205,11 @@ const ListRoundTemplates = () => {
             {loaderResponse?.data.quizTemplate.name}
             <br />
             <br />
-            <span>
-              Rounds Created:{' '}
-              <span
-                style={{
-                  color:
-                    numRoundsCreated < numRoundsTotal
-                      ? getColors().ERROR_TEXT
-                      : getColors().SUCCESS_TEXT,
-                }}
-              >
-                {numRoundsCreated}
-              </span>{' '}
-              / {numRoundsTotal}
-            </span>
+            <span>Rounds Created: {numRoundsCreated}</span>
           </p>
           <JustifyContentDiv justifyContent="left">
-            <ButtonAction
-              disabled={
-                (loaderResponse?.data.roundTemplates.length ?? 0) >=
-                (loaderResponse?.data.quizTemplate.numRounds ?? 0)
-              }
-              onClick={handleCreateRoundTemplateClick}
-            >
-              + Create New Round Template
+            <ButtonAction onClick={handleCreateRoundTemplateClick}>
+              + New Round Template
             </ButtonAction>
             <HSpace />
             <ButtonAction
@@ -238,9 +219,37 @@ const ListRoundTemplates = () => {
               }
               onClick={handlePickExistingRoundTemplateClick}
             >
-              + Pick Existing Round Templates
+              + Pick Round Templates
             </ButtonAction>
           </JustifyContentDiv>
+          <div
+            style={{
+              margin: '16px 0',
+            }}
+          >
+            {loaderResponse?.data.roundTemplates.length === 0 ? (
+              <TextCenter>(none)</TextCenter>
+            ) : null}
+            <a
+              href={
+                '/api/template/export/quiz/' +
+                loaderResponse?.data?.quizTemplate.id +
+                '/html'
+              }
+            >
+              Download as HTML
+            </a>
+            <br />
+            <a
+              href={
+                '/api/template/export/quiz/' +
+                loaderResponse?.data?.quizTemplate.id +
+                '/json'
+              }
+            >
+              Download as JSON
+            </a>
+          </div>
           <p>Round Templates</p>
           {orderedRoundTemplates?.map((templateId, i) => {
             const t = loaderResponse?.data.roundTemplates.find(
@@ -251,12 +260,18 @@ const ListRoundTemplates = () => {
             }
 
             // const isDraggingThis = dragState.dragging && t.id === dragState.id;
-            const isDraggingThis = false;
+            // const isDraggingThis = false;
+            const isDraggingThis = dragState.dragging && t.id === dragState.id;
+            const isHoveredOverThis =
+              dragState.dragging &&
+              t.id === dragState.hoveredId &&
+              !isDraggingThis;
 
             return (
               <div key={t.id}>
                 {isDraggingThis ? (
                   <div
+                    id="drag-placeholder"
                     style={{
                       width: '100%',
                       height: '52px',
@@ -270,8 +285,10 @@ const ListRoundTemplates = () => {
                   color="secondary"
                   style={{
                     width: '100%',
-                    maxWidth: '800px',
+                    maxWidth: LAYOUT_MAX_WIDTH,
                     position: isDraggingThis ? 'absolute' : 'unset',
+                    filter: isHoveredOverThis ? 'brightness(1.3)' : 'unset',
+                    zIndex: isDraggingThis ? 100 : 0,
                   }}
                   onClick={
                     dragState.dragging
@@ -339,7 +356,12 @@ const ListRoundTemplates = () => {
           })}
           <Form method="post" id="reorder-rounds-form">
             {dragWasEdited ? (
-              <p>
+              <div
+                style={{
+                  margin: '16px 0',
+                  display: 'flex',
+                }}
+              >
                 <HiddenTextField
                   name="roundOrder"
                   value={orderedRoundTemplates.join(',')}
@@ -369,31 +391,28 @@ const ListRoundTemplates = () => {
                 >
                   <IconLeft src="/res/check-mark.svg" /> Save
                 </Button>
-              </p>
+                <Button
+                  color="cancel"
+                  style={{
+                    width: '100%',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}
+                  onClick={ev => {
+                    ev.preventDefault();
+                    ev.stopPropagation();
+                    resetDragState();
+                    setOrderedRoundTemplates(
+                      loaderResponse?.data?.quizTemplate?.roundOrder ?? []
+                    );
+                  }}
+                >
+                  <IconLeft src="/res/cancel.svg" /> Cancel
+                </Button>
+              </div>
             ) : null}
           </Form>
-          {loaderResponse?.data.roundTemplates.length === 0 ? (
-            <TextCenter>(none)</TextCenter>
-          ) : null}
-          <a
-            href={
-              '/api/template/export/quiz/' +
-              loaderResponse?.data?.quizTemplate.id +
-              '/html'
-            }
-          >
-            Download as HTML
-          </a>
-          <br />
-          <a
-            href={
-              '/api/template/export/quiz/' +
-              loaderResponse?.data?.quizTemplate.id +
-              '/json'
-            }
-          >
-            Download as JSON
-          </a>
         </InnerRoot>
       </MobileLayout>
       {confirmDialog}

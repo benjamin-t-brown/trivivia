@@ -1,6 +1,7 @@
 import { useResizeRender } from 'hooks';
 import React from 'react';
-import { useActionData, useNavigation } from 'react-router-dom';
+import { useNavigation } from 'react-router-dom';
+import { LAYOUT_MAX_WIDTH } from 'style';
 import styled from 'styled-components';
 
 const Root = styled.div<Object>(() => {
@@ -18,8 +19,9 @@ const Root = styled.div<Object>(() => {
 
 const InnerRoot = styled.div<{ useBoxShadow?: boolean }>(props => {
   return {
-    maxWidth: '800px',
+    maxWidth: LAYOUT_MAX_WIDTH,
     boxSizing: 'border-box',
+    margin: window.innerWidth < 600 ? '0px 4px' : '0px 32px',
     width: window.innerWidth - 20,
     boxShadow: props.useBoxShadow
       ? '0px 0px 16px 0px rgba(0,0,0,0.75)'

@@ -3,7 +3,7 @@
 node 18.7.0^
 npm
 
-## Deployment on ec2
+## Deployment on ec2 (without docker)
 
 This application is deployed at [https://trivivia.net](https://trivivia.net/login)
 
@@ -17,8 +17,8 @@ git pull
 
 # test and build client
 cd client
-npm run test:prod
-npm run build
+yarn test:prod
+yarn build
 
 # Since it is static site, client code doesn't require a server restart.
 
@@ -27,7 +27,7 @@ npm run build
 
 # test server
 cd ../server
-npm run test:prod
+yarn test:prod
 forever list
 
 # use the trivivia index from the forever list command
@@ -46,7 +46,7 @@ source ~/trivivia_config_vars.sh
 
 # when the server is not running anymore you can re-start it with this
 cd server
-forever start --uid "trivivia" --minUptime 1000 --spinSleepTime 1000 --append -c "npm run start:prod" ./
+forever start --uid "trivivia" --minUptime 1000 --spinSleepTime 1000 --append -c "yarn start:prod" ./
 
 # to check if it's running correctly
 forever list
@@ -70,6 +70,49 @@ sudo service nginx restart
 
 SSL stuff is managed by certbot.
 
-## Domains
+## Docker + AWS
 
-Free domain hosting is provided at https://freedns.afraid.org/
+Install docker on system
+
+```
+sudo apt-get install docker.io -y
+sudo systemctl start docker
+# verify
+sudo docker run hello-world
+sudo usermod -a -G docker $(whoami)f
+```
+
+Install awscli
+
+```
+pip3 install awscli
+
+# configure with cli-user
+aws configure
+# login to docker registry
+aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 442979135069.dkr.ecr.us-east-1.amazonaws.com
+```
+
+Build and push image
+
+```
+docker build -t revirtualis/trivivia .
+docker tag revirtualis/trivivia:latest 442979135069.dkr.ecr.us-east-1.amazonaws.com/revirtualis/trivivia:latest
+docker push 442979135069.dkr.ecr.us-east-1.amazonaws.com/revirtualis/trivivia:latest
+```
+
+Running the image
+```
+# debug msys
+docker run --rm -it -p 3006:3006 --mount type=bind,source="$(cygpath -w "$(pwd)")/db",target=/app/db --entrypoint bash revirtualis/trivivia:latest
+
+# debug bash
+docker run --rm -it -p 3006:3006 --mount type=bind,source="$(pwd)/db",target=/app/db --entrypoint bash revirtualis/trivivia:latest
+
+# local (from root of repo)
+docker run -it -p 3006:3006 --mount type=bind,source="$(cygpath -w "$(pwd)")/db",target=/app/db revirtualis/trivivia:latest
+
+# server (from root of repo)
+docker run -it -p 3006:3006 --mount type=bind,source="$(pwd)/db",target=/app/db revirtualis/trivivia:latest
+```
+

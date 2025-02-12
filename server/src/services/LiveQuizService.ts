@@ -161,12 +161,6 @@ export class LiveQuizService {
       return undefined;
     }
 
-    if (quizTemplate.rounds.length < quizTemplate.numRounds) {
-      throw new InvalidInputError(
-        'Error creating live quiz, the provided quiz template is not valid.'
-      );
-    }
-
     const liveQuiz = new LiveQuiz({
       id: randomUUID(),
       userFriendlyId: this.nanoid(),
@@ -740,7 +734,7 @@ export class LiveQuizService {
 
     if (args.didJoker) {
       if (hasAlreadyUsedJoker || roundTemplate.jokerDisabled) {
-        logger.error(
+        logger.warn(
           `Team id=${liveQuizTeam.id} has already used joker or joker is disabled, ignoring this instance.`
         );
       } else {

@@ -5,15 +5,21 @@ import {
   AnswerBoxType,
   AnswerState,
   answerStateToString,
+  buildAnswerBoxType,
+  extractAnswerBoxType,
+  getGenericAnswerType,
   getNumAnswers,
   getNumCorrectAnswers,
   getNumRadioBoxes,
+  isLegacyAnswerBoxType,
   QuestionTemplateResponse,
   stringToAnswerState,
 } from 'shared/responses';
 import { colorsDark, getColors } from 'style';
 import HiddenTextField from './HiddenTextField';
 import Img from 'elements/Img';
+import IconLeft from 'elements/IconLeft';
+import IconRight from 'elements/IconRight';
 
 interface EditAnswersProps {
   questionTemplate?: QuestionTemplateResponse;
@@ -26,7 +32,7 @@ interface EditAnswersProps {
 
 const EditAnswers = (props: EditAnswersProps) => {
   const { answerType, setAnswerType } = props;
-  const [state, dispatch]: [AnswerState, any] = React.useReducer<any>(
+  const [state, dispatch]: [AnswerState, any] = React.useReducer(
     (
       state: AnswerState,
       action: { type: 'answer' | 'radio' | 'reset'; i: number; value: string }
@@ -101,30 +107,92 @@ const EditAnswers = (props: EditAnswersProps) => {
     });
   };
 
+  const handleNumAnswersChange: React.ChangeEventHandler<
+    HTMLSelectElement
+  > = ev => {
+    if (isLegacyAnswerBoxType(answerType)) {
+      return;
+    }
+
+    const [type, , numCorrectAnswers] = extractAnswerBoxType(answerType);
+    const nextNumAnswers = parseInt(ev.target.value);
+
+    if (type === 'radio') {
+      // radio inputs can only have 1 correct answer
+      const nextAnswerType = buildAnswerBoxType(type, nextNumAnswers, 1);
+      setAnswerType(nextAnswerType);
+    } else {
+      const nextAnswerType = buildAnswerBoxType(
+        type,
+        nextNumAnswers,
+        numCorrectAnswers
+      );
+      setAnswerType(nextAnswerType);
+    }
+  };
+
+  const handleNumCorrectAnswersChange: React.ChangeEventHandler<
+    HTMLSelectElement
+  > = ev => {
+    if (isLegacyAnswerBoxType(answerType)) {
+      return;
+    }
+
+    const [type, numAnswers] = extractAnswerBoxType(answerType);
+    const nextNumCorrectAnswers = parseInt(ev.target.value);
+    const nextAnswerType = buildAnswerBoxType(
+      type,
+      numAnswers,
+      nextNumCorrectAnswers
+    );
+    setAnswerType(nextAnswerType);
+  };
+
+  const genericAnswerType = getGenericAnswerType(answerType);
   const numAnswers = getNumAnswers(answerType);
   const numRadioBoxes = getNumRadioBoxes(answerType);
   const numListAnswers = getNumCorrectAnswers(answerType);
+  console.log('render answers', answerType);
 
   const answerBoxes: ReactNode[] = [];
-  if (numAnswers !== numListAnswers) {
-    for (let i = 0; i < 8; i++) {
-      answerBoxes.push(
-        <div key={i}>
-          <InputLabel>Potential Answer {i + 1}</InputLabel>
-          <Input
-            aria-label="Answer"
-            type="text"
-            defaultValue={state['answer' + (i + 1)]}
-            onChange={handleAnswerChange(i + 1)}
-            style={{
-              width: '75%',
-            }}
-          />
-        </div>
-      );
+  if (isLegacyAnswerBoxType(answerType)) {
+    if (numAnswers !== numListAnswers) {
+      for (let i = 0; i < 8; i++) {
+        answerBoxes.push(
+          <div key={i}>
+            <InputLabel>Potential Answer {i + 1}</InputLabel>
+            <Input
+              aria-label="Answer"
+              type="text"
+              defaultValue={state['answer' + (i + 1)]}
+              onChange={handleAnswerChange(i + 1)}
+              style={{
+                width: '75%',
+              }}
+            />
+          </div>
+        );
+      }
+    } else {
+      for (let i = 0; i < numAnswers; i++) {
+        answerBoxes.push(
+          <div key={i}>
+            <InputLabel>Answer {i + 1}</InputLabel>
+            <Input
+              aria-label="Answer"
+              type="text"
+              defaultValue={state['answer' + (i + 1)]}
+              onChange={handleAnswerChange(i + 1)}
+              style={{
+                width: '75%',
+              }}
+            />
+          </div>
+        );
+      }
     }
   } else {
-    for (let i = 0; i < numAnswers; i++) {
+    for (let i = 0; i < numListAnswers; i++) {
       answerBoxes.push(
         <div key={i}>
           <InputLabel>Answer {i + 1}</InputLabel>
@@ -160,36 +228,152 @@ const EditAnswers = (props: EditAnswersProps) => {
     );
   }
 
+  const checkBoxes: ReactNode[] = [];
+  if (genericAnswerType === AnswerBoxType.CHECKBOX_LIST) {
+    for (let i = 0; i < numAnswers; i++) {
+      radioBoxes.push(
+        <div key={i}>
+          <InputLabel>Multiple Choice {i + 1}</InputLabel>
+          <Input
+            aria-label="Checkbox"
+            type="text"
+            defaultValue={state['radio' + (i + 1)]}
+            onChange={handleRadioChange(i + 1)}
+            style={{
+              width: '75%',
+            }}
+          />
+        </div>
+      );
+    }
+  }
+
+  const options = isLegacyAnswerBoxType(genericAnswerType) ? (
+    <>
+      <option value={AnswerBoxType.INPUT1}>Input 1</option>
+      <option value={AnswerBoxType.INPUT2}>Input 2</option>
+      <option value={AnswerBoxType.INPUT3}>Input 3</option>
+      <option value={AnswerBoxType.INPUT4}>Input 4</option>
+      <option value={AnswerBoxType.INPUT8}>Input 8</option>
+      <option value={AnswerBoxType.INPUT16}>Input 16</option>
+      <option value={AnswerBoxType.INPUT16_WITH_EXTRA}>Input 16 Extra</option>
+      <option value={AnswerBoxType.RADIO2}>Radio 2</option>
+      <option value={AnswerBoxType.RADIO3}>Radio 3</option>
+      <option value={AnswerBoxType.RADIO4}>Radio 4</option>
+      <option value={AnswerBoxType.RADIO8}>Radio 8</option>
+      <option value={AnswerBoxType.INPUT1_LIST}>Input 1 List</option>
+      <option value={AnswerBoxType.INPUT2_LIST}>Input 2 List</option>
+      <option value={AnswerBoxType.INPUT3_LIST}>Input 3 List</option>
+      <option value={AnswerBoxType.INPUT4_LIST}>Input 4 List</option>
+      <option value={AnswerBoxType.INPUT_LIST}>Text Input</option>
+      <option value={AnswerBoxType.RADIO_LIST}>Radio Input</option>
+      <option value={AnswerBoxType.CHECKBOX_LIST}>Multi</option>
+    </>
+  ) : (
+    <>
+      <option value={AnswerBoxType.INPUT_LIST}>Text Input</option>
+      <option value={AnswerBoxType.RADIO_LIST}>Radio Input</option>
+      <option value={AnswerBoxType.CHECKBOX_LIST}>Multi</option>
+    </>
+  );
+
   return (
     <>
       <HiddenTextField name="answers" value={answerStateToString(state)} />
-      <InputLabel htmlFor="answerType">Answer Type</InputLabel>
-      <select
+
+      <div
         style={{
-          maxWidth: '148px',
-          padding: '8px',
-          marginTop: '2px',
+          flexWrap: 'wrap',
+          display: 'flex',
         }}
-        name="answerType"
-        defaultValue={answerType}
-        onChange={handleAnswerBoxChange}
       >
-        <option value={AnswerBoxType.INPUT1}>Input 1</option>
-        <option value={AnswerBoxType.INPUT2}>Input 2</option>
-        <option value={AnswerBoxType.INPUT3}>Input 3</option>
-        <option value={AnswerBoxType.INPUT4}>Input 4</option>
-        <option value={AnswerBoxType.INPUT8}>Input 8</option>
-        <option value={AnswerBoxType.INPUT16}>Input 16</option>
-        <option value={AnswerBoxType.INPUT16_WITH_EXTRA}>Input 16 Extra</option>
-        <option value={AnswerBoxType.RADIO2}>Radio 2</option>
-        <option value={AnswerBoxType.RADIO3}>Radio 3</option>
-        <option value={AnswerBoxType.RADIO4}>Radio 4</option>
-        <option value={AnswerBoxType.RADIO8}>Radio 8</option>
-        <option value={AnswerBoxType.INPUT1_LIST}>Input 1 List</option>
-        <option value={AnswerBoxType.INPUT2_LIST}>Input 2 List</option>
-        <option value={AnswerBoxType.INPUT3_LIST}>Input 3 List</option>
-        <option value={AnswerBoxType.INPUT4_LIST}>Input 4 List</option>
-      </select>
+        <div>
+          <InputLabel htmlFor="answerType">Answer Type</InputLabel>
+          <select
+            style={{
+              maxWidth: '148px',
+              padding: '8px',
+              marginTop: '2px',
+            }}
+            name="answerType"
+            defaultValue={genericAnswerType}
+            onChange={handleAnswerBoxChange}
+          >
+            {options}
+          </select>
+        </div>
+        <div
+          style={{
+            marginLeft: '8px',
+          }}
+        >
+          <InputLabel htmlFor="numCorrectAnswers">
+            Number of Answers{' '}
+            <IconRight
+              src="/res/help.svg"
+              style={{ width: '16px', height: '16px' }}
+              title="The number of answers that are correct for this question."
+            />
+          </InputLabel>
+          <select
+            style={{
+              maxWidth: '148px',
+              padding: '8px',
+              marginTop: '2px',
+            }}
+            disabled={
+              isLegacyAnswerBoxType(genericAnswerType) || numRadioBoxes > 0
+            }
+            name="numCorrectAnswers"
+            value={numListAnswers}
+            onChange={handleNumCorrectAnswersChange}
+          >
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="8">8</option>
+            <option value="16">16</option>
+            <option value="32">32</option>
+          </select>
+        </div>
+        <div
+          style={{
+            marginLeft: '8px',
+          }}
+        >
+          <InputLabel htmlFor="numAnswers">
+            Number of Inputs{' '}
+            <IconRight
+              src="/res/help.svg"
+              style={{ width: '16px', height: '16px' }}
+              title="The number of inputs a user will see when answering this question."
+            />
+          </InputLabel>
+          <select
+            style={{
+              maxWidth: '148px',
+              padding: '8px',
+              marginTop: '2px',
+            }}
+            disabled={isLegacyAnswerBoxType(genericAnswerType)}
+            name="numAnswers"
+            value={numAnswers}
+            onChange={handleNumAnswersChange}
+          >
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="8">8</option>
+            <option value="16">16</option>
+            <option value="32">32</option>
+          </select>
+        </div>
+      </div>
+
+      <div></div>
+
       <div
         id="radio boxes"
         style={{
@@ -202,6 +386,15 @@ const EditAnswers = (props: EditAnswersProps) => {
         {radioBoxes}
       </div>
       {radioBoxes.length > 0 ? (
+        <div
+          style={{
+            height: '16px',
+            borderBottom: '1px solid ' + getColors().TEXT_DESCRIPTION,
+            marginBottom: '16px',
+          }}
+        ></div>
+      ) : null}
+      {checkBoxes.length > 0 ? (
         <div
           style={{
             height: '16px',
