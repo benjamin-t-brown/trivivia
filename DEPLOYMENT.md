@@ -147,9 +147,9 @@ docker push 442979135069.dkr.ecr.us-east-1.amazonaws.com/revirtualis/trivivia:la
 ssh admin@3.84.126.152
 aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 442979135069.dkr.ecr.us-east-1.amazonaws.com
 docker pull 442979135069.dkr.ecr.us-east-1.amazonaws.com/revirtualis/trivivia:latest
-docker ps
-- stop the image from this command "docker stop <name>"
+docker stop $(docker ps -a -q)
 docker rm -vf $(docker ps -aq)
+cd trivivia
 docker run -d -p 3006:3006 --mount type=bind,source="$(pwd)/db",target=/app/db 442979135069.dkr.ecr.us-east-1.amazonaws.com/revirtualis/trivivia:latest
 ```
 

@@ -13,6 +13,8 @@ const nonProtectedRoutes = [
   '/$',
   '/join',
   '^/live/',
+  '^/static-quiz/(.*)',
+  '/api/static/(.*)',
   '/login',
   '/signup',
 ];
