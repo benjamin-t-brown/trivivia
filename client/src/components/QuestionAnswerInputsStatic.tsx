@@ -1,3 +1,5 @@
+// TODO Just delete this and do it better
+
 import Img from 'elements/Img';
 import Input from 'elements/Input';
 import React, { ReactNode } from 'react';
@@ -82,8 +84,8 @@ const InputAnswer = (
         disabled={props.disabled}
         aria-label="Answer"
         type="text"
-        value={props.value}
-        onChange={props.handleChange(props.i + 1)}
+        // value={props.value}
+        // onChange={props.handleChange(props.i + 1)}
         maxLength={255}
         fullWidth
         style={style}
@@ -150,12 +152,12 @@ const CheckboxAnswer = (
       <input
         type="checkbox"
         disabled={props.disabled}
-        checked={Boolean(props.checked)}
-        onChange={props.handleChange(
-          props.i + 1,
-          props.maxNumsToCheck,
-          props.otherAnswers
-        )}
+        // checked={Boolean(props.checked)}
+        // onChange={props.handleChange(
+        //   props.i + 1,
+        //   props.maxNumsToCheck,
+        //   props.otherAnswers
+        // )}
         style={style}
         id={props.i + props.text}
         name={props.i + props.text}
@@ -166,7 +168,7 @@ const CheckboxAnswer = (
   );
 };
 
-export const QuestionAnswerInputs = (props: {
+export const QuestionAnswerInputsStatic = (props: {
   question: LiveQuizPublicQuestionResponse;
   questionNumber: number;
   disabled?: boolean;
@@ -280,8 +282,8 @@ export const QuestionAnswerInputs = (props: {
             disabled={props.disabled}
             aria-label="Answer"
             type="text"
-            value={props.answersSaved[answerKey] ?? ''}
-            onChange={handleAnswerChange(i + 1)}
+            // value={props.answersSaved[answerKey] ?? ''}
+            // onChange={handleAnswerChange(i + 1)}
             maxLength={255}
             fullWidth
             style={style}
@@ -534,11 +536,11 @@ export const QuestionAnswerInputs = (props: {
       >
         <Input
           type="radio"
-          checked={checked}
+          // checked={checked}
           id={id}
-          value={value}
+          // value={value}
           name={radioName}
-          onChange={props.disabled ? () => void 0 : handleRadioChange}
+          // onChange={props.disabled ? () => void 0 : handleRadioChange}
           style={{
             transform: 'scale(1.5)',
             pointerEvents: props.disabled ? 'none' : 'auto',

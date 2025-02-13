@@ -45,6 +45,7 @@ import { LiveQuizAdminGradingRoute } from 'routes/LiveQuizAdminGrading';
 import { QRCodeRoute } from 'routes/QRCode';
 import { SettingsAdminRoute, SettingsRoute } from 'routes/Settings';
 import { ListAllRoundTemplatesRoute } from 'routes/ListAllRoundTemplates';
+import { StaticQuizRoute } from 'routes/StaticQuiz';
 
 export const init = () => {
   const router = createBrowserRouter([
@@ -87,6 +88,7 @@ export const init = () => {
         QRCodeRoute,
         SettingsRoute,
         SettingsAdminRoute,
+        StaticQuizRoute,
         // UpdatePasswordRoute,
       ],
     },

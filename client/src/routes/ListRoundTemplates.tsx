@@ -70,8 +70,6 @@ interface ListRoundTemplatesLoaderResponse {
   quizTemplate: QuizTemplateResponse;
 }
 const loader = async ({ params }) => {
-  console.log('loader params', params);
-
   const roundTemplatesResponse = await fetchAsync<
     FetchResponse<RoundTemplateResponse[]>
   >('get', '/api/template/all/round/' + params.quizTemplateId);

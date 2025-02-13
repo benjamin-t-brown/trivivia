@@ -6,6 +6,7 @@ export const QuestionCorrectAnswers = (props: {
   correctAnswers: string[];
   numTeams: number;
   answersStats?: AnswerStateStats;
+  hideStatsForAnswers?: boolean;
 }) => {
   if (props.correctAnswers.length === 1) {
     // the percentage of teams who got 1 answer correct (since there's only one input, then this is
@@ -37,7 +38,7 @@ export const QuestionCorrectAnswers = (props: {
           }}
         >
           {' '}
-          ({pct}%)
+          {props.hideStatsForAnswers ? null : '(' + pct + '%)'}
         </span>
       </div>
     );
@@ -136,9 +137,9 @@ export const QuestionCorrectAnswers = (props: {
           <div
             style={{
               position: 'relative',
-              display: 'flex',
               justifyContent: 'center',
               margin: '42px',
+              display: props.hideStatsForAnswers ? 'none' : 'flex',
             }}
           >
             <div style={{ position: 'relative' }}>

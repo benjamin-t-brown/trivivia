@@ -116,8 +116,6 @@ docker run --rm -it -p 3006:3006 --mount type=bind,source="$(cygpath -w "$(pwd)"
 docker run --rm -it -p 3006:3006 --mount type=bind,source="$(cygpath -w "$(pwd)")/db",target=/app/db --entrypoint bash revirtualis/trivivia:latest
 docker run --rm -it -p 3006:3006 --mount type=bind,source="$(pwd)/db",target=/app/db --entrypoint bash  442979135069.dkr.ecr.us-east-1.amazonaws.com/revirtualis/trivivia:latest
 
-
-
 # local (from root of repo)
 docker run -it -p 3006:3006 --mount type=bind,source="$(cygpath -w "$(pwd)")/db",target=/app/db revirtualis/trivivia:latest
 
@@ -139,10 +137,18 @@ docker rm -vf $(docker ps -aq)
 
 Quick Deploy
 ```
+# build and push image
+docker build -t revirtualis/trivivia .
+docker tag revirtualis/trivivia:latest 442979135069.dkr.ecr.us-east-1.amazonaws.com/revirtualis/trivivia:latest
+aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 442979135069.dkr.ecr.us-east-1.amazonaws.com
+docker push 442979135069.dkr.ecr.us-east-1.amazonaws.com/revirtualis/trivivia:latest
+
+# pull and restart image
+ssh admin@3.84.126.152
 aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 442979135069.dkr.ecr.us-east-1.amazonaws.com
 docker pull 442979135069.dkr.ecr.us-east-1.amazonaws.com/revirtualis/trivivia:latest
 docker ps
-- stop the image from this command
+- stop the image from this command "docker stop <name>"
 docker rm -vf $(docker ps -aq)
 docker run -d -p 3006:3006 --mount type=bind,source="$(pwd)/db",target=/app/db 442979135069.dkr.ecr.us-east-1.amazonaws.com/revirtualis/trivivia:latest
 ```

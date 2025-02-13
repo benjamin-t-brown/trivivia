@@ -1,59 +1,77 @@
-import { randomUUID } from 'crypto';
-import { Account } from '../models/Account';
-import { LiveQuiz } from '../models/LiveQuiz';
-import { LiveQuizRoundAnswers } from '../models/LiveQuizRoundAnswers';
-import { LiveQuizTeam } from '../models/LiveQuizTeam';
 import {
-  AnswerState,
-  AnswerStateGraded,
-  AnswerStateStats,
   LiveQuizPublicQuestionResponse,
-  LiveQuizPublicStateResponse,
-  LiveQuizRoundAnswersResponse,
-  LiveQuizState,
-  LiveQuizTeamResponse,
-  LiveRoundState,
-  QuizStats,
+  LiveQuizStaticResponse,
+  LiveQuizStaticRoundResponse,
   QuizTemplateResponse,
-  StructuredQuizQuestion,
-  StructuredQuizResponse,
-  StructuredQuizRound,
-  StructuredQuizTeam,
-  StructuredQuizTeamAnswersSubmission,
-  getNumAnswers,
-  getNumCorrectAnswers,
 } from 'shared';
-import logger from '../logger';
-import { TemplateService } from './TemplateService';
-import { InvalidInputError } from '../routing';
-import { Op } from 'sequelize';
-import { QuizTemplate } from '../models/QuizTemplate';
-import { customAlphabet } from 'nanoid';
-import { GradeInputState } from '@shared/requests';
-import { Model } from 'sequelize-typescript';
 import { LiveQuizService } from './LiveQuizService';
 
 export class StaticQuizService {
-  nanoid = customAlphabet('1234567890abcdefghijklmnopqrstuvwxyz', 6);
-  private templateService = new TemplateService();
-  setTemplateService(templateService: TemplateService) {
-    this.templateService = templateService;
-  }
   private liveQuizService = new LiveQuizService();
   setLiveQuizService(liveQuizService: LiveQuizService) {
     this.liveQuizService = liveQuizService;
   }
 
-  async getStaticQuizState(liveQuizUserFriendlyId: string) {
+  async getStaticQuiz(
+    liveQuizUserFriendlyId: string
+  ): Promise<LiveQuizStaticResponse | undefined> {
     const liveQuiz = await this.liveQuizService.findLiveQuizByUserFriendlyId(
       liveQuizUserFriendlyId
     );
-
-    const staticQuiz = {
-
+    if (!liveQuiz) {
+      return undefined;
     }
 
-    const quiz = this.getStructuredQuiz(template);
-    return quiz;
+    const staticQuiz: LiveQuizStaticResponse = {
+      id: liveQuiz.id,
+      userFriendlyId: liveQuiz.userFriendlyId,
+      name: liveQuiz.name,
+      isComplete: false,
+      rounds: [],
+      creationDate: liveQuiz.createdAt?.toISOString(),
+      startedAt: liveQuiz.startedAt?.toISOString(),
+      completedAt: liveQuiz.completedAt?.toISOString(),
+    };
+
+    const quizTemplate: QuizTemplateResponse = JSON.parse(
+      liveQuiz.quizTemplateJson
+    );
+
+    for (const roundId of quizTemplate.roundOrder) {
+      const round = quizTemplate.rounds?.find(r => r.id === roundId);
+      if (!round) {
+        continue;
+      }
+      const staticRound: LiveQuizStaticRoundResponse = {
+        id: roundId,
+        roundNumber: quizTemplate.roundOrder.indexOf(roundId),
+        totalNumberOfQuestions: round.questionOrder.length,
+        title: round.title,
+        didJoker: false,
+        description: round.description,
+        questions: [],
+        jokerDisabled: Boolean(round.jokerDisabled),
+      };
+
+      for (const questionId of round.questionOrder) {
+        const question = round.questions?.find(q => q.id === questionId);
+        if (!question) {
+          continue;
+        }
+
+        const staticQuestion: LiveQuizPublicQuestionResponse = {
+          text: question.text,
+          answerType: question.answerType,
+          answers: question.answers,
+          imageLink: question.imageLink,
+        };
+
+        staticRound.questions.push(staticQuestion);
+      }
+
+      staticQuiz.rounds.push(staticRound);
+    }
+
+    return staticQuiz;
   }
 }

@@ -15,6 +15,7 @@ import http from 'http';
 import { Server } from 'socket.io';
 import { ioSession, setupIo } from './middlewares/ioSessionMemory';
 import compression from 'compression';
+import { initStaticQuizController } from './controllers/staticQuizController';
 
 const port = 3006;
 
@@ -47,7 +48,7 @@ const main = async () => {
       secret: env.cookieSecret,
       httpOnly: true,
       maxAge: 24 * 60 * 60 * 1000,
-    })
+    }) as any
   );
   app.use(
     withLogging({
@@ -74,6 +75,7 @@ const main = async () => {
   initTemplateControllers(router);
   initLiveQuizAdminControllers(router);
   initLiveQuizControllers(router);
+  initStaticQuizController(router);
 
   router.use('/', (req, res) => {
     res.sendFile(path.resolve(__dirname, '../../client/dist/index.html'));

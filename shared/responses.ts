@@ -437,6 +437,37 @@ export interface LiveQuizRoundAnswersResponse extends CreateUpdateDelete {
   didJoker: boolean;
 }
 
+export interface LiveQuizStaticRoundResponse {
+  id: string;
+  roundNumber: number;
+  totalNumberOfQuestions: number;
+  title: string;
+  didJoker: boolean;
+  description: string;
+  answersSubmitted?: Record<string, AnswerState>;
+  answersGraded?: Record<string, Partial<AnswerStateGraded>>;
+  questions: LiveQuizPublicQuestionResponse[];
+  jokerDisabled: boolean;
+}
+
+export interface LiveQuizPublicQuestionResponse {
+  text: string;
+  answerType: AnswerBoxType;
+  answers?: AnswerState;
+  imageLink?: string;
+}
+
+export interface LiveQuizStaticResponse extends CreateUpdateDelete {
+  id: string;
+  userFriendlyId: string;
+  name: string;
+  isComplete: boolean;
+  isJoker?: boolean;
+  rounds: LiveQuizStaticRoundResponse[];
+  startedAt?: string;
+  completedAt?: string;
+}
+
 export interface LiveQuizPublicResponse extends CreateUpdateDelete {
   id: string;
   userFriendlyId: string;
