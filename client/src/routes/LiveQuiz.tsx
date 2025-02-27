@@ -66,6 +66,7 @@ const InnerRoot = styled.div<Object>(() => {
     width: '100%',
     display: 'flex',
     flexDirection: 'column',
+    textAlign: 'center',
   };
 });
 
@@ -576,7 +577,7 @@ const LiveQuiz = (props: { error?: boolean }) => {
                 Connected to quiz:
               </span>{' '}
               {liveQuizResponse.data.quiz.name}
-              {isSpectating ? (
+              {/* {isSpectating ? (
                 <>
                   <br />
                   <span
@@ -593,7 +594,7 @@ const LiveQuiz = (props: { error?: boolean }) => {
                     </Link>
                   </span>
                 </>
-              ) : null}
+              ) : null} */}
             </p>
             {isWaitingForQuizToStart(liveQuizResponse.data.quiz) ? (
               <>

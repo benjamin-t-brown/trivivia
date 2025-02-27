@@ -30,19 +30,28 @@ export const UpdateTeamNameForm = () => {
     <fetcher.Form method="post" id={formId}>
       <div
         style={{
+          marginTop: '16px',
           display: 'flex',
           justifyContent: 'center',
         }}
       >
         <div
           style={{
-            width: '50%',
-            minWidth: '164px',
+            width: '100%',
             display: 'flex',
             justifyContent: 'center',
+            flexDirection: 'column',
+            alignItems: 'center',
           }}
         >
-          <InputLabel htmlFor="code">Update Team Name</InputLabel>
+          <InputLabel
+            htmlFor="code"
+            style={{
+              textAlign: 'center',
+            }}
+          >
+            Update Team Name
+          </InputLabel>
           {isLoading ? (
             <div>Loading...</div>
           ) : (
@@ -66,20 +75,22 @@ export const UpdateTeamNameForm = () => {
         <FormErrorText />
       </div>
       <div style={{ height: '16px' }}></div>
-      <Button
-        flex
-        center
-        color="secondary"
-        style={{
-          width: '100%',
-        }}
-        disabled={teamName.length <= 0 || isLoading}
-        type="submit"
-        onClick={handleSubmitClick}
-      >
-        <IconLeft src="/res/edit.svg" />
-        Update Team Name
-      </Button>
+      <div id="update-team-name-button">
+        <Button
+          flex
+          center
+          color="secondary"
+          style={{
+            width: '100%',
+          }}
+          disabled={teamName.length <= 0 || isLoading}
+          type="submit"
+          onClick={handleSubmitClick}
+        >
+          <IconLeft src="/res/edit.svg" />
+          Update Team Name
+        </Button>
+      </div>
     </fetcher.Form>
   );
 };

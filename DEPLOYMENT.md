@@ -150,6 +150,6 @@ docker pull 442979135069.dkr.ecr.us-east-1.amazonaws.com/revirtualis/trivivia:la
 docker stop $(docker ps -a -q)
 docker rm -vf $(docker ps -aq)
 cd trivivia
-docker run -d -p 3006:3006 --mount type=bind,source="$(pwd)/db",target=/app/db 442979135069.dkr.ecr.us-east-1.amazonaws.com/revirtualis/trivivia:latest
+docker run -d -p 3006:3006 --restart=on-failure --mount type=bind,source="$(pwd)/db",target=/app/db 442979135069.dkr.ecr.us-east-1.amazonaws.com/revirtualis/trivivia:latest
 ```
 
