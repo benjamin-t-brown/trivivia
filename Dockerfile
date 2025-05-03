@@ -5,7 +5,7 @@ COPY package.json yarn.lock ./
 COPY client/package.json ./client/
 COPY server/package.json ./server/
 COPY shared/package.json ./shared/
-# RUN npm install --global yarn
+
 COPY install.sh .
 RUN ./install.sh
 COPY . .
