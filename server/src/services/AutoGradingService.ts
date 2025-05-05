@@ -2,27 +2,31 @@ import {
   ANSWER_DELIMITER,
   AnswerState,
   AnswerStateGraded,
-  LiveQuizRoundAnswersResponse,
-  LiveQuizTeamResponse,
-  QuestionTemplateResponse,
+  AnswerStateGradedCertainty,
   RoundTemplateResponse,
-  getNumAnswers,
-  getRoundAnswersArrays,
+  getRoundAnswersArraysByAnswerState,
 } from 'shared/responses';
 import * as fastFuzzy from 'fast-fuzzy';
 
 export class AutoGradingService {
-  gradeAnswersInRound(
-    teamResponse: LiveQuizTeamResponse,
+  // returns an object where each key is a questionId and value is the graded answer object
+  async gradeAnswersInRound(
+    roundAnswers: Record<string, AnswerState>,
     roundTemplate: RoundTemplateResponse
   ) {
     const { answersArr, teamAnswersArr, orderMattersArr } =
-      getRoundAnswersArrays(roundTemplate, teamResponse);
+      getRoundAnswersArraysByAnswerState(roundTemplate, roundAnswers);
 
-    const roundAnswerObj: Record<string, AnswerStateGraded> = {};
+    const roundAnswerObj: Record<
+      string,
+      {
+        gradeState: AnswerStateGraded;
+        certainty: AnswerStateGradedCertainty;
+      }
+    > = {};
 
     let questionNumber = 1;
-    for (const questionId of roundTemplate.questionOrder) {
+    for (let i = 0; i < roundTemplate.questionOrder.length; i++) {
       const answersForQuestion =
         answersArr[questionNumber - 1].split(ANSWER_DELIMITER);
       const submittedAnswersForQuestion =
@@ -32,13 +36,20 @@ export class AutoGradingService {
         submittedAnswersForQuestion,
         orderMattersArr[questionNumber - 1]
       );
+
       const answerObj: Partial<AnswerStateGraded> = {};
+      const certaintyObj: Partial<AnswerStateGradedCertainty> = {};
       for (let i = 0; i < results.length; i++) {
+        const { result, certainty } = results[i];
         const answerKey = 'answer' + (i + 1);
-        answerObj[answerKey] = results[i];
+        answerObj[answerKey] = result;
+        certaintyObj[answerKey] = certainty;
       }
 
-      roundAnswerObj[questionId] = answerObj as AnswerStateGraded;
+      roundAnswerObj[questionNumber] = {
+        gradeState: answerObj as AnswerStateGraded,
+        certainty: certaintyObj as AnswerStateGradedCertainty,
+      };
       questionNumber++;
     }
 
@@ -49,8 +60,14 @@ export class AutoGradingService {
     correctAnswers: string[],
     submittedAnswers: string[],
     orderMatters: boolean
-  ): ('true' | 'false' | 'unknown')[] {
-    const ret: ('true' | 'false' | 'unknown')[] = [];
+  ): {
+    result: 'true' | 'false' | 'unknown';
+    certainty: number;
+  }[] {
+    const ret: {
+      result: 'true' | 'false' | 'unknown';
+      certainty: number;
+    }[] = [];
     for (let i = 0; i < correctAnswers.length; i++) {
       const submittedAnswer = submittedAnswers[i];
       const result = fastFuzzy.search(
@@ -60,18 +77,23 @@ export class AutoGradingService {
           returnMatchData: true,
         }
       );
-      // console.log(
-      //   'RESULT',
-      //   submittedAnswer,
-      //   orderMatters ? [correctAnswers[i]] : correctAnswers,
-      //   result
-      // );
-      if (result[0]?.score > 0.9) {
-        ret.push('true');
-      } else if (result[0]?.score > 0.5) {
-        ret.push('unknown');
+      // TODO make this threshold configurable
+      if (result[0]?.score > 0.8) {
+        ret.push({
+          result: 'true',
+          certainty: result[0].score,
+        });
+        // TODO Let's just not account for unknown for now
+        // } else if (result[0]?.score > 0.5) {
+        //   ret.push({
+        //     result: 'unknown',
+        //     certainty: result[0].score,
+        //   });
       } else {
-        ret.push('false');
+        ret.push({
+          result: 'false',
+          certainty: result[0]?.score ?? 0,
+        });
       }
     }
     return ret;

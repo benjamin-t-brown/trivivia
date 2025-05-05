@@ -1,5 +1,4 @@
-// Only put types in this file, and don't include any server side node_modules.  This file
-// is included on the client as well
+// Don't include any server side node_modules.  This file is included on the client as well.
 
 interface CreateUpdateDelete {
   updatedOn?: string;
@@ -166,6 +165,11 @@ export type AnswerStateGraded = Record<
   Partial<keyof AnswerState>,
   'true' | 'false' | 'unknown'
 >;
+export type AnswerStateGradedCertainty = Record<
+  Partial<keyof AnswerState>,
+  number
+>;
+
 export type AnswerStateStats = Record<number | string, number | string[]>;
 
 export const stringToAnswerState = (s?: string): AnswerState => {
@@ -183,6 +187,7 @@ export const answerStateToString = (s: AnswerState) => {
   return JSON.stringify(s);
 };
 
+// number of inputs for each answer type
 export const getNumAnswers = (answerType: AnswerBoxType) => {
   switch (answerType) {
     case AnswerBoxType.RADIO2:
@@ -237,6 +242,7 @@ export const getNumRadioBoxes = (answerType: AnswerBoxType) => {
   return 0;
 };
 
+// number of correct answers for each answer type
 export const getNumCorrectAnswers = (answerType: AnswerBoxType) => {
   switch (answerType) {
     case AnswerBoxType.RADIO2:
@@ -260,6 +266,7 @@ export const getNumCorrectAnswers = (answerType: AnswerBoxType) => {
       return 32;
   }
 
+  // default case is the generic one, where N answers available with M correct
   const [, , numCorrectAnswersStr] = answerType.split('_');
   const numCorrectAnswers = parseInt(numCorrectAnswersStr ?? '1', 10);
   return isNaN(numCorrectAnswers) ? 1 : numCorrectAnswers;
@@ -271,17 +278,13 @@ export const ANSWER_DELIMITER = ' | ';
 // - answersArr is the list of answers for each question in a round
 // - teamAnswersArr is the list of answers for each question in a round submitted by a team
 // - orderMattersArr is the list of whether the order matters for each question
-export const getRoundAnswersArrays = (
+export const getRoundAnswersArraysByAnswerState = (
   roundTemplate: RoundTemplateResponse,
-  team: LiveQuizTeamResponse
+  submittedAnswers: Record<string, AnswerState>
 ) => {
   const answersArr: string[] = [];
   const teamAnswersArr: string[] = [];
   const orderMattersArr: boolean[] = [];
-
-  const submittedAnswers =
-    team.liveQuizRoundAnswers.find(a => a.roundId === roundTemplate.id)
-      ?.answers ?? {};
 
   for (let j = 0; j < roundTemplate.questionOrder.length; j++) {
     const questionId = roundTemplate.questionOrder[j];
@@ -375,6 +378,16 @@ export const getRoundAnswersArrays = (
     orderMattersArr.push(questionTemplate.orderMatters);
   }
   return { answersArr, teamAnswersArr, orderMattersArr };
+};
+
+export const getRoundAnswersArrays = (
+  roundTemplate: RoundTemplateResponse,
+  team: LiveQuizTeamResponse
+) => {
+  const submittedAnswers =
+    team.liveQuizRoundAnswers.find(a => a.roundId === roundTemplate.id)
+      ?.answers ?? {};
+  return getRoundAnswersArraysByAnswerState(roundTemplate, submittedAnswers);
 };
 
 export enum LiveQuizState {
@@ -559,3 +572,18 @@ export interface StructuredQuizResponse {
   rounds: StructuredQuizRound[];
   teams: StructuredQuizTeam[];
 }
+
+// team id -> round id -> question id -> answer state / certainty
+export type GradeOutputState = Record<
+  string,
+  Record<
+    string,
+    Record<
+      string,
+      {
+        gradeState: AnswerStateGraded;
+        certainty: AnswerStateGradedCertainty;
+      }
+    >
+  >
+>;

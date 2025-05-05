@@ -40,8 +40,9 @@ function PaginatedListFiltered<T>(
             debounceUpdateUrlParams(e.target.value, String(defaultPage));
           }}
           style={{
-            width: '33%',
+            width: '75%',
             minWidth: '160px',
+            maxWidth: '400px',
           }}
         />
       </div>

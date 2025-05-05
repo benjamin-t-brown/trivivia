@@ -66,7 +66,7 @@ const InnerRoot = styled.div<Object>(() => {
     width: '100%',
     display: 'flex',
     flexDirection: 'column',
-    textAlign: 'center',
+    textAlign: 'left',
   };
 });
 

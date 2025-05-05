@@ -84,7 +84,7 @@ const main = async () => {
   setupIo(io);
 
   server.listen(port, () => {
-    logger.info(`Example app listening on http://localhost:${port}`);
+    logger.info(`App listening on http://localhost:${port}`);
   });
 };
 

@@ -14,6 +14,7 @@ The application has two operating modes:
 - Use interfaces for data structures and type definitions
 - Prefer immutable data (const, readonly)
 - Use optional chaining (?.) and nullish coalescing (??) operators
+- All if statements should have braces.
 
 ## React Guidelines
 - Use functional components with hooks
@@ -32,3 +33,6 @@ The application has two operating modes:
 - Use try/catch blocks for async operations
 - Implement proper error boundaries in React components
 - Always log errors with contextual information
+
+## Library Instructions
+- Prefer not to add any new outside libraries to this program.

@@ -11,45 +11,16 @@ This application is deployed at [https://trivivia.net](https://trivivia.net/logi
 # ssh into ecs instance
 ssh admin@3.84.126.152
 
-# pull changes
+# ensure login credentials
+aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 442979135069.dkr.ecr.us-east-1.amazonaws.com
+
+# pull and restart
+docker pull 442979135069.dkr.ecr.us-east-1.amazonaws.com/revirtualis/trivivia:latest
+docker stop $(docker ps -a -q)
+docker rm -vf $(docker ps -aq)
 cd trivivia
-git pull
+docker run -d -p 3006:3006 --restart=on-failure --mount type=bind,source="$(pwd)/db",target=/app/db 442979135069.dkr.ecr.us-east-1.amazonaws.com/revirtualis/trivivia:latest
 
-# test and build client
-cd client
-yarn test:prod
-yarn build
-
-# Since it is static site, client code doesn't require a server restart.
-
-# If you need to deploy the server then do the following
-# but no need to if you have no server changes.
-
-# test server
-cd ../server
-yarn test:prod
-forever list
-
-# use the trivivia index from the forever list command
-forever stop <number>
-
-# forever doesn't actually kill the ts-node process so you have to find it
-# 'forever restart' also does not work correctly
-ps aux | grep /home/admin/trivivia/server/node_modules/.bin/
-
-# you're looking for:
-#   /home/admin/trivivia/server/node_modules/.bin/(ts-node OR tsx) --project ./tsconfig.json src/server.ts /home/admin/trivivia/server/
-kill -9 159706
-
-# before starting server again, source env
-source ~/trivivia_config_vars.sh
-
-# when the server is not running anymore you can re-start it with this
-cd server
-forever start --uid "trivivia" --minUptime 1000 --spinSleepTime 1000 --append -c "yarn start:prod" ./
-
-# to check if it's running correctly
-forever list
 ```
 
 ## Nginx Restart
@@ -153,3 +124,47 @@ cd trivivia
 docker run -d -p 3006:3006 --restart=on-failure --mount type=bind,source="$(pwd)/db",target=/app/db 442979135069.dkr.ecr.us-east-1.amazonaws.com/revirtualis/trivivia:latest
 ```
 
+## Old deployment instructions
+
+# ssh into ecs instance
+ssh admin@3.84.126.152
+
+# pull changes
+cd trivivia
+git pull
+
+# test and build client
+cd client
+yarn test:prod
+yarn build
+
+# Since it is static site, client code doesn't require a server restart.
+
+# If you need to deploy the server then do the following
+# but no need to if you have no server changes.
+
+# test server
+cd ../server
+yarn test:prod
+forever list
+
+# use the trivivia index from the forever list command
+forever stop <number>
+
+# forever doesn't actually kill the ts-node process so you have to find it
+# 'forever restart' also does not work correctly
+ps aux | grep /home/admin/trivivia/server/node_modules/.bin/
+
+# you're looking for:
+#   /home/admin/trivivia/server/node_modules/.bin/(ts-node OR tsx) --project ./tsconfig.json src/server.ts /home/admin/trivivia/server/
+kill -9 159706
+
+# before starting server again, source env
+source ~/trivivia_config_vars.sh
+
+# when the server is not running anymore you can re-start it with this
+cd server
+forever start --uid "trivivia" --minUptime 1000 --spinSleepTime 1000 --append -c "yarn start:prod" ./
+
+# to check if it's running correctly
+forever list

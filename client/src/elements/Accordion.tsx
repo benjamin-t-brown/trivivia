@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { JSX } from 'react';
 import { getColors } from 'style';
 import styled from 'styled-components';
 
@@ -39,6 +39,7 @@ const AccordionHeader = (
         // />
         <span
           style={{
+            width: '16px',
             marginRight: '16px',
           }}
         >
@@ -59,6 +60,7 @@ const AccordionHeader = (
         // />
         <span
           style={{
+            width: '16px',
             marginRight: '16px',
           }}
         >

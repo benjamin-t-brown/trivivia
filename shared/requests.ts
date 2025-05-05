@@ -26,6 +26,7 @@ export interface QuestionTemplateRequest {
   notes?: string;
 }
 
+// team id -> round id -> question id -> answer state
 export type GradeInputState = Record<
   string,
   Record<string, Record<string, AnswerStateGraded>>

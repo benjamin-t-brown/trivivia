@@ -9,13 +9,15 @@ import {
   registerRoute,
 } from '../routing';
 import { LiveQuizService } from '../services/LiveQuizService';
-import { LiveQuizState, LiveRoundState } from 'shared';
+import { GradeOutputState, LiveQuizState, LiveRoundState } from 'shared';
 import { validateString } from '../validators';
 import { GradeInputState } from '@shared/requests';
 import logger from '../logger';
+import { AutoGradingService } from '../services/AutoGradingService';
 
 export const initLiveQuizAdminControllers = (router: Router) => {
   const liveQuizService = new LiveQuizService();
+  const autoGradingService = new AutoGradingService();
 
   registerGet(
     router,
@@ -252,6 +254,93 @@ export const initLiveQuizAdminControllers = (router: Router) => {
       return str;
     },
     true
+  );
+
+  registerPut(
+    router,
+    '/api/live-quiz-admin/quiz/:liveQuizId/autograde',
+    async function autogradeQuiz(
+      params: { liveQuizId: string },
+      body: { roundIds: string[]; overwrite?: boolean }
+    ) {
+      const { liveQuizId } = params;
+      const { roundIds } = body;
+
+      if (!roundIds || !Array.isArray(roundIds) || roundIds.length === 0) {
+        throw new InvalidInputError(
+          'Please provide at least one round to grade'
+        );
+      }
+
+      const lq = await liveQuizService.findLiveQuizById(liveQuizId, {
+        includeSubmitted: true,
+      });
+
+      if (!lq) {
+        throw new InvalidInputError(`Quiz with ID ${liveQuizId} not found`);
+      }
+
+      const liveQuiz = lq.getResponseJson();
+
+      const gradeState: GradeOutputState = {};
+      const gradeStateInput: GradeInputState = {};
+
+      for (const roundId of roundIds) {
+        const roundTemplate = liveQuiz.quizTemplateJson.rounds?.find(
+          r => r.id === roundId
+        );
+
+        if (!roundTemplate) {
+          logger.error(`Round template not found for roundId=${roundId}`);
+          continue;
+        }
+
+        const roundTemplateResponse = roundTemplate;
+
+        const teamResponses = liveQuiz.liveQuizTeams.map(t =>
+          t.liveQuizRoundAnswers?.find(ra => ra?.roundId === roundId)
+        );
+
+        for (const teamResponse of teamResponses) {
+          if (!teamResponse) {
+            continue;
+          }
+
+          const teamId = teamResponse.liveQuizTeamId;
+
+          if (!teamId) {
+            logger.error(
+              `Team ID not found for teamResponse with ID ${teamResponse.id}`
+            );
+            continue;
+          }
+
+          const gradedAnswers = await autoGradingService.gradeAnswersInRound(
+            teamResponse.answers,
+            roundTemplateResponse
+          );
+
+          if (!gradeState[teamId]) {
+            gradeState[teamId] = {};
+          }
+          if (!gradeStateInput[teamId]) {
+            gradeStateInput[teamId] = {};
+          }
+
+          gradeState[teamId][roundTemplateResponse.id] = gradedAnswers;
+
+          gradeStateInput[teamId][roundTemplateResponse.id] = {};
+          for (const questionNum in gradedAnswers) {
+            gradeStateInput[teamId][roundTemplateResponse.id][questionNum] =
+              gradedAnswers[questionNum].gradeState;
+          }
+        }
+      }
+
+      await liveQuizService.submitGrades(liveQuizId, gradeStateInput);
+
+      return gradeState;
+    }
   );
 
   const emitStateUpdate = (
