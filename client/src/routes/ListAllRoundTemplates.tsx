@@ -363,6 +363,7 @@ const ListAllRoundTemplates = (props: { error?: boolean }) => {
           <p></p>
           <Form method="post" id="choose-rounds-form">
             <PaginatedListFiltered
+              actions={[]}
               maxItemsPerPage={20}
               items={filteredItems ?? []}
               renderItem={t =>

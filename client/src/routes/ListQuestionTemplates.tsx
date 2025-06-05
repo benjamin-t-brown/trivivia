@@ -31,6 +31,7 @@ import IconLeft from 'elements/IconLeft';
 import HiddenTextField from 'components/HiddenTextField';
 import { updateCacheQuestionTemplate, updateCacheRoundTemplate } from 'cache';
 import { ButtonAction } from 'elements/ButtonAction';
+import { TitleWithActions } from 'elements/TitleWithActions';
 
 const InnerRoot = styled.div<Object>(() => {
   return {
@@ -258,12 +259,12 @@ const ListQuestionTemplates = () => {
               {loaderResponse?.data.roundTemplate.description}
             </p>
           ) : null}
-          <ButtonAction
+          {/* <ButtonAction
             color="primary"
             onClick={handleCreateQuestionTemplateClick}
           >
             + New Question Template
-          </ButtonAction>
+          </ButtonAction> */}
           <div
             style={{
               margin: '16px 0',
@@ -282,10 +283,20 @@ const ListQuestionTemplates = () => {
               </a>
             )}
           </div>
-          <p>
+          {/* <p>
             Question Templates ({loaderResponse?.data.questionTemplates?.length}
             )
-          </p>
+          </p> */}
+          <TitleWithActions
+            title={`Question Templates (${loaderResponse?.data.questionTemplates?.length})`}
+            actions={[
+              {
+                label: 'New Question Template',
+                icon: '/res/plus.svg',
+                onClick: handleCreateQuestionTemplateClick,
+              },
+            ]}
+          ></TitleWithActions>
           <fetcher.Form
             style={{
               margin: '0px',

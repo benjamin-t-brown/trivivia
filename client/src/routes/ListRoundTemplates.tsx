@@ -29,6 +29,7 @@ import Img from 'elements/Img';
 import { ButtonAction } from 'elements/ButtonAction';
 import { JustifyContentDiv } from 'elements/JustifyContentDiv';
 import { HSpace } from 'elements/HSpace';
+import { TitleWithActions } from 'elements/TitleWithActions';
 
 const InnerRoot = styled.div<Object>(() => {
   return {
@@ -205,7 +206,7 @@ const ListRoundTemplates = () => {
             <br />
             <span>Rounds Created: {numRoundsCreated}</span>
           </p>
-          <JustifyContentDiv justifyContent="left">
+          {/* <JustifyContentDiv justifyContent="left">
             <ButtonAction onClick={handleCreateRoundTemplateClick}>
               + New Round Template
             </ButtonAction>
@@ -219,7 +220,7 @@ const ListRoundTemplates = () => {
             >
               + Pick Round Templates
             </ButtonAction>
-          </JustifyContentDiv>
+          </JustifyContentDiv> */}
           <div
             style={{
               margin: '16px 0',
@@ -248,7 +249,21 @@ const ListRoundTemplates = () => {
               Download as JSON
             </a>
           </div>
-          <p>Round Templates</p>
+          <TitleWithActions
+            title="Round Templates"
+            actions={[
+              {
+                label: 'New Round Template',
+                icon: '/res/plus.svg',
+                onClick: handleCreateRoundTemplateClick,
+              },
+              {
+                label: 'Pick Round Template',
+                icon: '/res/clone.svg',
+                onClick: handlePickExistingRoundTemplateClick,
+              },
+            ]}
+          ></TitleWithActions>
           {orderedRoundTemplates?.map((templateId, i) => {
             const t = loaderResponse?.data.roundTemplates.find(
               t => t.id === templateId

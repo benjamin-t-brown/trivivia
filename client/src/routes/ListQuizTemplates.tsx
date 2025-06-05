@@ -156,10 +156,6 @@ const ListQuizTemplates = () => {
       <DefaultTopBar upTo="/landing" />
       <MobileLayout topBar>
         <InnerRoot>
-          <p></p>
-          <ButtonAction onClick={handleCreateQuizTemplateClick}>
-            + New Quiz Template
-          </ButtonAction>
           <p>Quiz Templates</p>
           <PaginatedListFiltered
             maxItemsPerPage={20}
@@ -171,6 +167,13 @@ const ListQuizTemplates = () => {
                 handleEditQuizTemplateClick
               )
             }
+            actions={[
+              {
+                label: 'New Quiz Template',
+                icon: '/res/plus.svg',
+                onClick: handleCreateQuizTemplateClick,
+              },
+            ]}
             isFiltered={(t, filter) =>
               t.name.toLocaleLowerCase().includes(filter.toLocaleLowerCase())
             }

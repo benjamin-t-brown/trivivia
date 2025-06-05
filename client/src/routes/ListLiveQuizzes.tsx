@@ -140,12 +140,15 @@ const ListLiveQuizzes = () => {
       <DefaultTopBar upTo="/landing" />
       <MobileLayout topBar>
         <InnerRoot>
-          <p></p>
-          <ButtonAction onClick={handleCreateQuizClick}>
-            + Start New Live Quiz
-          </ButtonAction>
           <p>Live Quizzes</p>
           <PaginatedListFiltered
+            actions={[
+              {
+                label: 'Start New Live Quiz',
+                icon: '/res/plus.svg',
+                onClick: handleCreateQuizClick,
+              },
+            ]}
             maxItemsPerPage={20}
             items={liveQuizListResponse?.data ?? []}
             renderItem={t =>
