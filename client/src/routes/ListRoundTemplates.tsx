@@ -259,7 +259,7 @@ const ListRoundTemplates = () => {
               },
               {
                 label: 'Pick Round Template',
-                icon: '/res/clone.svg',
+                icon: '/res/search.svg',
                 onClick: handlePickExistingRoundTemplateClick,
               },
             ]}

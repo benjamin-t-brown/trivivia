@@ -94,6 +94,7 @@ function PaginatedListFiltered<T>(
                     draggable={false}
                     style={{
                       width: '16px',
+                      height: '16px',
                     }}
                   />
                 )}
