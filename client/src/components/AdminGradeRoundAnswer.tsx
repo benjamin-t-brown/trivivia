@@ -71,7 +71,7 @@ export const AdminGradeRoundAnswer = (props: {
   const individualAnswersSubmitted = props.teamAnswers.split(ANSWER_DELIMITER);
   const individualAnswersCorrect = props.correctAnswers.split(ANSWER_DELIMITER);
   const gradeState =
-    props.state[props.team.id][props.roundId][props.questionNumber] ?? {};
+    props.state[props.team.id]?.[props.roundId]?.[props.questionNumber] ?? {};
   const certaintyState =
     props.certaintyState?.[props.team.id]?.[props.roundId]?.[
       props.questionNumber

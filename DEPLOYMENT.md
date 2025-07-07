@@ -23,6 +23,12 @@ docker run -d -p 3006:3006 --restart=on-failure --mount type=bind,source="$(pwd)
 
 ```
 
+Remote DB
+
+```
+scp -i ~/.ssh/id_rsa admin@3.84.126.152:/home/admin/trivivia/db/database.sqlite ~/prod.sqlite
+```
+
 ## Nginx Restart
 
 ecs server uses nginx to route ssl and domain names to the proper port where the server is listening:

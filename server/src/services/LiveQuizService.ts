@@ -429,6 +429,18 @@ export class LiveQuizService {
     return liveQuizTeam;
   }
 
+  async createLiveQuizRoundAnswersForTeam(teamId: string, roundId: string) {
+    const liveQuizRoundAnswers = new LiveQuizRoundAnswers({
+      id: randomUUID(),
+      liveQuizTeamId: teamId,
+      roundId,
+      answers: '{}',
+      answersGraded: '{}',
+      didJoker: false,
+    });
+    return await liveQuizRoundAnswers.save();
+  }
+
   async updateQuizTeam(
     userFriendlyId: string,
     quizTeamId: string,
@@ -558,10 +570,10 @@ export class LiveQuizService {
       args?.ignoreTeamId
         ? ({} as LiveQuizRoundAnswersResponse)
         : (await this.findAllLiveQuizRoundAnswersForTeam(liveQuizTeamId))
-            ?.find(a => {
-              return a.roundId === roundTemplate.id;
-            })
-            ?.getResponseJson();
+          ?.find(a => {
+            return a.roundId === roundTemplate.id;
+          })
+          ?.getResponseJson();
 
     const includeAnswers =
       args?.forceIncludeAnswers ??
@@ -574,9 +586,9 @@ export class LiveQuizService {
       (args?.forceIncludeAllQuestions || isRoundInAnswerShowState
         ? roundTemplate.questionOrder.length
         : Math.min(
-            roundTemplate.questionOrder.length,
-            liveQuiz.currentQuestionNumber
-          ));
+          roundTemplate.questionOrder.length,
+          liveQuiz.currentQuestionNumber
+        ));
       i++
     ) {
       const questionTemplateId = roundTemplate.questionOrder[i];
@@ -707,17 +719,20 @@ export class LiveQuizService {
       );
     }
 
-    const liveQuizRoundAnswers =
+    let liveQuizRoundAnswers =
       await this.findLiveQuizRoundAnswerByTeamIdAndRoundId(
         liveQuizTeamId,
         roundTemplate.id
       );
 
     if (!liveQuizRoundAnswers) {
-      logger.error(
-        `Could not submit answers for team ${liveQuizTeamId}, no round answers found for roundId=${roundTemplate.id}.`
-      );
-      return undefined;
+      liveQuizRoundAnswers = await this.createLiveQuizRoundAnswersForTeam(liveQuizTeamId, roundTemplate.id);
+      if (!liveQuizRoundAnswers) {
+        logger.error(
+          `Could not submit answers for team ${liveQuizTeamId}, no round answers found and could not create for roundId=${roundTemplate.id}.`
+        );
+        return undefined;
+      }
     }
 
     for (const answerState of Object.values(args.submittedAnswers)) {
