@@ -3,7 +3,7 @@ import { Sequelize } from 'sequelize-typescript';
 import env from './env';
 import logger from './logger';
 
-const dbLocation = __dirname + '/../../db/database.sqlite';
+const dbLocation = __dirname + '/../../db/prod.sqlite';
 
 class Db {
   sequelize: Sequelize;
