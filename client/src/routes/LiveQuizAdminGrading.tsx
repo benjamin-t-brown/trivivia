@@ -151,7 +151,6 @@ const LiveQuizAdminGrading = (props: EditLiveQuizProps) => {
   const [isAutograding, setIsAutograding] = React.useState(false);
   const confirmDialog = useConfirmNav(false); // TODO: Implement this
 
-
   const [outerState, dispatch]: [
     typeof initialState,
     (action: DispatchAction) => void
@@ -202,14 +201,13 @@ const LiveQuizAdminGrading = (props: EditLiveQuizProps) => {
       }
 
       setValidationError('');
-      
+
       return {
         ...prevState,
       };
     },
     initialState
   );
-  console.log('OUTER STATE STATE', outerState);
 
   const setGradeForAnswer = (args: {
     teamId: string;
