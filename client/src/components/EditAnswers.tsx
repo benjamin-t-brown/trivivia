@@ -267,13 +267,13 @@ const EditAnswers = (props: EditAnswersProps) => {
       <option value={AnswerBoxType.INPUT4_LIST}>Input 4 List</option>
       <option value={AnswerBoxType.INPUT_LIST}>Text Input</option>
       <option value={AnswerBoxType.RADIO_LIST}>Radio Input</option>
-      <option value={AnswerBoxType.CHECKBOX_LIST}>Multi</option>
+      <option value={AnswerBoxType.CHECKBOX_LIST}>Multiple Choice</option>
     </>
   ) : (
     <>
       <option value={AnswerBoxType.INPUT_LIST}>Text Input</option>
       <option value={AnswerBoxType.RADIO_LIST}>Radio Input</option>
-      <option value={AnswerBoxType.CHECKBOX_LIST}>Multi</option>
+      <option value={AnswerBoxType.CHECKBOX_LIST}>Multiple Choice</option>
     </>
   );
 

@@ -8,6 +8,9 @@ npm
 This application is deployed at [https://trivivia.net](https://trivivia.net/login)
 
 ```
+# build local image and upload it to amazon
+<see below>
+
 # ssh into ecs instance
 ssh admin@3.84.126.152
 
