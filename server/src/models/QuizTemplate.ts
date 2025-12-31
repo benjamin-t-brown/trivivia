@@ -52,6 +52,9 @@ export class QuizTemplate extends Model {
   @Column(DataType.TEXT)
   notes: string;
 
+  @Column(DataType.BOOLEAN)
+  allowStaticRender: boolean;
+
   @CreatedAt
   creationDate: Date;
 

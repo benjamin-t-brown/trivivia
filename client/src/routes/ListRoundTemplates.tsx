@@ -248,6 +248,19 @@ const ListRoundTemplates = () => {
             >
               Download as JSON
             </a>
+            {loaderResponse?.data?.quizTemplate.allowStaticRender ? (
+              <>
+                <br />
+                <a
+                  href={
+                    '/api/static/render-html/template/' +
+                    loaderResponse?.data?.quizTemplate.id
+                  }
+                >
+                  Public Link To Html
+                </a>
+              </>
+            ) : null}
           </div>
           <TitleWithActions
             title="Round Templates"

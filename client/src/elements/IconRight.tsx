@@ -13,6 +13,8 @@ const IconRight = (props: {
       style={{
         width: '20px',
         transform: `translateY(${props.verticalAdjust ?? 0}px)`,
+        float: 'right',
+        marginLeft: '8px',
         ...(props.style ?? {}),
       }}
       title={props.title}

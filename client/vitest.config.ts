@@ -25,16 +25,15 @@ export default defineConfig((...args) => {
       tsconfigPaths({
         projects: [rootPath + 'tsconfig.vitest.json'],
       }),
-      react(),
+      react({
+        jsxRuntime: 'automatic',
+        fastRefresh: false,
+      }),
     ],
-    // optimizeDeps: {
-    //   include: ['preact/hooks', 'preact/compat', 'preact'],
-    // },
     resolve: {
       alias: {
         'src': path.resolve('src/'),
         ...absolutePathAliases,
-        // 'view/style': path.resolve('src/view/styleTest'),
       },
     },
     test: {
@@ -44,7 +43,7 @@ export default defineConfig((...args) => {
         ? new GithubActionsReporter()
         : 'default',
       coverage: {
-        provider: 'c8',
+        provider: 'v8',
         reporter: ['text-summary', 'lcov'],
         exclude: ['test/*', 'res/*'],
       },

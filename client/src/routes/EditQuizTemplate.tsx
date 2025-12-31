@@ -6,7 +6,6 @@ import {
   Form,
   json,
   redirect,
-  useActionData,
   useLocation,
   useNavigate,
   useNavigation,
@@ -26,20 +25,14 @@ import {
 } from 'hooks';
 import DefaultTopBar from 'components/DefaultTopBar';
 import { updateCacheQuizTemplate } from 'cache';
-import {
-  QuestionTemplateResponse,
-  QuizTemplateResponse,
-  RoundTemplateResponse,
-} from 'shared/responses';
+import { QuizTemplateResponse } from 'shared/responses';
 import TextCenter from 'elements/TextCenter';
 import InputLabel from 'elements/InputLabel';
-import FormErrorText, { FormError } from 'components/FormErrorText';
+import FormErrorText from 'components/FormErrorText';
 import TextArea from 'elements/TextArea';
 import { fetchImportQuizTemplate } from 'fetches';
 import HiddenTextField from 'components/HiddenTextField';
 import { LoadingPage } from 'components/LoadingPage';
-import IconLeft from 'elements/IconLeft';
-import NavButton from 'components/NavButton';
 import { ButtonAction } from 'elements/ButtonAction';
 import { IconButton } from 'elements/IconButton';
 import { JustifyContentDiv } from 'elements/JustifyContentDiv';
@@ -57,6 +50,7 @@ export interface EditQuizValues {
   isNew: boolean;
   name: string;
   notes: string;
+  allowStaticRender: boolean;
   importedQuizTemplate?: string;
   'import-quiz'?: string;
 }
@@ -72,6 +66,8 @@ const action = createAction(async (values: EditQuizValues, params) => {
 
   delete values['importedQuizTemplate'];
   delete values['import-quiz'];
+  // values.allowStaticRender = (values.allowStaticRender as any) === 'true';
+  console.log('values.allowStaticRender', values.allowStaticRender);
 
   let result: FetchResponse<QuizTemplateResponse>;
   if (quizTemplate) {
@@ -204,6 +200,7 @@ const EditQuizTemplate = (props: EditQuizProps) => {
     isNew: Boolean(props.isNew),
     name: quizTemplateResponse?.data.name ?? '',
     notes: quizTemplateResponse?.data?.notes ?? '',
+    allowStaticRender: quizTemplateResponse?.data?.allowStaticRender ?? false,
   };
   const formIsPristine = useFormPristine('edit-quiz-form', initialValues, [
     'import-quiz',
@@ -328,6 +325,34 @@ const EditQuizTemplate = (props: EditQuizProps) => {
                 render();
               }}
             />
+            <div
+              style={{
+                margin: '16px 0px',
+                display: 'flex',
+              }}
+            >
+              <input
+                type="checkbox"
+                name="allowStaticRender"
+                id="allowStaticRender"
+                defaultChecked={
+                  props.isNew
+                    ? false
+                    : quizTemplateResponse?.data.allowStaticRender
+                }
+                onChange={ev => {
+                  ev.target.value = String(ev.target.checked);
+                }}
+              ></input>
+              <label
+                htmlFor="allowStaticRender"
+                style={{
+                  marginLeft: '8px',
+                }}
+              >
+                Allow Public Link To Html
+              </label>
+            </div>
             <p />
             <div
               style={{

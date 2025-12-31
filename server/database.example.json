@@ -2,21 +2,21 @@
   "development": {
     "username": "user",
     "password": "password",
-    "storage": "../db/database.sqlite",
+    "storage": "../db/prod.sqlite",
     "host": "0.0.0.0",
     "dialect": "sqlite"
   },
   "test": {
     "username": "user",
     "password": "password",
-    "storage": "../db/database.sqlite",
+    "storage": "../db/prod.sqlite",
     "host": "0.0.0.0",
     "dialect": "sqlite"
   },
   "production": {
     "username": "user",
     "password": "password",
-    "storage": "../db/database.sqlite",
+    "storage": "../db/prod.sqlite",
     "host": "0.0.0.0",
     "dialect": "sqlite"
   }

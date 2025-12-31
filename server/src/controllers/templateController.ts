@@ -57,7 +57,7 @@ export const initTemplateControllers = (router: Router) => {
     router,
     '/api/template/quiz',
     async function createQuizTemplate(_, body: QuizTemplateRequest, context) {
-      const { name, notes } = body;
+      const { name, notes, allowStaticRender } = body;
       if (!validateString(name)) {
         throw new InvalidInputError('Not a valid name.');
       }
@@ -68,6 +68,7 @@ export const initTemplateControllers = (router: Router) => {
         {
           name,
           notes,
+          allowStaticRender,
         },
         context
       );
@@ -92,7 +93,7 @@ export const initTemplateControllers = (router: Router) => {
     router,
     '/api/template/quiz/:id',
     async function updateQuizTemplate(params, body: QuizTemplateRequest) {
-      const { name, notes } = body;
+      const { name, notes, allowStaticRender } = body;
       if (!validateString(name)) {
         throw new InvalidInputError('Not a valid name.');
       }
@@ -104,6 +105,7 @@ export const initTemplateControllers = (router: Router) => {
         id: params.id,
         name,
         notes,
+        allowStaticRender: Boolean(allowStaticRender),
       });
       if (!quizTemplate) {
         return;

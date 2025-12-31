@@ -10,6 +10,7 @@
     "start:dev": "yarn start",
     "start:prod": "tsx --no-cache --tsconfig ./tsconfig.json ./src/server.ts",
     "migrate": "sequelize db:migrate",
+    "migrate:undo": "sequelize db:migrate:undo",
     "setup-db": "cp -n database.example.json database.json && yarn migrate"
   },
   "author": "",
@@ -19,6 +20,7 @@
     "@types/cookie-session": "^2.0.44",
     "@types/express": "^4.17.17",
     "@types/node": "^18.15.5",
+    "@vitest/coverage-v8": "^4.0.16",
     "sequelize-cli": "^6.6.0",
     "sequelize-mock": "^0.10.2"
   },

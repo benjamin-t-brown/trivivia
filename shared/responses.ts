@@ -24,6 +24,7 @@ export interface QuizTemplateResponse extends CreateUpdateDelete {
   numRounds: number;
   notes?: string;
   isJoker?: boolean;
+  allowStaticRender?: boolean;
 }
 
 export interface RoundTemplateResponse extends CreateUpdateDelete {

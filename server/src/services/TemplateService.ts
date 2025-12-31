@@ -192,7 +192,7 @@ export class TemplateService {
   }
 
   async createQuizTemplate(
-    params: { name: string; notes?: string },
+    params: { name: string; notes?: string; allowStaticRender?: boolean },
     context: RouteContext
   ) {
     const quizTemplate = new QuizTemplate({
@@ -203,6 +203,7 @@ export class TemplateService {
       roundOrder: '[]',
       notes: params.notes ?? '',
       isJoker: false,
+      allowStaticRender: params.allowStaticRender ?? false,
     });
     return quizTemplate.save();
   }
@@ -210,6 +211,7 @@ export class TemplateService {
   async updateQuizTemplate(params: {
     id: string;
     name: string;
+    allowStaticRender: boolean;
     notes?: string;
   }) {
     const quizTemplate = await this.findQuizById(params.id);
@@ -221,6 +223,7 @@ export class TemplateService {
     quizTemplate.name = params.name;
     quizTemplate.numRounds = 99;
     quizTemplate.notes = params.notes ?? '';
+    quizTemplate.allowStaticRender = params.allowStaticRender;
     return quizTemplate.save();
   }
 

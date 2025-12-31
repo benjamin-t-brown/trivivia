@@ -132,7 +132,9 @@ export const useFormPristine = (
 
   const form = document.getElementById(formId) as HTMLFormElement | null;
   if (form) {
-    for (const [key, value] of (new FormData(form) as any).entries()) {
+    const diffs: string[] = [];
+    const formData = new FormData(form) as any;
+    for (const [key, value] of formData.entries()) {
       if (ignoreKeys && ignoreKeys.includes(key)) {
         continue;
       }
@@ -159,10 +161,10 @@ export const useFormPristine = (
         v2 = v2Num;
       }
       if (v1 !== v2) {
-        return false;
+        diffs.push(key);
       }
     }
-    return true;
+    return diffs.length === 0;
   } else {
     return true;
   }
@@ -489,7 +491,6 @@ export const useSocketIoRefreshState = (
       return;
     }
 
-    // console.log('send ping');
     socket.emit('ping-alive');
     pingSent = true;
   }
@@ -531,7 +532,6 @@ export const useSocketIoRefreshState = (
         setJoined(false);
       });
       socket.on('ping-alive', () => {
-        // console.log('got ping');
         pingSent = false;
       });
     }

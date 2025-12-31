@@ -15,8 +15,9 @@ interface TitleWithActionsProps {
 
 export const TitleWithActions = (props: TitleWithActionsProps) => {
   return (
-    <p
+    <div
       style={{
+        margin: '16px 0',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
@@ -72,6 +73,6 @@ export const TitleWithActions = (props: TitleWithActionsProps) => {
           );
         })}
       </div>
-    </p>
+    </div>
   );
 };

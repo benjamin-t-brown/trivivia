@@ -39,7 +39,7 @@ const NextPrevArea = (props: {
       <HSpace />
       <div>
         Page {props.page + 1} of{' '}
-        {Math.ceil(props.items.length / props.maxItemsPerPage)}
+        {Math.max(1, Math.ceil(props.items.length / props.maxItemsPerPage))}
       </div>
       <HSpace />
       <Button

@@ -5,6 +5,7 @@ export interface QuizTemplateRequest {
   numRounds: number;
   isJoker?: boolean;
   notes?: string;
+  allowStaticRender?: boolean;
 }
 
 export interface RoundTemplateRequest {

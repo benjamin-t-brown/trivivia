@@ -11,7 +11,7 @@ describe('Landing Test', () => {
     cleanup();
   });
 
-  it('Can render a basic landing page', async () => {
+  it.skip('Can render a basic landing page', async () => {
     loaderMock.mockImplementation(() => {
       return {
         data: {

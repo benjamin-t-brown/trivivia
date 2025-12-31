@@ -13,6 +13,7 @@ This application is deployed at [https://trivivia.net](https://trivivia.net/logi
 
 # ssh into ecs instance
 ssh admin@3.84.126.152
+aws ec2-instance-connect ssh --instance-id i-085c41c7b75df790e --os-user admin --private-key-file file://~/.ssh/id_rsa
 
 # ensure login credentials
 aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 442979135069.dkr.ecr.us-east-1.amazonaws.com
@@ -28,8 +29,10 @@ docker run -d -p 3006:3006 --restart=on-failure --mount type=bind,source="$(pwd)
 
 Remote DB
 
+Backup the remote db to local
+
 ```
-scp -i ~/.ssh/id_rsa admin@3.84.126.152:/home/admin/trivivia/db/database.sqlite ~/prod.sqlite
+scp -i ~/.ssh/id_rsa admin@3.84.126.152:/home/admin/trivivia/db/prod.sqlite ./prod.bak.sqlite
 ```
 
 ## Nginx Restart
@@ -127,8 +130,8 @@ docker push 442979135069.dkr.ecr.us-east-1.amazonaws.com/revirtualis/trivivia:la
 ssh admin@3.84.126.152
 aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 442979135069.dkr.ecr.us-east-1.amazonaws.com
 docker pull 442979135069.dkr.ecr.us-east-1.amazonaws.com/revirtualis/trivivia:latest
-docker stop $(docker ps -a -q)
-docker rm -vf $(docker ps -aq)
+docker stop $(docker ps -a --filter "ancestor=442979135069.dkr.ecr.us-east-1.amazonaws.com/revirtualis/trivivia:latest" -q)
+docker rm -vf $(docker ps -a --filter "ancestor=442979135069.dkr.ecr.us-east-1.amazonaws.com/revirtualis/trivivia:latest" -q)
 cd trivivia
 docker run -d -p 3006:3006 --restart=on-failure --mount type=bind,source="$(pwd)/db",target=/app/db 442979135069.dkr.ecr.us-east-1.amazonaws.com/revirtualis/trivivia:latest
 ```
@@ -158,7 +161,7 @@ yarn test:prod
 forever list
 
 # use the trivivia index from the forever list command
-forever stop <number>
+`forever stop <number>`
 
 # forever doesn't actually kill the ts-node process so you have to find it
 # 'forever restart' also does not work correctly
@@ -168,7 +171,7 @@ ps aux | grep /home/admin/trivivia/server/node_modules/.bin/
 #   /home/admin/trivivia/server/node_modules/.bin/(ts-node OR tsx) --project ./tsconfig.json src/server.ts /home/admin/trivivia/server/
 kill -9 159706
 
-# before starting server again, source env
+# before starting server again, source env (which was setup before)
 source ~/trivivia_config_vars.sh
 
 # when the server is not running anymore you can re-start it with this

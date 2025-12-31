@@ -67,6 +67,8 @@ interface EditQuestionValues {
   isBonus: boolean;
   imageLink?: string;
   notes: string;
+  numAnswers: number;
+  numCorrectAnswers: number;
 }
 const action = createAction(async (values: EditQuestionValues, params) => {
   if (!values.answers || !values.answerType) {
@@ -293,6 +295,10 @@ const EditQuestionTemplate = (props: EditQuestionProps) => {
     isError: props.error,
   });
 
+  const [, numInputs, numCorrectAnswers] = extractAnswerBoxType(
+    questionTemplateResponse?.data?.answerType ?? AnswerBoxType.INPUT_LIST
+  );
+
   const render = useReRender();
   const initialValues: EditQuestionValues = {
     isNew: Boolean(props.isNew),
@@ -309,6 +315,8 @@ const EditQuestionTemplate = (props: EditQuestionProps) => {
     isBonus: questionTemplateResponse?.data?.isBonus ?? false,
     imageLink: questionTemplateResponse?.data?.imageLink ?? '',
     notes: questionTemplateResponse?.data?.notes ?? '',
+    numAnswers: numInputs,
+    numCorrectAnswers: numCorrectAnswers,
   };
   const formIsPristine = useFormPristine('edit-question-form', initialValues);
   const confirmDialog = useConfirmNav(!formIsPristine);

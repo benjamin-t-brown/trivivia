@@ -74,6 +74,7 @@ export const fetchImportQuizTemplate = async (
       name: quizTemplate.name,
       numRounds: quizTemplate.numRounds,
       notes: quizTemplate.notes,
+      allowStaticRender: quizTemplate.allowStaticRender,
     }
   );
   const importedQuizTemplate = quizTemplate as QuizTemplateResponse;
