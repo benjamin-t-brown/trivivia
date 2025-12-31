@@ -20,7 +20,7 @@ aws ecr get-login-password --region us-east-1 | docker login --username AWS --pa
 
 # pull and restart
 docker pull 442979135069.dkr.ecr.us-east-1.amazonaws.com/revirtualis/trivivia:latest
-docker stop $(docker ps -a -q)
+docker stop $(docker ps -aq)
 docker rm -vf $(docker ps -aq)
 cd trivivia
 docker run -d -p 3006:3006 --restart=on-failure --mount type=bind,source="$(pwd)/db",target=/app/db 442979135069.dkr.ecr.us-east-1.amazonaws.com/revirtualis/trivivia:latest
@@ -33,6 +33,12 @@ Backup the remote db to local
 
 ```
 scp -i ~/.ssh/id_rsa admin@3.84.126.152:/home/admin/trivivia/db/prod.sqlite ./prod.bak.sqlite
+```
+
+Restore db from backup
+
+```
+scp -i ~/.ssh/id_rsa ./prod.bak.sqlite admin@3.84.126.152:/home/admin/trivivia/db/prod.sqlite
 ```
 
 ## Nginx Restart
