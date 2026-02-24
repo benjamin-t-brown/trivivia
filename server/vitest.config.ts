@@ -34,6 +34,7 @@ export default defineConfig((...args) => {
     test: {
       environment: 'happy-dom',
       setupFiles: ['test/setup.ts'],
+      env: { VITEST: 'true' },
       reporters: process.env.GITHUB_ACTIONS
         ? new GithubActionsReporter()
         : 'default',
@@ -41,6 +42,12 @@ export default defineConfig((...args) => {
         provider: 'v8',
         reporter: ['text-summary', 'lcov'],
         exclude: ['test/*'],
+        thresholds: {
+          statements: 35,
+          branches: 25,
+          functions: 35,
+          lines: 35,
+        },
       },
     },
     directory: 'test',

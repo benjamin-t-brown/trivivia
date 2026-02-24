@@ -27,7 +27,7 @@ export const initAccountControllers = (router: Router) => {
       if (!validateEmail(email)) {
         throw new InvalidInputError('Not a valid email.');
       }
-      if (!validateString(password)) {
+      if (!validateString(password, 1)) {
         throw new InvalidInputError('Not a valid password.');
       }
       const isAuthorized = await accountService.login(email, password, context);
@@ -60,7 +60,7 @@ export const initAccountControllers = (router: Router) => {
       if (!validateEmail(email)) {
         throw new InvalidInputError('Not a valid email.');
       }
-      if (!validateString(password)) {
+      if (!validateString(password, 1)) {
         throw new InvalidInputError('Not a valid password.');
       }
 

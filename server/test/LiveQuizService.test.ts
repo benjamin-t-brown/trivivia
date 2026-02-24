@@ -296,4 +296,66 @@ describe('LiveQuizService', () => {
       ).toBeTruthy();
     });
   });
+
+  describe('findLiveQuizByUserFriendlyId and findLiveQuizById', () => {
+    it('can find live quiz by user friendly id', async () => {
+      const liveQuizService = new LiveQuizService();
+      const liveQuiz = new LiveQuiz({
+        id: randomUUID(),
+        userFriendlyId: 'abc123',
+        name: 'Test Quiz',
+      });
+      LiveQuiz.findAll = vi.fn().mockResolvedValue([liveQuiz]);
+
+      const result =
+        await liveQuizService.findLiveQuizByUserFriendlyId('abc123');
+
+      expect(result).toBeDefined();
+      expect(result?.userFriendlyId).toBe('abc123');
+    });
+
+    it('returns undefined when live quiz not found by user friendly id', async () => {
+      const liveQuizService = new LiveQuizService();
+      LiveQuiz.findAll = vi.fn().mockResolvedValue([]);
+
+      const result =
+        await liveQuizService.findLiveQuizByUserFriendlyId('nonexistent');
+
+      expect(result).toBeUndefined();
+    });
+
+    it('can find live quiz by id', async () => {
+      const liveQuizService = new LiveQuizService();
+      const liveQuiz = new LiveQuiz({
+        id: 'quiz-uuid',
+        userFriendlyId: 'abc123',
+        name: 'Test',
+      });
+      LiveQuiz.findByPk = vi.fn().mockResolvedValue(liveQuiz);
+
+      const result = await liveQuizService.findLiveQuizById('quiz-uuid');
+
+      expect(result).toBeDefined();
+      expect(result?.id).toBe('quiz-uuid');
+    });
+
+    it('assertQuiz returns false when quiz not found', async () => {
+      const liveQuizService = new LiveQuizService();
+      LiveQuiz.findByPk = vi.fn().mockResolvedValue(null);
+
+      const result = await liveQuizService.assertQuiz('nonexistent');
+
+      expect(result).toBe(false);
+    });
+
+    it('assertQuiz returns liveQuiz when found', async () => {
+      const liveQuizService = new LiveQuizService();
+      const liveQuiz = new LiveQuiz({ id: 'quiz-1', name: 'Test' });
+      LiveQuiz.findByPk = vi.fn().mockResolvedValue(liveQuiz);
+
+      const result = await liveQuizService.assertQuiz('quiz-1');
+
+      expect(result).toBe(liveQuiz);
+    });
+  });
 });

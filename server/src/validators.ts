@@ -72,7 +72,7 @@ export const validateAnswersSubmitted = (
       }
       if (!validateString(answers[key], undefined, 255)) {
         logger.error(
-          `Invalid answer length found while validating answers submitted: answerNum=${i} len=${answers[i].length}`
+          `Invalid answer length found while validating answers submitted: answerNum=${i} key=${key} len=${(answers[key] as string)?.length ?? 'undefined'}`
         );
         return false;
       }
