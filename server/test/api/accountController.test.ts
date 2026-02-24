@@ -151,4 +151,49 @@ describe('accountController API', () => {
       expect(body.email).toBe(email);
     });
   });
+
+  describe('PUT /api/account/pw', () => {
+    it('returns 400 for invalid password (too short)', async () => {
+      const email = `pwtest-${Date.now()}@example.com`;
+      await request(app)
+        .post('/api/account')
+        .send({ email, password: 'password' });
+      const loginRes = await request(app)
+        .post('/api/account/login')
+        .send({ email, password: 'password' });
+      const cookies = loginRes.headers['set-cookie'];
+
+      const res = await request(app)
+        .put('/api/account/pw')
+        .set('Cookie', cookies || [])
+        .send({ password: 'ab' });
+
+      expect(res.status).toBe(400);
+      expect(parseBody(res).message).toContain('valid password');
+    });
+
+    it('updates password when valid', async () => {
+      const email = `pwupdate-${Date.now()}@example.com`;
+      await request(app)
+        .post('/api/account')
+        .send({ email, password: 'oldpass123' });
+      const loginRes = await request(app)
+        .post('/api/account/login')
+        .send({ email, password: 'oldpass123' });
+      const cookies = loginRes.headers['set-cookie'];
+
+      const res = await request(app)
+        .put('/api/account/pw')
+        .set('Cookie', cookies || [])
+        .send({ password: 'newpass456' });
+
+      expect(res.status).toBe(200);
+
+      const loginWithNew = await request(app)
+        .post('/api/account/login')
+        .send({ email, password: 'newpass456' });
+      expect(loginWithNew.status).toBe(200);
+      expect(parseBody(loginWithNew).isAuthorized).toBe(true);
+    });
+  });
 });

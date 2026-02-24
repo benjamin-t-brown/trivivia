@@ -1,4 +1,5 @@
 import { vi, it, describe, expect, beforeEach } from 'vitest';
+import { InvalidInputError } from '../src/routing';
 import { TemplateService } from '../src/services/TemplateService';
 
 function createQuizTemplateMock() {
@@ -67,10 +68,14 @@ vi.mock('../src/models/RoundTemplate', () => ({
 vi.mock('../src/models/QuestionTemplate', () => ({
   QuestionTemplate: createQuestionTemplateMock(),
 }));
+vi.mock('../src/models/Account', () => ({
+  Account: { findByPk: vi.fn() },
+}));
 
 import { QuizTemplate } from '../src/models/QuizTemplate';
 import { RoundTemplate } from '../src/models/RoundTemplate';
 import { QuestionTemplate } from '../src/models/QuestionTemplate';
+import { Account } from '../src/models/Account';
 
 const getDefaultContext = () => {
   const context = {
@@ -203,7 +208,7 @@ describe('TemplateService', () => {
     );
 
     const deleted = await templateService.deleteRoundTemplate({
-      roundTemplateId: 'round-123',
+      roundId: 'round-123',
     });
 
     expect(deleted?.id).toBe('round-123');
@@ -284,5 +289,247 @@ describe('TemplateService', () => {
     });
 
     expect(deleted?.id).toBe('q-123');
+  });
+
+  it('can reorder rounds in quiz', async () => {
+    const templateService = new TemplateService();
+    const quizTemplate = new QuizTemplate({
+      id: 'quiz-123',
+      roundOrder: JSON.stringify(['r1', 'r2']),
+      rounds: [],
+    });
+    quizTemplate.save = vi.fn().mockResolvedValue(quizTemplate);
+    (QuizTemplate.findByPk as ReturnType<typeof vi.fn>).mockResolvedValue(
+      quizTemplate
+    );
+
+    const result = await templateService.reorderRoundsInQuiz({
+      id: 'quiz-123',
+      newOrder: ['r2', 'r1'],
+    });
+
+    expect(result).toBeDefined();
+    expect(quizTemplate.roundOrder).toBe(JSON.stringify(['r2', 'r1']));
+  });
+
+  it('throws InvalidInputError when reorderRounds has extraneous round id', async () => {
+    const templateService = new TemplateService();
+    const quizTemplate = new QuizTemplate({
+      id: 'quiz-123',
+      roundOrder: JSON.stringify(['r1']),
+      rounds: [],
+    });
+    (QuizTemplate.findByPk as ReturnType<typeof vi.fn>).mockResolvedValue(
+      quizTemplate
+    );
+
+    await expect(
+      templateService.reorderRoundsInQuiz({
+        id: 'quiz-123',
+        newOrder: ['r1', 'r2'],
+      })
+    ).rejects.toThrow(InvalidInputError);
+    await expect(
+      templateService.reorderRoundsInQuiz({
+        id: 'quiz-123',
+        newOrder: ['r1', 'r2'],
+      })
+    ).rejects.toThrow('extraneous');
+  });
+
+  it('throws InvalidInputError when reorderRounds omits round id', async () => {
+    const templateService = new TemplateService();
+    const quizTemplate = new QuizTemplate({
+      id: 'quiz-123',
+      roundOrder: JSON.stringify(['r1', 'r2']),
+      rounds: [],
+    });
+    (QuizTemplate.findByPk as ReturnType<typeof vi.fn>).mockResolvedValue(
+      quizTemplate
+    );
+
+    await expect(
+      templateService.reorderRoundsInQuiz({
+        id: 'quiz-123',
+        newOrder: ['r1'],
+      })
+    ).rejects.toThrow(InvalidInputError);
+    await expect(
+      templateService.reorderRoundsInQuiz({
+        id: 'quiz-123',
+        newOrder: ['r1'],
+      })
+    ).rejects.toThrow('omitted');
+  });
+
+  it('can reorder questions in round', async () => {
+    const templateService = new TemplateService();
+    const roundTemplate = new RoundTemplate({
+      id: 'round-123',
+      questionOrder: JSON.stringify(['q1', 'q2']),
+      quizTemplate: {},
+    });
+    roundTemplate.save = vi.fn().mockResolvedValue(roundTemplate);
+    (RoundTemplate.findByPk as ReturnType<typeof vi.fn>).mockResolvedValue(
+      roundTemplate
+    );
+
+    const result = await templateService.reorderQuestionsInRound({
+      id: 'round-123',
+      newOrder: ['q2', 'q1'],
+    });
+
+    expect(result).toBeDefined();
+    expect(roundTemplate.questionOrder).toBe(JSON.stringify(['q2', 'q1']));
+  });
+
+  it('can duplicate question template', async () => {
+    const templateService = new TemplateService();
+    const questionTemplate = new QuestionTemplate({
+      id: 'q-123',
+      text: 'Original',
+      answers: '{}',
+      answerType: 'input1' as any,
+      roundTemplate: { id: 'round-123' } as any,
+    });
+    (QuestionTemplate.findByPk as ReturnType<typeof vi.fn>).mockResolvedValue(
+      questionTemplate
+    );
+
+    const roundTemplate = new RoundTemplate({
+      id: 'round-123',
+      questionOrder: JSON.stringify(['q-123']),
+      questions: [],
+      quizTemplate: {},
+    });
+    roundTemplate.save = vi.fn().mockResolvedValue(roundTemplate);
+    (RoundTemplate.findByPk as ReturnType<typeof vi.fn>).mockResolvedValue(
+      roundTemplate
+    );
+
+    const duplicated = await templateService.duplicateQuestionTemplate({
+      questionTemplateId: 'q-123',
+    });
+
+    expect(duplicated).toBeDefined();
+    expect(duplicated?.text).toContain('DUPLICATE');
+    expect(duplicated?.text).toContain('Original');
+  });
+
+  it('findQuizById returns quiz with includes', async () => {
+    const templateService = new TemplateService();
+    const quizTemplate = new QuizTemplate({
+      id: 'quiz-1',
+      rounds: [],
+      account: {},
+    });
+    (QuizTemplate.findByPk as ReturnType<typeof vi.fn>).mockResolvedValue(
+      quizTemplate
+    );
+
+    const result = await templateService.findQuizById('quiz-1');
+
+    expect(result).toBe(quizTemplate);
+  });
+
+  it('findRoundsByQuizId returns rounds', async () => {
+    const templateService = new TemplateService();
+    const quizTemplate = new QuizTemplate({
+      id: 'quiz-1',
+      rounds: [{ id: 'r1' }] as any,
+    });
+    (QuizTemplate.findByPk as ReturnType<typeof vi.fn>).mockResolvedValue(
+      quizTemplate
+    );
+
+    const result = await templateService.findRoundsByQuizId('quiz-1');
+
+    expect(result).toHaveLength(1);
+    expect(result[0].id).toBe('r1');
+  });
+
+  it('findRoundById returns round', async () => {
+    const templateService = new TemplateService();
+    const roundTemplate = new RoundTemplate({
+      id: 'round-1',
+      questions: [],
+      quizTemplate: {},
+    });
+    (RoundTemplate.findByPk as ReturnType<typeof vi.fn>).mockResolvedValue(
+      roundTemplate
+    );
+
+    const result = await templateService.findRoundById('round-1');
+
+    expect(result).toBe(roundTemplate);
+  });
+
+  it('findQuestionsByRoundId returns questions', async () => {
+    const templateService = new TemplateService();
+    const roundTemplate = new RoundTemplate({
+      id: 'round-1',
+      questions: [{ id: 'q1' }] as any,
+      quizTemplate: {},
+    });
+    (RoundTemplate.findByPk as ReturnType<typeof vi.fn>).mockResolvedValue(
+      roundTemplate
+    );
+
+    const result = await templateService.findQuestionsByRoundId('round-1');
+
+    expect(result).toHaveLength(1);
+    expect(result[0].id).toBe('q1');
+  });
+
+  it('findAllQuizTemplatesByAccountId returns templates', async () => {
+    const templateService = new TemplateService();
+    const mockAccount = {
+      quizTemplates: [
+        new QuizTemplate({ id: 'qt1', getResponseJson: () => ({ id: 'qt1' }) }),
+      ],
+    };
+    (Account.findByPk as ReturnType<typeof vi.fn>).mockResolvedValue(
+      mockAccount
+    );
+
+    const result = await templateService.findAllQuizTemplatesByAccountId('acc-1');
+
+    expect(result).toHaveLength(1);
+  });
+
+  it('findAllRoundTemplatesByQuizTemplateId returns undefined when quiz not found', async () => {
+    const templateService = new TemplateService();
+    (QuizTemplate.findByPk as ReturnType<typeof vi.fn>).mockResolvedValue(null);
+
+    const result =
+      await templateService.findAllRoundTemplatesByQuizTemplateId('nonexistent');
+
+    expect(result).toBeUndefined();
+  });
+
+  it('exportQuizTemplate returns JSON', async () => {
+    const templateService = new TemplateService();
+    const quizTemplate = new QuizTemplate({
+      id: 'quiz-1',
+      name: 'Test Quiz',
+      roundOrder: '[]',
+      rounds: [],
+      account: {},
+    });
+    quizTemplate.getResponseJson = () =>
+      ({ id: 'quiz-1', name: 'Test Quiz', rounds: [] } as any);
+    (QuizTemplate.findByPk as ReturnType<typeof vi.fn>).mockResolvedValue(
+      quizTemplate
+    );
+
+    const result = await templateService.exportQuizTemplate({
+      quizTemplateId: 'quiz-1',
+      format: 'json',
+    });
+
+    expect(result).toBeDefined();
+    expect(typeof result).toBe('string');
+    const parsed = JSON.parse(result as string);
+    expect(parsed.name).toBe('Test Quiz');
   });
 });

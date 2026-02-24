@@ -11,5 +11,6 @@
     "javascriptreact",
     "typescript",
     "typescriptreact"
-  ]
+  ],
+  "files.eol": "\n"
 }

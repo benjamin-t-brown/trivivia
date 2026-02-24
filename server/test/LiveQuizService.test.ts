@@ -16,8 +16,14 @@ vi.mock('../src/models/LiveQuizRoundAnswers', async () => {
     LiveQuizRoundAnswers: createModelMock(),
   };
 });
+vi.mock('../src/models/Account', () => ({
+  Account: {
+    findByPk: vi.fn(),
+  },
+}));
 
 import { QuizTemplate } from '../src/models/QuizTemplate';
+import { Account } from '../src/models/Account';
 import { LiveQuizService } from '../src/services/LiveQuizService';
 import { LiveQuiz } from '../src/models/LiveQuiz';
 import { BASIC_ONE_ROUND_QUIZ_TEMPLATE } from './mocks/sampleQuizTemplates';
@@ -356,6 +362,165 @@ describe('LiveQuizService', () => {
       const result = await liveQuizService.assertQuiz('quiz-1');
 
       expect(result).toBe(liveQuiz);
+    });
+  });
+
+  describe('createLiveQuiz and state transitions', () => {
+    it('returns undefined when template not found', async () => {
+      const liveQuizService = new LiveQuizService();
+      liveQuizService.setTemplateService(mockTemplateService);
+      mockTemplateService.findQuizById = vi.fn().mockResolvedValue(undefined);
+
+      const result = await liveQuizService.createLiveQuiz('nonexistent', {
+        name: 'Test',
+      });
+
+      expect(result).toBeUndefined();
+    });
+
+    it('setQuizState returns undefined when quiz not found', async () => {
+      const liveQuizService = new LiveQuizService();
+      LiveQuiz.findByPk = vi.fn().mockResolvedValue(null);
+
+      const result = await liveQuizService.setQuizState(
+        'nonexistent',
+        LiveQuizState.STARTED_IN_ROUND
+      );
+
+      expect(result).toBeUndefined();
+    });
+
+    it('setCurrentRoundForLiveQuiz returns undefined when quiz not found', async () => {
+      const liveQuizService = new LiveQuizService();
+      LiveQuiz.findByPk = vi.fn().mockResolvedValue(null);
+
+      const result =
+        await liveQuizService.setCurrentRoundForLiveQuiz('nonexistent', 1);
+
+      expect(result).toBeUndefined();
+    });
+
+    it('setQuizRoundState returns undefined when quiz not found', async () => {
+      const liveQuizService = new LiveQuizService();
+      LiveQuiz.findByPk = vi.fn().mockResolvedValue(null);
+
+      const result = await liveQuizService.setQuizRoundState(
+        'nonexistent',
+        LiveRoundState.STARTED_ACCEPTING_ANSWERS
+      );
+
+      expect(result).toBeUndefined();
+    });
+
+    it('setQuizState updates quiz when found', async () => {
+      const liveQuizService = new LiveQuizService();
+      const liveQuiz = new LiveQuiz({
+        id: 'quiz-1',
+        quizState: LiveQuizState.NOT_STARTED,
+      });
+      liveQuiz.save = vi.fn().mockResolvedValue(liveQuiz);
+      LiveQuiz.findByPk = vi.fn().mockResolvedValue(liveQuiz);
+
+      const result = await liveQuizService.setQuizState(
+        'quiz-1',
+        LiveQuizState.COMPLETED
+      );
+
+      expect(result).toBeDefined();
+      expect(liveQuiz.quizState).toBe(LiveQuizState.COMPLETED);
+      expect(liveQuiz.save).toHaveBeenCalled();
+    });
+
+    it('startLiveQuiz returns undefined when quiz not found', async () => {
+      const liveQuizService = new LiveQuizService();
+      LiveQuiz.findByPk = vi.fn().mockResolvedValue(null);
+
+      const result = await liveQuizService.startLiveQuiz('nonexistent');
+
+      expect(result).toBeUndefined();
+    });
+  });
+
+  describe('joinQuiz validation', () => {
+    it('throws when quiz not found', async () => {
+      const liveQuizService = new LiveQuizService();
+      LiveQuiz.findAll = vi.fn().mockResolvedValue([]);
+
+      await expect(
+        liveQuizService.joinQuiz('nonexistent', {
+          teamName: 'Team1',
+          numberOfPlayers: 1,
+        })
+      ).rejects.toThrow('No quiz exists at the provided id');
+    });
+  });
+
+  describe('findLiveQuizById with includeSubmitted', () => {
+    it('uses include when includeSubmitted is true', async () => {
+      const liveQuizService = new LiveQuizService();
+      const liveQuiz = new LiveQuiz({ id: 'quiz-1', liveQuizTeams: [] });
+      LiveQuiz.findByPk = vi.fn().mockResolvedValue(liveQuiz);
+
+      const result = await liveQuizService.findLiveQuizById('quiz-1', {
+        includeSubmitted: true,
+      });
+
+      expect(result).toBe(liveQuiz);
+      expect(LiveQuiz.findByPk).toHaveBeenCalledWith(
+        'quiz-1',
+        expect.objectContaining({
+          include: expect.any(Array),
+        })
+      );
+    });
+  });
+
+  describe('findAllLiveQuizzesByAccountId', () => {
+    it('returns empty array when account not found', async () => {
+      const liveQuizService = new LiveQuizService();
+      (Account.findByPk as ReturnType<typeof vi.fn>).mockResolvedValue(null);
+
+      const result =
+        await liveQuizService.findAllLiveQuizzesByAccountId('nonexistent');
+
+      expect(result).toEqual([]);
+    });
+
+    it('returns liveQuizzes from account', async () => {
+      const liveQuizService = new LiveQuizService();
+      const mockQuizzes = [{ id: 'lq-1', name: 'Quiz 1' }];
+      const mockAccount = {
+        getResponseJson: () => ({ liveQuizzes: mockQuizzes }),
+      };
+      (Account.findByPk as ReturnType<typeof vi.fn>).mockResolvedValue(
+        mockAccount
+      );
+
+      const result = await liveQuizService.findAllLiveQuizzesByAccountId('acc-1');
+
+      expect(result).toHaveLength(1);
+      expect(result?.[0]).toEqual(mockQuizzes[0]);
+    });
+
+    it('includes completed when includeCompleted is true', async () => {
+      const liveQuizService = new LiveQuizService();
+      const mockAccount = {
+        getResponseJson: () => ({ liveQuizzes: [] }),
+      };
+      (Account.findByPk as ReturnType<typeof vi.fn>).mockResolvedValue(
+        mockAccount
+      );
+
+      await liveQuizService.findAllLiveQuizzesByAccountId('acc-1', {
+        includeCompleted: true,
+      });
+
+      expect(Account.findByPk).toHaveBeenCalledWith(
+        'acc-1',
+        expect.objectContaining({
+          include: expect.any(Array),
+        })
+      );
     });
   });
 });

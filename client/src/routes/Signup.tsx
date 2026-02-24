@@ -68,6 +68,10 @@ const Signup = (props: { error?: boolean }) => {
       <MobileLayout topBar>
         <Form method="post" id="signup-form">
           <InnerRoot>
+            <p>
+              With a Triviva account, you can create, run, and manage your own
+              quizzes and questions.
+            </p>
             <img
               src="/res/new-account.png"
               alt="New Account Banner"

@@ -248,6 +248,16 @@ const ListRoundTemplates = () => {
             >
               Download as JSON
             </a>
+            <br />
+            <a
+              href={
+                '/api/template/export/quiz/' +
+                loaderResponse?.data?.quizTemplate.id +
+                '/pptx'
+              }
+            >
+              Download as PowerPoint
+            </a>
             {loaderResponse?.data?.quizTemplate.allowStaticRender ? (
               <>
                 <br />
