@@ -69,8 +69,8 @@ const Signup = (props: { error?: boolean }) => {
         <Form method="post" id="signup-form">
           <InnerRoot>
             <p>
-              With a Triviva account, you can create, run, and manage your own
-              quizzes and questions.
+              With a Triviva admin account, you can create, run, and manage your
+              own quizzes and questions.
             </p>
             <img
               src="/res/new-account.png"
@@ -119,17 +119,11 @@ const Signup = (props: { error?: boolean }) => {
                 {routeError?.statusText}{' '}
               </div>
             ) : null}
-            <p>{'Already have an account? Login instead!'}</p>
-            <Button
-              color="secondary"
-              style={{
-                maxWidth: '500px',
-                width: '100%',
-              }}
-              onClick={handleToLogin}
-            >
-              Go to Login
-            </Button>
+            <p>
+              <span>
+                Already have an account? <a href="/login">Login</a> instead!
+              </span>
+            </p>
           </InnerRoot>
         </Form>
       </MobileLayout>

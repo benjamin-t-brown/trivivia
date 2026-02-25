@@ -3,7 +3,7 @@
 node 18.7.0^
 npm
 
-## Deployment on ec2 (without docker)
+## Deployment on ec2 (with docker)
 
 This application is deployed at [https://trivivia.net](https://trivivia.net/login)
 

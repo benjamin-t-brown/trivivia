@@ -84,8 +84,8 @@ const Login = (props: { error?: boolean }) => {
               src="/res/sign-in.png"
               alt="Sign In Banner"
               style={{
-                width: '33%',
-                margin: '32px',
+                width: '25%',
+                margin: '48px',
               }}
             />
             <p>Login to a Trivivia quiz admin account.</p>
@@ -127,17 +127,11 @@ const Login = (props: { error?: boolean }) => {
                 {routeError?.statusText}{' '}
               </div>
             ) : null}
-            <p>{"Don't have an account? Signup instead!"}</p>
-            <Button
-              color="secondary"
-              style={{
-                width: '100%',
-                maxWidth: '500px',
-              }}
-              onClick={handleToSignup}
-            >
-              Go to Signup
-            </Button>
+            <p>
+              <span>
+                {"Don't"} have an account? <a href="/signup">Signup</a> instead!
+              </span>
+            </p>
           </InnerRoot>
         </Form>
       </MobileLayout>

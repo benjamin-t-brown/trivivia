@@ -33,6 +33,45 @@ import { updateCacheQuestionTemplate, updateCacheRoundTemplate } from 'cache';
 import { ButtonAction } from 'elements/ButtonAction';
 import { TitleWithActions } from 'elements/TitleWithActions';
 
+const ExportDropdownRoot = styled.div`
+  position: relative;
+  display: inline-block;
+`;
+
+const ExportDropdownMenu = styled.div<{ open: boolean }>`
+  display: ${p => (p.open ? 'block' : 'none')};
+  position: absolute;
+  top: 100%;
+  left: 0;
+  margin-top: 4px;
+  min-width: 180px;
+  background: ${() => getColors().BACKGROUND2};
+  border: 1px solid ${() => getColors().PRIMARY};
+  border-radius: 4px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  z-index: 100;
+  overflow: hidden;
+`;
+
+const ExportDropdownItem = styled.a`
+  display: block;
+  padding: 10px 14px;
+  color: ${() => getColors().TEXT_DEFAULT};
+  text-decoration: none;
+  font-size: 14px;
+  cursor: pointer;
+  &:hover {
+    background: ${() => getColors().PRIMARY};
+    color: white;
+  }
+  &:link {
+    color: ${() => getColors().TEXT_DEFAULT};
+  }
+  &:visited {
+    color: ${() => getColors().TEXT_DEFAULT};
+  }
+`;
+
 const InnerRoot = styled.div<Object>(() => {
   return {
     width: '100%',
@@ -196,6 +235,23 @@ const ListQuestionTemplates = () => {
 
   const confirmDialog = useConfirmNav(dragWasEdited);
 
+  const [exportDropdownOpen, setExportDropdownOpen] = React.useState(false);
+  const exportDropdownRef = React.useRef<HTMLDivElement>(null);
+
+  React.useEffect(() => {
+    if (!exportDropdownOpen) return;
+    const handleClickOutside = (ev: MouseEvent) => {
+      if (
+        exportDropdownRef.current &&
+        !exportDropdownRef.current.contains(ev.target as Node)
+      ) {
+        setExportDropdownOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [exportDropdownOpen]);
+
   const handleCreateQuestionTemplateClick = (ev: React.MouseEvent) => {
     ev.preventDefault();
     navigate(
@@ -242,12 +298,46 @@ const ListQuestionTemplates = () => {
       />
       <MobileLayout topBar>
         <InnerRoot>
-          <p>
+          <p
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              flexWrap: 'wrap',
+              gap: '4px',
+            }}
+          >
             <InlineIconButton
               imgSrc="/res/edit.svg"
               onClick={handleEditRoundTemplateClick}
-            ></InlineIconButton>
-            Round: {loaderResponse?.data.roundTemplate.title}
+            />
+            <ExportDropdownRoot ref={exportDropdownRef}>
+              <InlineIconButton
+                imgSrc="/res/cloud-download.svg"
+                onClick={ev => {
+                  ev.preventDefault();
+                  setExportDropdownOpen(o => !o);
+                }}
+              />
+              <ExportDropdownMenu open={exportDropdownOpen}>
+                <ExportDropdownItem
+                  href={
+                    '/api/template/export/round/' +
+                    loaderResponse?.data?.roundTemplate?.id
+                  }
+                  onClick={() => setExportDropdownOpen(false)}
+                >
+                  Download as JSON
+                </ExportDropdownItem>
+              </ExportDropdownMenu>
+            </ExportDropdownRoot>
+            <span
+              style={{
+                color: getColors().TEXT_DESCRIPTION,
+              }}
+            >
+              Round:
+            </span>{' '}
+            {loaderResponse?.data.roundTemplate.title}
           </p>
           {loaderResponse?.data.roundTemplate.description ? (
             <p
@@ -259,30 +349,11 @@ const ListQuestionTemplates = () => {
               {loaderResponse?.data.roundTemplate.description}
             </p>
           ) : null}
-          {/* <ButtonAction
-            color="primary"
-            onClick={handleCreateQuestionTemplateClick}
-          >
-            + New Question Template
-          </ButtonAction> */}
-          <div
-            style={{
-              margin: '16px 0',
-            }}
-          >
-            {loaderResponse?.data.questionTemplates.length === 0 ? (
+          {loaderResponse?.data.questionTemplates.length === 0 ? (
+            <div style={{ margin: '16px 0' }}>
               <TextCenter>(none)</TextCenter>
-            ) : (
-              <a
-                href={
-                  '/api/template/export/round/' +
-                  loaderResponse?.data?.roundTemplate?.id
-                }
-              >
-                Download as JSON
-              </a>
-            )}
-          </div>
+            </div>
+          ) : null}
           {/* <p>
             Question Templates ({loaderResponse?.data.questionTemplates?.length}
             )
