@@ -5,11 +5,16 @@ import logger from './logger';
 import { initDb } from './db';
 import { configureApp } from './app';
 import { setupIo } from './middlewares/ioSessionMemory';
+import { seedIntegration } from './seedIntegration';
 
 const port = 3006;
 
 const main = async () => {
   await initDb();
+
+  if (process.env.INTEGRATION_TEST === 'true') {
+    await seedIntegration();
+  }
 
   const app = express();
   const server = http.createServer(app);

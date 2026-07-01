@@ -36,6 +36,8 @@
     "socket.io-client": "^4.6.1",
     "styled-components": "^5.3.10",
     "terser": "^5.16.6",
+    "vite": "^4.2.0",
+    "vitest": "^4.0.16",
     "vitest-fetch-mock": "^0.2.2"
   }
 }

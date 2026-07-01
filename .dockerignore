@@ -11,5 +11,5 @@ server/node_modules
 client/node_modules
 quizzes
 scratch
-test-browser
+integration
 test-results

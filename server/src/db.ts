@@ -20,10 +20,12 @@ const models = [
   RoundTemplate,
 ];
 
-const dbLocation =
-  process.env.VITEST === 'true'
-    ? ':memory:'
-    : path.resolve(__dirname, '../../db/prod.sqlite');
+const useInMemoryDb =
+  process.env.VITEST === 'true' || process.env.INTEGRATION_TEST === 'true';
+
+const dbLocation = useInMemoryDb
+  ? ':memory:'
+  : path.resolve(__dirname, '../../db/prod.sqlite');
 
 class Db {
   sequelize: Sequelize;
@@ -39,7 +41,7 @@ class Db {
     this.sequelize = sequelize;
   }
   async init() {
-    if (process.env.VITEST === 'true') {
+    if (useInMemoryDb) {
       await this.sequelize.sync();
     }
   }

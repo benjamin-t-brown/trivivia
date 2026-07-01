@@ -120,6 +120,7 @@ describe('TemplateService', () => {
     const quizTemplate = await templateService.updateQuizTemplate({
       id: 'abcd',
       name: 'testQuiz2',
+      allowStaticRender: false,
     });
 
     expect(quizTemplate?.id).toBeDefined();
