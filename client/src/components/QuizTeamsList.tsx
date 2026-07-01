@@ -35,6 +35,8 @@ export const QuizTeamsList = (props: {
                   padding: '4px',
                   display: 'flex',
                   justifyContent: 'space-between',
+                  fontWeight: currentTeamId === team.id ? 'bold' : 'unset',
+                  fontStyle: currentTeamId === team.id ? 'italic' : 'unset',
                 }}
               >
                 <span

@@ -39,7 +39,13 @@ export function configureApp(app: Express, io: any = {}) {
       logLevel: env.logLevel,
     })
   );
-  app.use('/res', express.static(path.resolve(__dirname, '../../res')));
+  app.use(
+    '/res',
+    express.static(path.resolve(__dirname, '../../res'), {
+      maxAge: env.isProduction ? '1y' : 60 * 60 * 1000,
+      etag: true,
+    })
+  );
   app.use('/index.html', (req, res) => {
     res.sendFile(path.resolve(__dirname, '../../client/dist/index.html'));
   });

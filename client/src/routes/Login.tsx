@@ -5,13 +5,7 @@ import CardTitle from 'elements/CardTitle';
 import Input from 'elements/Input';
 import MobileLayout from 'elements/MobileLayout';
 import React from 'react';
-import {
-  Form,
-  useRouteError,
-  useNavigation,
-  useNavigate,
-  redirect,
-} from 'react-router-dom';
+import { Form, useRouteError, useNavigation, redirect } from 'react-router-dom';
 import { getColors } from 'style';
 import styled from 'styled-components';
 
@@ -63,12 +57,6 @@ export const action = createAction(async (values: ILoginAction) => {
 const Login = (props: { error?: boolean }) => {
   const routeError = useRouteError() as LocalErrorResponse;
   const navigation = useNavigation();
-  const navigate = useNavigate();
-
-  const handleToSignup = (ev: React.MouseEvent) => {
-    ev.preventDefault();
-    navigate('/signup');
-  };
 
   return (
     <>
@@ -81,11 +69,12 @@ const Login = (props: { error?: boolean }) => {
         <Form method="post" id="login-form">
           <InnerRoot>
             <img
-              src="/res/sign-in.png"
+              src="/res/sign-in.avif"
               alt="Sign In Banner"
               style={{
                 width: '25%',
                 margin: '48px',
+                minWidth: '300px',
               }}
             />
             <p>Login to a Trivivia quiz admin account.</p>
@@ -130,6 +119,11 @@ const Login = (props: { error?: boolean }) => {
             <p>
               <span>
                 {"Don't"} have an account? <a href="/signup">Signup</a> instead!
+              </span>
+            </p>
+            <p>
+              <span>
+                Looking to join a quiz? <a href="/join">Head here!</a>
               </span>
             </p>
           </InnerRoot>

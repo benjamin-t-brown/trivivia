@@ -2,10 +2,10 @@ import SectionTitle from 'elements/SectionTitle';
 import { useConfirmDialog } from 'hooks';
 import { isShowingRoundQuestions } from 'quizUtils';
 import React, { useState } from 'react';
-import { useFetcher, useParams } from 'react-router-dom';
+import { Link, useFetcher, useParams } from 'react-router-dom';
 import { LiveQuizResponse } from 'shared/responses';
 import { getColors } from 'style';
-import { getRoundsFromLiveQuiz } from 'utils';
+import { getRoundsFromLiveQuiz, getTeamQrCodePath } from 'utils';
 
 export const QuizTeamsListAdmin = (props: { liveQuiz: LiveQuizResponse }) => {
   const fetcher = useFetcher();
@@ -83,17 +83,40 @@ export const QuizTeamsListAdmin = (props: { liveQuiz: LiveQuizResponse }) => {
                   justifyContent: 'space-between',
                 }}
               >
-                <div>
+                <div
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    flex: 1,
+                    minWidth: 0,
+                  }}
+                >
+                  <Link
+                    to={getTeamQrCodePath(
+                      props.liveQuiz.userFriendlyId,
+                      team.id,
+                      team.teamName
+                    )}
+                    style={{
+                      marginRight: '8px',
+                      fontSize: '13px',
+                      whiteSpace: 'nowrap',
+                      flexShrink: 0,
+                    }}
+                  >
+                    Rejoin Link
+                  </Link>
                   <span
                     onClick={handleDeleteTeamClick(team.id)}
                     style={{
                       color: getColors().ERROR_TEXT,
                       cursor: 'pointer',
                       marginRight: '8px',
+                      flexShrink: 0,
                     }}
                   >
                     X
-                  </span>{' '}
+                  </span>
                   <span
                     style={{
                       marginRight: '8px',
@@ -117,6 +140,7 @@ export const QuizTeamsListAdmin = (props: { liveQuiz: LiveQuizResponse }) => {
                   style={{
                     width: '95px',
                     flexShrink: '0',
+                    textAlign: 'right',
                   }}
                 >
                   Score: {team.currentScore}

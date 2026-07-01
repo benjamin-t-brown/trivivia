@@ -110,8 +110,17 @@ let noRedirect = false;
 export const setNoRedirect = (_noRedirect: boolean) => {
   noRedirect = _noRedirect;
 };
+export const isNoRedirectSearch = (search: string) => {
+  return new URLSearchParams(search).get('noredirect') === 'true';
+};
 export const getIsNoRedirect = () => {
-  return noRedirect;
+  if (noRedirect) {
+    return true;
+  }
+  if (typeof window !== 'undefined') {
+    return isNoRedirectSearch(window.location.search);
+  }
+  return false;
 };
 
 export const getLiveQuizJoinedDate = () => {
@@ -120,6 +129,22 @@ export const getLiveQuizJoinedDate = () => {
     return new Date(dateStr);
   }
   return new Date(0);
+};
+
+export const getTeamRejoinUrl = (
+  userFriendlyQuizId: string,
+  teamId: string
+) => {
+  return `${window?.location?.origin ?? ''}/rejoin/${userFriendlyQuizId}/${teamId}`;
+};
+
+export const getTeamQrCodePath = (
+  userFriendlyQuizId: string,
+  teamId: string,
+  teamName: string
+) => {
+  const params = new URLSearchParams({ teamName });
+  return `/qr/${userFriendlyQuizId}/team/${teamId}?${params}`;
 };
 
 export const setLiveQuizAnswersLs = (

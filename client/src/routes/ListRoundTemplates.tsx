@@ -233,8 +233,9 @@ const ListRoundTemplates = () => {
       <DefaultTopBar upTo="/quiz-templates" />
       <MobileLayout topBar>
         <InnerRoot>
-          <p
+          <div
             style={{
+              margin: '1em 0',
               display: 'flex',
               alignItems: 'center',
               flexWrap: 'wrap',
@@ -307,7 +308,7 @@ const ListRoundTemplates = () => {
               Quiz:
             </span>{' '}
             {loaderResponse?.data.quizTemplate.name}
-          </p>
+          </div>
           {loaderResponse?.data.roundTemplates.length === 0 ? (
             <div style={{ margin: '16px 0' }}>
               <TextCenter>(none)</TextCenter>

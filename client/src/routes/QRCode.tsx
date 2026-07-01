@@ -1,9 +1,10 @@
 import DefaultTopBar from 'components/DefaultTopBar';
 import MobileLayout from 'elements/MobileLayout';
 import React from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useSearchParams } from 'react-router-dom';
 import styled from 'styled-components';
 import qr from 'qrcode';
+import { getTeamRejoinUrl } from 'utils';
 
 const InnerRoot = styled.div<Object>(() => {
   return {
@@ -13,12 +14,12 @@ const InnerRoot = styled.div<Object>(() => {
   };
 });
 
-const QRCodeCmpt = () => {
+const QRCodeCmpt = (props: { teamId?: string; teamName?: string }) => {
   const params = useParams();
 
-  const href = `${window?.location?.origin ?? ''}/live/${
-    params.userFriendlyQuizId
-  }`;
+  const href = props.teamId
+    ? getTeamRejoinUrl(params.userFriendlyQuizId ?? '', props.teamId)
+    : `${window?.location?.origin ?? ''}/join/${params.userFriendlyQuizId}`;
 
   const ref = React.useRef<HTMLCanvasElement>(null);
 
@@ -32,11 +33,10 @@ const QRCodeCmpt = () => {
         },
         function (error) {
           if (error) console.error(error);
-          console.log('success!');
         }
       );
     }
-  }, []);
+  }, [href]);
 
   return (
     <>
@@ -49,11 +49,30 @@ const QRCodeCmpt = () => {
               justifyContent: 'center',
               flexDirection: 'column',
               alignItems: 'center',
+              textAlign: 'center',
+              padding: '0 16px',
             }}
           >
+            {props.teamName ? (
+              <>
+                <br />
+                <strong>Team: {props.teamName}</strong>
+                <p style={{ fontSize: '14px' }}>
+                  Share this link so the team can rejoin and submit answers.
+                </p>
+              </>
+            ) : (
+              <>
+                <br />
+                <p style={{ fontSize: '14px' }}>
+                  Share this link so teams can join the quiz.
+                </p>
+              </>
+            )}
             <br />
-            <br />
-            <a href={href}>{href}</a>
+            <a href={href} style={{ wordBreak: 'break-all' }}>
+              {href}
+            </a>
             <br />
             <br />
             <div>
@@ -66,7 +85,23 @@ const QRCodeCmpt = () => {
   );
 };
 
+const TeamQRCodeCmpt = () => {
+  const params = useParams();
+  const [searchParams] = useSearchParams();
+  return (
+    <QRCodeCmpt
+      teamId={params.teamId}
+      teamName={searchParams.get('teamName') ?? undefined}
+    />
+  );
+};
+
 export const QRCodeRoute = {
   path: 'qr/:userFriendlyQuizId',
   element: <QRCodeCmpt />,
+};
+
+export const TeamQRCodeRoute = {
+  path: 'qr/:userFriendlyQuizId/team/:teamId',
+  element: <TeamQRCodeCmpt />,
 };

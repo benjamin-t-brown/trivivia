@@ -138,28 +138,21 @@ const duplicateAction = createAction(
   }
 );
 
+const MEDIA_QUESTION_PREFIXES = ['(audio)', '(video)', '(visual)'];
+
 const getQuestionButtonText = (t: QuestionTemplateResponse) => {
-  const ret = (t.text ?? '').replace(/\n/g, '');
-  // HACK the stupid way:
-  if (ret.toLowerCase() === '(audio)') {
-    const answers = Object.values(t.answers).join(', ');
-    // return 'Notes: ' + t.notes || 'Audio Question';
-    return 'Audio: ' + answers || 'Question';
+  const text = (t.text ?? '').replace(/\n/g, ' ').trim();
+  const textLower = text.toLowerCase();
+
+  if (MEDIA_QUESTION_PREFIXES.some(prefix => textLower.startsWith(prefix))) {
+    const answers = Object.values(t.answers ?? {}).join(', ');
+    return answers ? `${text} - ${answers}` : text;
   }
-  if (ret.toLowerCase() === '(video)') {
-    const answers = Object.values(t.answers).join(', ');
-    // return 'Notes: ' + t.notes || 'Video Question';
-    return 'Video: ' + answers || 'Question';
+
+  if (text.length < 2) {
+    return 'Notes: ' + (t.notes || 'Image question');
   }
-  if (ret.toLowerCase() === '(visual)') {
-    const answers = Object.values(t.answers).join(', ');
-    // return 'Notes: ' + t.notes || 'Visual Question';
-    return 'Visual: ' + answers || 'Question';
-  }
-  if (ret.length < 2) {
-    return 'Notes: ' + t.notes || 'Image question';
-  }
-  return ret;
+  return text;
 };
 
 interface ListQuestionTemplatesLoaderResponse {
@@ -298,8 +291,9 @@ const ListQuestionTemplates = () => {
       />
       <MobileLayout topBar>
         <InnerRoot>
-          <p
+          <div
             style={{
+              margin: '1em 0',
               display: 'flex',
               alignItems: 'center',
               flexWrap: 'wrap',
@@ -338,7 +332,7 @@ const ListQuestionTemplates = () => {
               Round:
             </span>{' '}
             {loaderResponse?.data.roundTemplate.title}
-          </p>
+          </div>
           {loaderResponse?.data.roundTemplate.description ? (
             <p
               style={{

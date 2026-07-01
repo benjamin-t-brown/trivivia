@@ -37,6 +37,7 @@ import { ButtonAction } from 'elements/ButtonAction';
 import { IconButton } from 'elements/IconButton';
 import { JustifyContentDiv } from 'elements/JustifyContentDiv';
 import { HSpace } from 'elements/HSpace';
+import CreatedUpdatedDates from 'elements/CreatedUpdatedDates';
 
 const InnerRoot = styled.div<Object>(() => {
   return {
@@ -290,6 +291,13 @@ const EditQuizTemplate = (props: EditQuizProps) => {
             >
               Fill out information for this quiz template.
             </p>
+            {!props.isNew && quizTemplateResponse?.data ? (
+              <CreatedUpdatedDates
+                creationDate={quizTemplateResponse.data.creationDate}
+                updatedOn={quizTemplateResponse.data.updatedOn}
+                style={{ marginTop: '-8px', marginBottom: '8px' }}
+              />
+            ) : null}
             <HiddenBooleanField name="isNew" value={Boolean(props.isNew)} />
             <HiddenTextField
               name="importedQuizTemplate"

@@ -16,21 +16,14 @@ import {
   useFormResetValues,
   useTypedLoaderData,
 } from 'hooks';
-import NavButton from 'components/NavButton';
 import {
-  AccountResponse,
-  LiveQuizPublicResponse,
   LiveQuizPublicStateResponse,
-  LiveQuizResponse,
   LiveQuizTeamResponse,
 } from 'shared/responses';
 import TopBar from 'elements/TopBar';
 import CardTitleZone from 'elements/CardTitleZone';
-import BackButton from 'components/BackButton';
 import CardTitle from 'elements/CardTitle';
 import Button from 'elements/Button';
-import { LiveQuizStartRoute } from './LiveQuizStart';
-import { ListQuizTemplatesRoute } from './ListQuizTemplates';
 import IconLeft from 'elements/IconLeft';
 import FormErrorText from 'components/FormErrorText';
 import InputLabel from 'elements/InputLabel';
@@ -40,6 +33,7 @@ import { getColors } from 'style';
 import { getFromCache, updateCacheLiveQuiz } from 'cache';
 import {
   getIsNoRedirect,
+  isNoRedirectSearch,
   getLiveQuizJoinedDate,
   getLiveQuizJoinedId,
   getLiveQuizTeamId,
@@ -120,7 +114,7 @@ const action = createAction(async (values: JoinQuizValues, params) => {
   return redirect(`/live/${params.userFriendlyQuizId}`);
 });
 
-const loader = async ({ params }) => {
+const loader = async ({ params, request }) => {
   const accountResponse = await fetchAsync<LiveQuizPublicStateResponse>(
     'get',
     '/api/live/' + params.userFriendlyQuizId + '/meta'
@@ -133,7 +127,13 @@ const loader = async ({ params }) => {
     });
   }
 
-  if (accountResponse.data.teams.find(t => t.id === getLiveQuizTeamId())) {
+  const isNoRedirect =
+    isNoRedirectSearch(new URL(request.url).search) || getIsNoRedirect();
+
+  if (
+    !isNoRedirect &&
+    accountResponse.data.teams.find(t => t.id === getLiveQuizTeamId())
+  ) {
     setNoRedirect(false);
     return redirect(`/live/${params.userFriendlyQuizId}`);
   }
@@ -217,9 +217,7 @@ const JoinQuiz = (props: { error?: boolean }) => {
     const existingQuizJoinedDate = getLiveQuizJoinedDate();
     const dayjsJoinedDate = dayjs(existingQuizJoinedDate);
     const dayjsNow = dayjs();
-    const isNoRedirect =
-      new URLSearchParams(window.location.search).get('noredirect') ===
-        'true' || getIsNoRedirect();
+    const isNoRedirect = getIsNoRedirect();
     if (
       existingTeamId &&
       existingQuizId &&
@@ -395,7 +393,7 @@ const JoinQuiz = (props: { error?: boolean }) => {
                   <IconLeft src="/res/check-mark.svg" />
                   Join Quiz
                 </Button>
-                <p>Or</p>
+                <p style={{ textAlign: 'center' }}>Or</p>
                 <Button
                   flex
                   center
@@ -405,7 +403,7 @@ const JoinQuiz = (props: { error?: boolean }) => {
                   }}
                   onClick={handleSpectateClick}
                 >
-                  <IconLeft src="/res/trade.svg" />
+                  <IconLeft src="/res/binoculars.svg" />
                   Spectate Quiz
                 </Button>
                 <QuizTeamsList quizState={liveQuizResponse.data} />

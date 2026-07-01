@@ -8,7 +8,7 @@
     "test:prod": "tsc --project ./tsconfig.json && vitest --run",
     "start": "tsx watch --tsconfig ./tsconfig.json ./src/server.ts",
     "start:dev": "yarn start",
-    "start:prod": "tsx --no-cache --tsconfig ./tsconfig.json ./src/server.ts",
+    "start:prod": "NODE_ENV=production tsx --no-cache --tsconfig ./tsconfig.json ./src/server.ts",
     "migrate": "sequelize db:migrate",
     "migrate:undo": "sequelize db:migrate:undo",
     "setup-db": "cp -n database.example.json database.json && yarn migrate"

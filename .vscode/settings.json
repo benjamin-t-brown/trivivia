@@ -3,6 +3,7 @@
     "Autograde",
     "Autograding",
     "Revalidator",
+    "Triviva",
     "Trivivia"
   ],
   "eslint.enable": true,

@@ -13,3 +13,4 @@ test-browser/gwd
 scratch/gwd-rounds/
 db/database.sqlite
 *.sqlite
+docker-push.sh
