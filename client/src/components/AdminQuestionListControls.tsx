@@ -75,8 +75,8 @@ export const AdminQuestionListControls = (props: {
             liveQuiz.quizState === LiveQuizState.SHOWING_ANSWERS_ANSWERS_HIDDEN
               ? getColors().PRIMARY_TEXT
               : isRoundLocked(liveQuiz)
-              ? getColors().ERROR_TEXT
-              : getColors().SUCCESS_TEXT),
+                ? getColors().ERROR_TEXT
+                : getColors().SUCCESS_TEXT),
           padding: '8px',
         }}
       >

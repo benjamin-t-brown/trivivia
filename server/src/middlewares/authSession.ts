@@ -17,6 +17,8 @@ const nonProtectedRoutes = [
   '/api/static/(.*)',
   '/login',
   '/signup',
+  '^/rejoin/',
+  '^/qr/',
 ];
 
 export const authSession = (

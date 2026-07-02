@@ -378,9 +378,9 @@ const ListAllRoundTemplates = (props: { error?: boolean }) => {
                   t.title
                     .toLocaleLowerCase()
                     .includes(filter.toLocaleLowerCase()) ||
-                    t.quizTemplateName
-                      .toLocaleLowerCase()
-                      .includes(filter.toLocaleLowerCase())
+                  t.quizTemplateName
+                    .toLocaleLowerCase()
+                    .includes(filter.toLocaleLowerCase())
                 )
               }
               filterLabel="Search"

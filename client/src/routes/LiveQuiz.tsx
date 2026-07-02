@@ -577,30 +577,30 @@ const LiveQuiz = (props: { error?: boolean }) => {
                 Connected to quiz:
               </span>{' '}
               {liveQuizResponse.data.quiz.name}
-              {/* {isSpectating ? (
-                <>
-                  <br />
-                  <span
-                    style={{
-                      textAlign: 'center',
-                      color: getColors().TEXT_DESCRIPTION,
-                    }}
-                  >
-                    You are spectating this quiz.
-                  </span>{' '}
-                  <span>
-                    <Link to={`/join/${params.userFriendlyQuizId}`}>
-                      Join instead?
-                    </Link>
-                  </span>
-                </>
-              ) : null} */}
             </p>
+            {isSpectating ? (
+              <p
+                style={{
+                  color: getColors().TEXT_DESCRIPTION,
+                }}
+              >
+                {"You're spectating - "}
+                <Link
+                  to={`/join/${params.userFriendlyQuizId}?noredirect=true`}
+                  style={{
+                    color: getColors().PRIMARY_TEXT,
+                    textDecoration: 'underline',
+                  }}
+                >
+                  Join
+                </Link>
+              </p>
+            ) : null}
             {isWaitingForQuizToStart(liveQuizResponse.data.quiz) ? (
               <>
                 <p
                   style={{
-                    textAlign: 'center',
+                    textAlign: 'left',
                     color: getColors().SUCCESS_TEXT,
                   }}
                 >
@@ -608,27 +608,13 @@ const LiveQuiz = (props: { error?: boolean }) => {
                 </p>
                 <p
                   style={{
-                    textAlign: 'center',
+                    textAlign: 'left',
                     color: getColors().TEXT_DESCRIPTION,
                   }}
                 >
                   Waiting for quiz to start...
                 </p>
-                {isSpectating ? (
-                  <p
-                    style={{
-                      textAlign: 'center',
-                      color: getColors().TEXT_DESCRIPTION,
-                    }}
-                  >
-                    Want to join instead?{' '}
-                    <Link to={`/join/${params.userFriendlyQuizId}`}>
-                      Click here.
-                    </Link>
-                  </p>
-                ) : (
-                  <UpdateTeamNameForm />
-                )}
+                {isSpectating ? null : <UpdateTeamNameForm />}
               </>
             ) : null}
             {isWaitingForRoundToStart(liveQuizResponse.data.quiz) ||
@@ -637,7 +623,7 @@ const LiveQuiz = (props: { error?: boolean }) => {
                 {liveQuizResponse.data.isComplete ? (
                   <p
                     style={{
-                      textAlign: 'center',
+                      textAlign: 'left',
                       color: getColors().TEXT_DESCRIPTION,
                     }}
                   >
@@ -646,7 +632,7 @@ const LiveQuiz = (props: { error?: boolean }) => {
                 ) : (
                   <p
                     style={{
-                      textAlign: 'center',
+                      textAlign: 'left',
                       color: getColors().TEXT_DESCRIPTION,
                     }}
                   >

@@ -1,9 +1,11 @@
 ## Requirements
 
-node 18.7.0^
-npm
+- **Node.js 20+**
+- **Yarn 4.17.0** — bundled in `.yarn/releases/`; `./install.sh` uses it automatically (no separate Yarn install needed)
+- **Docker**
+- aws credentials
 
-## Deployment on ec2 (without docker)
+## Deployment on ec2 (with docker)
 
 This application is deployed at [https://trivivia.net](https://trivivia.net/login)
 
@@ -13,6 +15,7 @@ This application is deployed at [https://trivivia.net](https://trivivia.net/logi
 
 # ssh into ecs instance
 ssh admin@3.84.126.152
+  OR
 aws ec2-instance-connect ssh --instance-id i-085c41c7b75df790e --os-user admin --private-key-file file://~/.ssh/id_rsa
 
 # ensure login credentials
@@ -20,19 +23,19 @@ aws ecr get-login-password --region us-east-1 | docker login --username AWS --pa
 
 # pull and restart
 docker pull 442979135069.dkr.ecr.us-east-1.amazonaws.com/revirtualis/trivivia:latest
-docker stop $(docker ps -aq)
-docker rm -vf $(docker ps -aq)
+docker stop $(docker ps -a -q --filter ancestor=442979135069.dkr.ecr.us-east-1.amazonaws.com/revirtualis/trivivia:latest)
+docker rm -vf $(docker ps -aq --filter ancestor=442979135069.dkr.ecr.us-east-1.amazonaws.com/revirtualis/trivivia:latest)
+cd quiz-getter-app
 cd trivivia
 docker run -d -p 3006:3006 --restart=on-failure --mount type=bind,source="$(pwd)/db",target=/app/db 442979135069.dkr.ecr.us-east-1.amazonaws.com/revirtualis/trivivia:latest
 
 ```
 
-Remote DB
-
-Backup the remote db to local
+## Backup and restore db
 
 ```
-scp -i ~/.ssh/id_rsa admin@3.84.126.152:/home/admin/trivivia/db/prod.sqlite ./prod.bak.sqlite
+scp -i ~/.ssh/id_rsa admin@3.80.218.58:/home/admin/trivivia/db/prod.sqlite prod.bak.sqlite
+scp -i ~/.ssh/id_rsa ./prod.bak.sqlite admin@3.80.218.58:/home/admin/trivivia/db/prod.sqlite
 ```
 
 Restore db from backup

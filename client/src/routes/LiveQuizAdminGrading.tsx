@@ -153,7 +153,7 @@ const LiveQuizAdminGrading = (props: EditLiveQuizProps) => {
 
   const [outerState, dispatch]: [
     typeof initialState,
-    (action: DispatchAction) => void
+    (action: DispatchAction) => void,
   ] = React.useReducer(
     (prevState: typeof initialState, action: DispatchAction) => {
       if (action.resetState) {

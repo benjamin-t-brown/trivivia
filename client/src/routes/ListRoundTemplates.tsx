@@ -26,10 +26,46 @@ import IconLeft from 'elements/IconLeft';
 import HiddenTextField from 'components/HiddenTextField';
 import { updateCacheQuizTemplate } from 'cache';
 import Img from 'elements/Img';
-import { ButtonAction } from 'elements/ButtonAction';
-import { JustifyContentDiv } from 'elements/JustifyContentDiv';
-import { HSpace } from 'elements/HSpace';
 import { TitleWithActions } from 'elements/TitleWithActions';
+
+const ExportDropdownRoot = styled.div`
+  position: relative;
+  display: inline-block;
+`;
+
+const ExportDropdownMenu = styled.div<{ open: boolean }>`
+  display: ${p => (p.open ? 'block' : 'none')};
+  position: absolute;
+  top: 100%;
+  left: 0;
+  margin-top: 4px;
+  min-width: 180px;
+  background: ${() => getColors().BACKGROUND2};
+  border: 1px solid ${() => getColors().PRIMARY};
+  border-radius: 4px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  z-index: 100;
+  overflow: hidden;
+`;
+
+const ExportDropdownItem = styled.a`
+  display: block;
+  padding: 10px 14px;
+  color: ${() => getColors().TEXT_DEFAULT};
+  text-decoration: none;
+  font-size: 14px;
+  cursor: pointer;
+  &:hover {
+    background: ${() => getColors().PRIMARY};
+    color: white;
+  }
+  &:link {
+    color: ${() => getColors().TEXT_DEFAULT};
+  }
+  &:visited {
+    color: ${() => getColors().TEXT_DEFAULT};
+  }
+`;
 
 const InnerRoot = styled.div<Object>(() => {
   return {
@@ -142,6 +178,23 @@ const ListRoundTemplates = () => {
 
   const confirmDialog = useConfirmNav(dragWasEdited);
 
+  const [exportDropdownOpen, setExportDropdownOpen] = React.useState(false);
+  const exportDropdownRef = React.useRef<HTMLDivElement>(null);
+
+  React.useEffect(() => {
+    if (!exportDropdownOpen) return;
+    const handleClickOutside = (ev: MouseEvent) => {
+      if (
+        exportDropdownRef.current &&
+        !exportDropdownRef.current.contains(ev.target as Node)
+      ) {
+        setExportDropdownOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [exportDropdownOpen]);
+
   const handleCreateRoundTemplateClick = (ev: React.MouseEvent) => {
     ev.preventDefault();
     navigate(`/quiz-template/${params.quizTemplateId}/round-template-new`);
@@ -175,25 +228,78 @@ const ListRoundTemplates = () => {
     navigate('/quiz-template/' + params.quizTemplateId + '/edit');
   };
 
-  const numRoundsCreated =
-    loaderResponse?.data.quizTemplate.rounds?.length ?? 0;
-
   return (
     <>
       <DefaultTopBar upTo="/quiz-templates" />
       <MobileLayout topBar>
         <InnerRoot>
-          <p
-            style={
-              {
-                // width: '80%',
-              }
-            }
+          <div
+            style={{
+              margin: '1em 0',
+              display: 'flex',
+              alignItems: 'center',
+              flexWrap: 'wrap',
+              gap: '4px',
+            }}
           >
             <InlineIconButton
               imgSrc="/res/edit.svg"
               onClick={handleEditQuizTemplateClick}
-            ></InlineIconButton>
+            />
+            <ExportDropdownRoot ref={exportDropdownRef}>
+              <InlineIconButton
+                imgSrc="/res/cloud-download.svg"
+                onClick={ev => {
+                  ev.preventDefault();
+                  setExportDropdownOpen(o => !o);
+                }}
+              />
+              <ExportDropdownMenu open={exportDropdownOpen}>
+                <ExportDropdownItem
+                  href={
+                    '/api/template/export/quiz/' +
+                    loaderResponse?.data?.quizTemplate.id +
+                    '/html'
+                  }
+                  onClick={() => setExportDropdownOpen(false)}
+                >
+                  Download as HTML
+                </ExportDropdownItem>
+                <ExportDropdownItem
+                  href={
+                    '/api/template/export/quiz/' +
+                    loaderResponse?.data?.quizTemplate.id +
+                    '/json'
+                  }
+                  onClick={() => setExportDropdownOpen(false)}
+                >
+                  Download as JSON
+                </ExportDropdownItem>
+                <ExportDropdownItem
+                  href={
+                    '/api/template/export/quiz/' +
+                    loaderResponse?.data?.quizTemplate.id +
+                    '/pptx'
+                  }
+                  onClick={() => setExportDropdownOpen(false)}
+                >
+                  Download as Slides
+                </ExportDropdownItem>
+                {loaderResponse?.data?.quizTemplate.allowStaticRender ? (
+                  <ExportDropdownItem
+                    href={
+                      '/api/static/render-html/template/' +
+                      loaderResponse?.data?.quizTemplate.id
+                    }
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={() => setExportDropdownOpen(false)}
+                  >
+                    Public Link To Html
+                  </ExportDropdownItem>
+                ) : null}
+              </ExportDropdownMenu>
+            </ExportDropdownRoot>
             <span
               style={{
                 color: getColors().TEXT_DESCRIPTION,
@@ -202,66 +308,12 @@ const ListRoundTemplates = () => {
               Quiz:
             </span>{' '}
             {loaderResponse?.data.quizTemplate.name}
-            <br />
-            <br />
-            <span>Rounds Created: {numRoundsCreated}</span>
-          </p>
-          {/* <JustifyContentDiv justifyContent="left">
-            <ButtonAction onClick={handleCreateRoundTemplateClick}>
-              + New Round Template
-            </ButtonAction>
-            <HSpace />
-            <ButtonAction
-              disabled={
-                (loaderResponse?.data.roundTemplates.length ?? 0) >=
-                (loaderResponse?.data.quizTemplate.numRounds ?? 0)
-              }
-              onClick={handlePickExistingRoundTemplateClick}
-            >
-              + Pick Round Templates
-            </ButtonAction>
-          </JustifyContentDiv> */}
-          <div
-            style={{
-              margin: '16px 0',
-            }}
-          >
-            {loaderResponse?.data.roundTemplates.length === 0 ? (
-              <TextCenter>(none)</TextCenter>
-            ) : null}
-            <a
-              href={
-                '/api/template/export/quiz/' +
-                loaderResponse?.data?.quizTemplate.id +
-                '/html'
-              }
-            >
-              Download as HTML
-            </a>
-            <br />
-            <a
-              href={
-                '/api/template/export/quiz/' +
-                loaderResponse?.data?.quizTemplate.id +
-                '/json'
-              }
-            >
-              Download as JSON
-            </a>
-            {loaderResponse?.data?.quizTemplate.allowStaticRender ? (
-              <>
-                <br />
-                <a
-                  href={
-                    '/api/static/render-html/template/' +
-                    loaderResponse?.data?.quizTemplate.id
-                  }
-                >
-                  Public Link To Html
-                </a>
-              </>
-            ) : null}
           </div>
+          {loaderResponse?.data.roundTemplates.length === 0 ? (
+            <div style={{ margin: '16px 0' }}>
+              <TextCenter>(none)</TextCenter>
+            </div>
+          ) : null}
           <TitleWithActions
             title="Round Templates"
             actions={[

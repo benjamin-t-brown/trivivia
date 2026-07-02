@@ -2,7 +2,7 @@ import React from 'react';
 import {
   AnswerState,
   extractAnswerBoxType,
-  isLegacyAnswerBoxType,
+  LiveQuizPublicQuestionResponse,
   LiveQuizPublicStateResponse,
 } from 'shared/responses';
 import { getColors } from 'style';
@@ -30,25 +30,45 @@ export const SubmittedAnswersForRound = (props: {
       continue;
     }
     let submittedAnswer = '';
-    const question = round.questions[i];
-    const [type, numInputs] = extractAnswerBoxType(question.answerType);
-    if (type === 'input') {
-      for (let j = 0; j < numInputs; j++) {
-        const answerText = answers['answer' + (j + 1)] ?? '';
-        submittedAnswer = concatStr(submittedAnswer, answerText, ', ');
-      }
-    } else if (type === 'radio') {
-      const answerText = answers['answer1'] ?? '';
-      submittedAnswer = answerText;
-    } else if (type === 'checkbox') {
-      for (let j = 0; j < numInputs; j++) {
-        const didPickThisAnswer = answers['answer' + (j + 1)] === 'true';
-        if (didPickThisAnswer) {
-          const answerText = question.answers?.['radio' + (j + 1)] ?? '';
+    const question: LiveQuizPublicQuestionResponse | undefined =
+      round.questions[i];
+
+    if (question) {
+      const [type, numInputs] = extractAnswerBoxType(question.answerType);
+      if (type === 'input') {
+        for (let j = 0; j < numInputs; j++) {
+          const answerText = answers['answer' + (j + 1)] ?? '';
           submittedAnswer = concatStr(submittedAnswer, answerText, ', ');
         }
+      } else if (type === 'radio') {
+        const answerText = answers['answer1'] ?? '';
+        submittedAnswer = answerText;
+      } else if (type === 'checkbox') {
+        for (let j = 0; j < numInputs; j++) {
+          const didPickThisAnswer = answers['answer' + (j + 1)] === 'true';
+          if (didPickThisAnswer) {
+            const answerText = question.answers?.['radio' + (j + 1)] ?? '';
+            submittedAnswer = concatStr(submittedAnswer, answerText, ', ');
+          }
+        }
       }
+    } else {
+      // do best to infer what the answer looks like without the question
+      const maxAnswers = 16;
+      const answerList: string[] = [];
+      let didFindOne = false;
+      for (let i = maxAnswers; i >= 1; i--) {
+        const textAnswer = answers['answer' + i];
+        if (textAnswer) {
+          answerList.push(textAnswer);
+          didFindOne = true;
+        } else if (didFindOne) {
+          answerList.push('');
+        }
+      }
+      submittedAnswer = answerList.reverse().join(', ');
     }
+
     answerStrings.push(submittedAnswer);
   }
 

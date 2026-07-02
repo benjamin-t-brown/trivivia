@@ -18,7 +18,6 @@ import {
 import { colorsDark, getColors } from 'style';
 import HiddenTextField from './HiddenTextField';
 import Img from 'elements/Img';
-import IconLeft from 'elements/IconLeft';
 import IconRight from 'elements/IconRight';
 
 interface EditAnswersProps {
@@ -152,7 +151,6 @@ const EditAnswers = (props: EditAnswersProps) => {
   const numAnswers = getNumAnswers(answerType);
   const numRadioBoxes = getNumRadioBoxes(answerType);
   const numListAnswers = getNumCorrectAnswers(answerType);
-  console.log('render answers', answerType);
 
   const answerBoxes: ReactNode[] = [];
   if (isLegacyAnswerBoxType(answerType)) {

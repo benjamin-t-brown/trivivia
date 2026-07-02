@@ -33,6 +33,45 @@ import { updateCacheQuestionTemplate, updateCacheRoundTemplate } from 'cache';
 import { ButtonAction } from 'elements/ButtonAction';
 import { TitleWithActions } from 'elements/TitleWithActions';
 
+const ExportDropdownRoot = styled.div`
+  position: relative;
+  display: inline-block;
+`;
+
+const ExportDropdownMenu = styled.div<{ open: boolean }>`
+  display: ${p => (p.open ? 'block' : 'none')};
+  position: absolute;
+  top: 100%;
+  left: 0;
+  margin-top: 4px;
+  min-width: 180px;
+  background: ${() => getColors().BACKGROUND2};
+  border: 1px solid ${() => getColors().PRIMARY};
+  border-radius: 4px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  z-index: 100;
+  overflow: hidden;
+`;
+
+const ExportDropdownItem = styled.a`
+  display: block;
+  padding: 10px 14px;
+  color: ${() => getColors().TEXT_DEFAULT};
+  text-decoration: none;
+  font-size: 14px;
+  cursor: pointer;
+  &:hover {
+    background: ${() => getColors().PRIMARY};
+    color: white;
+  }
+  &:link {
+    color: ${() => getColors().TEXT_DEFAULT};
+  }
+  &:visited {
+    color: ${() => getColors().TEXT_DEFAULT};
+  }
+`;
+
 const InnerRoot = styled.div<Object>(() => {
   return {
     width: '100%',
@@ -99,28 +138,21 @@ const duplicateAction = createAction(
   }
 );
 
+const MEDIA_QUESTION_PREFIXES = ['(audio)', '(video)', '(visual)'];
+
 const getQuestionButtonText = (t: QuestionTemplateResponse) => {
-  const ret = (t.text ?? '').replace(/\n/g, '');
-  // HACK the stupid way:
-  if (ret.toLowerCase() === '(audio)') {
-    const answers = Object.values(t.answers).join(', ');
-    // return 'Notes: ' + t.notes || 'Audio Question';
-    return 'Audio: ' + answers || 'Question';
+  const text = (t.text ?? '').replace(/\n/g, ' ').trim();
+  const textLower = text.toLowerCase();
+
+  if (MEDIA_QUESTION_PREFIXES.some(prefix => textLower.startsWith(prefix))) {
+    const answers = Object.values(t.answers ?? {}).join(', ');
+    return answers ? `${text} - ${answers}` : text;
   }
-  if (ret.toLowerCase() === '(video)') {
-    const answers = Object.values(t.answers).join(', ');
-    // return 'Notes: ' + t.notes || 'Video Question';
-    return 'Video: ' + answers || 'Question';
+
+  if (text.length < 2) {
+    return 'Notes: ' + (t.notes || 'Image question');
   }
-  if (ret.toLowerCase() === '(visual)') {
-    const answers = Object.values(t.answers).join(', ');
-    // return 'Notes: ' + t.notes || 'Visual Question';
-    return 'Visual: ' + answers || 'Question';
-  }
-  if (ret.length < 2) {
-    return 'Notes: ' + t.notes || 'Image question';
-  }
-  return ret;
+  return text;
 };
 
 interface ListQuestionTemplatesLoaderResponse {
@@ -196,6 +228,23 @@ const ListQuestionTemplates = () => {
 
   const confirmDialog = useConfirmNav(dragWasEdited);
 
+  const [exportDropdownOpen, setExportDropdownOpen] = React.useState(false);
+  const exportDropdownRef = React.useRef<HTMLDivElement>(null);
+
+  React.useEffect(() => {
+    if (!exportDropdownOpen) return;
+    const handleClickOutside = (ev: MouseEvent) => {
+      if (
+        exportDropdownRef.current &&
+        !exportDropdownRef.current.contains(ev.target as Node)
+      ) {
+        setExportDropdownOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [exportDropdownOpen]);
+
   const handleCreateQuestionTemplateClick = (ev: React.MouseEvent) => {
     ev.preventDefault();
     navigate(
@@ -242,13 +291,48 @@ const ListQuestionTemplates = () => {
       />
       <MobileLayout topBar>
         <InnerRoot>
-          <p>
+          <div
+            style={{
+              margin: '1em 0',
+              display: 'flex',
+              alignItems: 'center',
+              flexWrap: 'wrap',
+              gap: '4px',
+            }}
+          >
             <InlineIconButton
               imgSrc="/res/edit.svg"
               onClick={handleEditRoundTemplateClick}
-            ></InlineIconButton>
-            Round: {loaderResponse?.data.roundTemplate.title}
-          </p>
+            />
+            <ExportDropdownRoot ref={exportDropdownRef}>
+              <InlineIconButton
+                imgSrc="/res/cloud-download.svg"
+                onClick={ev => {
+                  ev.preventDefault();
+                  setExportDropdownOpen(o => !o);
+                }}
+              />
+              <ExportDropdownMenu open={exportDropdownOpen}>
+                <ExportDropdownItem
+                  href={
+                    '/api/template/export/round/' +
+                    loaderResponse?.data?.roundTemplate?.id
+                  }
+                  onClick={() => setExportDropdownOpen(false)}
+                >
+                  Download as JSON
+                </ExportDropdownItem>
+              </ExportDropdownMenu>
+            </ExportDropdownRoot>
+            <span
+              style={{
+                color: getColors().TEXT_DESCRIPTION,
+              }}
+            >
+              Round:
+            </span>{' '}
+            {loaderResponse?.data.roundTemplate.title}
+          </div>
           {loaderResponse?.data.roundTemplate.description ? (
             <p
               style={{
@@ -259,30 +343,11 @@ const ListQuestionTemplates = () => {
               {loaderResponse?.data.roundTemplate.description}
             </p>
           ) : null}
-          {/* <ButtonAction
-            color="primary"
-            onClick={handleCreateQuestionTemplateClick}
-          >
-            + New Question Template
-          </ButtonAction> */}
-          <div
-            style={{
-              margin: '16px 0',
-            }}
-          >
-            {loaderResponse?.data.questionTemplates.length === 0 ? (
+          {loaderResponse?.data.questionTemplates.length === 0 ? (
+            <div style={{ margin: '16px 0' }}>
               <TextCenter>(none)</TextCenter>
-            ) : (
-              <a
-                href={
-                  '/api/template/export/round/' +
-                  loaderResponse?.data?.roundTemplate?.id
-                }
-              >
-                Download as JSON
-              </a>
-            )}
-          </div>
+            </div>
+          ) : null}
           {/* <p>
             Question Templates ({loaderResponse?.data.questionTemplates?.length}
             )

@@ -4,9 +4,10 @@ export const navigationMock = vi.fn();
 export const navigateMock = vi.fn();
 
 vi.mock('react-router-dom', async () => {
-  const mod = await vi.importActual<typeof import('react-router-dom')>(
-    'react-router-dom'
-  );
+  const mod =
+    await vi.importActual<typeof import('react-router-dom')>(
+      'react-router-dom'
+    );
   return {
     ...mod,
     useLoaderData: loaderMock,

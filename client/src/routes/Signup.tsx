@@ -68,12 +68,17 @@ const Signup = (props: { error?: boolean }) => {
       <MobileLayout topBar>
         <Form method="post" id="signup-form">
           <InnerRoot>
+            <p style={{ textAlign: 'center' }}>
+              With a Triviva admin account, you can create, run, and manage your
+              own quizzes and questions.
+            </p>
             <img
-              src="/res/new-account.png"
+              src="/res/new-account.avif"
               alt="New Account Banner"
               style={{
                 width: '33%',
                 margin: '32px',
+                minWidth: '300px',
               }}
             />
             <p>Signup for a new Trivivia account.</p>
@@ -115,17 +120,16 @@ const Signup = (props: { error?: boolean }) => {
                 {routeError?.statusText}{' '}
               </div>
             ) : null}
-            <p>{'Already have an account? Login instead!'}</p>
-            <Button
-              color="secondary"
-              style={{
-                maxWidth: '500px',
-                width: '100%',
-              }}
-              onClick={handleToLogin}
-            >
-              Go to Login
-            </Button>
+            <p>
+              <span>
+                Already have an account? <a href="/login">Login</a> instead!
+              </span>
+            </p>
+            <p>
+              <span>
+                Looking to join a quiz? <a href="/join">Head here!</a>
+              </span>
+            </p>
           </InnerRoot>
         </Form>
       </MobileLayout>

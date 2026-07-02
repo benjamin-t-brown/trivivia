@@ -4,7 +4,7 @@ preferably debian/ubuntu based
 
 # for debugging
 install node >= 20
-install yarn
+corepack enable   # Yarn 4 via packageManager in package.json
 
 install aws (if not installed)
   - configure aws

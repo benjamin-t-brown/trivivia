@@ -118,7 +118,7 @@ export class TemplateService {
     }
 
     return ret.sort((a, b) => {
-      return a.updatedAt ?? '' < (b.updatedAt ?? '') ? -1 : 1;
+      return (a.updatedAt ?? '' < (b.updatedAt ?? '')) ? -1 : 1;
     });
   }
 

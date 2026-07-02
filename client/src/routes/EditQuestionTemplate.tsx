@@ -227,12 +227,7 @@ const loader = async ({ params }) => {
 };
 
 type AutofillAction =
-  | 'audio'
-  | 'visual'
-  | 'video'
-  | 'basic'
-  | 'quad-radio'
-  | 'pick-2';
+  'audio' | 'visual' | 'video' | 'basic' | 'quad-radio' | 'pick-2';
 
 const DeleteQuestionTemplate = () => {
   const navigate = useNavigate();
@@ -302,7 +297,7 @@ const EditQuestionTemplate = (props: EditQuestionProps) => {
   const render = useReRender();
   const initialValues: EditQuestionValues = {
     isNew: Boolean(props.isNew),
-    text: props.isNew ? '' : questionTemplateResponse?.data.text ?? '',
+    text: props.isNew ? '' : (questionTemplateResponse?.data.text ?? ''),
     answers: questionTemplateResponse?.data?.answers
       ? answerStateToString(questionTemplateResponse?.data?.answers)
       : '{}',

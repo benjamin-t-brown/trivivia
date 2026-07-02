@@ -1,3 +1,10 @@
+## First Time Setup
+
+```
+yarn
+yarn setup-db
+```
+
 ## Migrations
 
 Required upon first setup, and any time the database models are changed.

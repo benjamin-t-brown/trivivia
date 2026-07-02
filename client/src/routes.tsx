@@ -42,15 +42,18 @@ import {
 import { JoinQuizRoute, JoinRoute } from 'routes/Join';
 import { LiveQuizRoute, LiveQuizUpdateRoute } from 'routes/LiveQuiz';
 import { LiveQuizAdminGradingRoute } from 'routes/LiveQuizAdminGrading';
-import { QRCodeRoute } from 'routes/QRCode';
+import { QRCodeRoute, TeamQRCodeRoute } from 'routes/QRCode';
+import { TeamRejoinRoute } from 'routes/TeamRejoin';
 import { SettingsAdminRoute, SettingsRoute } from 'routes/Settings';
 import { ListAllRoundTemplatesRoute } from 'routes/ListAllRoundTemplates';
 import { StaticQuizRoute } from 'routes/StaticQuiz';
+import AppShell from 'components/AppShell';
 
 export const init = () => {
   const router = createBrowserRouter([
     {
       path: '/',
+      element: <AppShell />,
       errorElement: <ErrorPage />,
       children: [
         RootRoute,
@@ -86,6 +89,8 @@ export const init = () => {
         LiveQuizRoute,
         LiveQuizUpdateRoute,
         QRCodeRoute,
+        TeamQRCodeRoute,
+        TeamRejoinRoute,
         SettingsRoute,
         SettingsAdminRoute,
         StaticQuizRoute,

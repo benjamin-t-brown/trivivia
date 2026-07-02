@@ -1,9 +1,9 @@
-import { defineConfig } from 'vite';
-import tsconfigPaths from 'vite-tsconfig-paths';
+import { defineConfig, type Plugin } from 'vite';
 import react from '@vitejs/plugin-react';
 import path from 'path';
+import { buildSrcAliases } from './build-aliases';
 
-function CustomHmr() {
+function customHmr(): Plugin {
   return {
     name: 'custom-hmr',
     enforce: 'post',
@@ -20,34 +20,41 @@ function CustomHmr() {
   };
 }
 
-export default defineConfig((({ command }) => {
-  const rootPath = '../';
+const srcDir = path.resolve(__dirname, 'src');
+const repoRoot = path.resolve(__dirname, '..');
 
+export default defineConfig(({ command }) => {
   const isProd = command !== 'serve';
 
-  const config = {
-    plugins: [
-      react(),
-      tsconfigPaths({
-        projects: [rootPath + 'tsconfig.vite.json'],
-      }),
-      CustomHmr(),
-    ],
+  return {
+    plugins: [react(), customHmr()],
+    resolve: {
+      alias: buildSrcAliases(srcDir),
+    },
     root: '.',
     base: '/',
-    publicDir: path.resolve(__dirname, '/../res/'),
+    publicDir: path.resolve(repoRoot, 'res'),
     build: {
-      outDir: rootPath + 'dist',
+      outDir: path.join(repoRoot, 'dist'),
       assetsDir: 'release',
       cssCodeSplit: false,
+      ...(isProd
+        ? {
+            rolldownOptions: {
+              output: {
+                minify: {
+                  compress: {
+                    dropConsole: true,
+                    dropDebugger: true,
+                  },
+                },
+              },
+            },
+          }
+        : {}),
     },
-    esbuild: isProd
-      ? {
-          drop: ['console', 'debugger'],
-        }
-      : undefined,
     server: {
-      port: '3005',
+      port: 3005,
       host: '0.0.0.0',
       open: '/',
       proxy: {
@@ -62,5 +69,4 @@ export default defineConfig((({ command }) => {
       },
     },
   };
-  return config;
-}) as any);
+});

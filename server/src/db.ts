@@ -2,8 +2,30 @@ import path from 'path';
 import { Sequelize } from 'sequelize-typescript';
 import env from './env';
 import logger from './logger';
+import { Account } from './models/Account';
+import { LiveQuiz } from './models/LiveQuiz';
+import { LiveQuizRoundAnswers } from './models/LiveQuizRoundAnswers';
+import { LiveQuizTeam } from './models/LiveQuizTeam';
+import { QuestionTemplate } from './models/QuestionTemplate';
+import { QuizTemplate } from './models/QuizTemplate';
+import { RoundTemplate } from './models/RoundTemplate';
 
-const dbLocation = path.resolve(__dirname, '../../db/prod.sqlite');
+const models = [
+  Account,
+  LiveQuiz,
+  LiveQuizRoundAnswers,
+  LiveQuizTeam,
+  QuestionTemplate,
+  QuizTemplate,
+  RoundTemplate,
+];
+
+const useInMemoryDb =
+  process.env.VITEST === 'true' || process.env.INTEGRATION_TEST === 'true';
+
+const dbLocation = useInMemoryDb
+  ? ':memory:'
+  : path.resolve(__dirname, '../../db/prod.sqlite');
 
 class Db {
   sequelize: Sequelize;
@@ -15,10 +37,14 @@ class Db {
       storage: dbLocation,
       logging: false,
     });
-    sequelize.addModels([path.resolve(__dirname, 'models')]);
+    sequelize.addModels(models);
     this.sequelize = sequelize;
   }
-  async init() {}
+  async init() {
+    if (useInMemoryDb) {
+      await this.sequelize.sync();
+    }
+  }
 }
 
 let db: Db | null = null;

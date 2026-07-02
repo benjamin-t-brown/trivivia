@@ -7,6 +7,7 @@ import {
   registerPut,
   registerRoute,
 } from '../routing';
+import { PowerPointExportService } from '../services/PowerPointExportService';
 import { TemplateService } from '../services/TemplateService';
 import { validateAnswerType, validateInt, validateString } from '../validators';
 import {
@@ -422,6 +423,33 @@ export const initTemplateControllers = (router: Router) => {
       });
 
       return questionTemplate?.getResponseJson();
+    }
+  );
+
+  // PowerPoint export - must be before the generic :format route
+  router.get(
+    '/api/template/export/quiz/:quizTemplateId/pptx',
+    async (req, res) => {
+      try {
+        const { quizTemplateId } = req.params;
+        const pptxService = new PowerPointExportService();
+        const buffer = await pptxService.exportQuizToPowerPoint(quizTemplateId);
+        const quizTemplate = await templateService.findQuizById(quizTemplateId);
+        const safeName = (quizTemplate?.name || 'quiz')
+          .replace(/[^a-zA-Z0-9-_]/g, '-')
+          .toLowerCase();
+        res.setHeader(
+          'Content-Type',
+          'application/vnd.openxmlformats-officedocument.presentationml.presentation'
+        );
+        res.setHeader(
+          'Content-Disposition',
+          `attachment; filename="${safeName}.pptx"`
+        );
+        res.send(buffer);
+      } catch (e) {
+        res.status(500).send(JSON.stringify({ message: (e as Error).message }));
+      }
     }
   );
 

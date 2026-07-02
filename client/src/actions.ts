@@ -85,6 +85,7 @@ export async function fetchAsync<T>(
 
   console.time('fetch');
   const result: FetchResponse<T> = await promise;
+  console.timeEnd('fetch');
 
   activeFetches.splice(activeFetches.indexOf(activeFetchKey), 1);
 
@@ -95,7 +96,6 @@ export async function fetchAsync<T>(
     result,
     bustCache: !!options?.bustCache,
   });
-  console.timeEnd('fetch');
 
   let finalResult: FetchResponse<T>;
   if (!ok || !result) {

@@ -51,24 +51,24 @@ const InputAnswer = (
           background: isMixedAnswer
             ? getColors().WARNING_BACKGROUND
             : isCorrectAnswer
-            ? getColors().SUCCESS_BACKGROUND
-            : getColors().ERROR_BACKGROUND,
+              ? getColors().SUCCESS_BACKGROUND
+              : getColors().ERROR_BACKGROUND,
         }}
         alt="Answer"
         src={
           isMixedAnswer
             ? '/res/warning.svg'
             : isCorrectAnswer
-            ? '/res/check-mark.svg'
-            : '/res/cancel.svg'
+              ? '/res/check-mark.svg'
+              : '/res/cancel.svg'
         }
       />
     );
     style.border = isMixedAnswer
       ? '1px solid ' + getColors().WARNING_TEXT
       : isCorrectAnswer
-      ? '1px solid ' + getColors().SUCCESS_TEXT
-      : '1px solid ' + getColors().ERROR_TEXT;
+        ? '1px solid ' + getColors().SUCCESS_TEXT
+        : '1px solid ' + getColors().ERROR_TEXT;
   }
 
   return (

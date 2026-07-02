@@ -1,0 +1,17 @@
+{
+  "name": "integration",
+  "version": "1.0.0",
+  "description": "Playwright integration tests for Trivivia",
+  "private": true,
+  "scripts": {
+    "pretest": "node ./ensure-playwright.cjs",
+    "pretest:prod": "node ./ensure-playwright.cjs",
+    "test": "playwright test",
+    "test:prod": "playwright test",
+    "install-playwright": "playwright install chromium"
+  },
+  "devDependencies": {
+    "@faker-js/faker": "^10.0.0",
+    "@playwright/test": "^1.60.0"
+  }
+}

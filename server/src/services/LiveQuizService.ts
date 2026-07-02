@@ -570,10 +570,10 @@ export class LiveQuizService {
       args?.ignoreTeamId
         ? ({} as LiveQuizRoundAnswersResponse)
         : (await this.findAllLiveQuizRoundAnswersForTeam(liveQuizTeamId))
-          ?.find(a => {
-            return a.roundId === roundTemplate.id;
-          })
-          ?.getResponseJson();
+            ?.find(a => {
+              return a.roundId === roundTemplate.id;
+            })
+            ?.getResponseJson();
 
     const includeAnswers =
       args?.forceIncludeAnswers ??
@@ -586,9 +586,9 @@ export class LiveQuizService {
       (args?.forceIncludeAllQuestions || isRoundInAnswerShowState
         ? roundTemplate.questionOrder.length
         : Math.min(
-          roundTemplate.questionOrder.length,
-          liveQuiz.currentQuestionNumber
-        ));
+            roundTemplate.questionOrder.length,
+            liveQuiz.currentQuestionNumber
+          ));
       i++
     ) {
       const questionTemplateId = roundTemplate.questionOrder[i];
@@ -726,7 +726,10 @@ export class LiveQuizService {
       );
 
     if (!liveQuizRoundAnswers) {
-      liveQuizRoundAnswers = await this.createLiveQuizRoundAnswersForTeam(liveQuizTeamId, roundTemplate.id);
+      liveQuizRoundAnswers = await this.createLiveQuizRoundAnswersForTeam(
+        liveQuizTeamId,
+        roundTemplate.id
+      );
       if (!liveQuizRoundAnswers) {
         logger.error(
           `Could not submit answers for team ${liveQuizTeamId}, no round answers found and could not create for roundId=${roundTemplate.id}.`
@@ -743,8 +746,11 @@ export class LiveQuizService {
 
     liveQuizRoundAnswers.answers = JSON.stringify(args.submittedAnswers);
 
-    const hasAlreadyUsedJoker = Boolean(
-      liveQuizTeam.liveQuizRoundAnswers?.find(a => a.didJoker === true)
+    const teamRoundAnswers =
+      (await this.findAllLiveQuizRoundAnswersForTeam(liveQuizTeamId)) ?? [];
+    const hasAlreadyUsedJoker = teamRoundAnswers.some(
+      answer =>
+        answer.didJoker === true && answer.roundId !== roundTemplate.id
     );
 
     if (args.didJoker) {

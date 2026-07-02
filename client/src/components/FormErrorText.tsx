@@ -18,7 +18,7 @@ const FormErrorText = (props: {
     return <div></div>;
   }
 
-  return props.message ?? routeError.message ? (
+  return (props.message ?? routeError.message) ? (
     <p
       style={{
         color: getColors().ERROR_TEXT,
