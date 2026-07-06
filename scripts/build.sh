@@ -2,9 +2,10 @@
 set -e
 
 script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-cd "$script_dir"
+repo_root="$(cd "$script_dir/.." && pwd)"
+cd "$repo_root"
 
-./test.sh
+"$script_dir/test.sh"
 
 echo "Building client..."
 cd client

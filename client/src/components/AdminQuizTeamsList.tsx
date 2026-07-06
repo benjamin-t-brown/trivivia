@@ -78,73 +78,79 @@ export const QuizTeamsListAdmin = (props: { liveQuiz: LiveQuizResponse }) => {
                   borderBottom: '1px solid ' + getColors().TEXT_DESCRIPTION,
                   borderRadius: '4px',
                   padding: '4px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
                 }}
               >
                 <div
                   style={{
                     display: 'flex',
                     alignItems: 'center',
-                    flex: 1,
-                    minWidth: 0,
+                    justifyContent: 'space-between',
                   }}
                 >
-                  <Link
-                    to={getTeamQrCodePath(
-                      props.liveQuiz.userFriendlyId,
-                      team.id,
-                      team.teamName
-                    )}
+                  <div
                     style={{
-                      marginRight: '8px',
-                      fontSize: '13px',
-                      whiteSpace: 'nowrap',
-                      flexShrink: 0,
+                      display: 'flex',
+                      alignItems: 'center',
+                      flex: 1,
+                      minWidth: 0,
                     }}
                   >
-                    Rejoin Link
-                  </Link>
-                  <span
-                    onClick={handleDeleteTeamClick(team.id)}
-                    style={{
-                      color: getColors().ERROR_TEXT,
-                      cursor: 'pointer',
-                      marginRight: '8px',
-                      flexShrink: 0,
-                    }}
-                  >
-                    X
-                  </span>
-                  <span
-                    style={{
-                      marginRight: '8px',
-                    }}
-                  >
-                    {i + 1}. {team.teamName}
-                  </span>
-                  {isShowingRoundQuestions(props.liveQuiz) ? (
-                    <span
+                    <Link
+                      to={getTeamQrCodePath(
+                        props.liveQuiz.userFriendlyId,
+                        team.id,
+                        team.teamName
+                      )}
                       style={{
-                        color: hasSubmitted
-                          ? getColors().SUCCESS_TEXT
-                          : getColors().ERROR_TEXT,
+                        marginRight: '8px',
+                        fontSize: '13px',
+                        whiteSpace: 'nowrap',
+                        flexShrink: 0,
                       }}
                     >
-                      {hasSubmitted ? ' Submitted' : ' Not Submitted'}
+                      Rejoin Link
+                    </Link>
+                    <span
+                      onClick={handleDeleteTeamClick(team.id)}
+                      style={{
+                        color: getColors().ERROR_TEXT,
+                        cursor: 'pointer',
+                        marginRight: '8px',
+                        flexShrink: 0,
+                      }}
+                    >
+                      X
                     </span>
-                  ) : null}
+                    <span
+                      style={{
+                        marginRight: '8px',
+                      }}
+                    >
+                      {i + 1}. {team.teamName}
+                    </span>
+                  </div>
+                  <div
+                    style={{
+                      width: '95px',
+                      flexShrink: '0',
+                      textAlign: 'right',
+                    }}
+                  >
+                    Score: {team.currentScore}
+                  </div>
                 </div>
-                <div
-                  style={{
-                    width: '95px',
-                    flexShrink: '0',
-                    textAlign: 'right',
-                  }}
-                >
-                  Score: {team.currentScore}
-                </div>
+                {isShowingRoundQuestions(props.liveQuiz) ? (
+                  <div
+                    style={{
+                      marginTop: '4px',
+                      color: hasSubmitted
+                        ? getColors().SUCCESS_TEXT
+                        : getColors().ERROR_TEXT,
+                    }}
+                  >
+                    {hasSubmitted ? 'Submitted' : 'Not Submitted'}
+                  </div>
+                ) : null}
               </div>
             );
           })}

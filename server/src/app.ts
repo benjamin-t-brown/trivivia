@@ -14,6 +14,8 @@ import { ioSession } from './middlewares/ioSessionMemory';
 import compression from 'compression';
 import { initStaticQuizController } from './controllers/staticQuizController';
 
+const clientDistDir = path.resolve(__dirname, '../../dist');
+
 export function configureApp(app: Express, io: any = {}) {
   const router = express.Router();
 
@@ -47,15 +49,10 @@ export function configureApp(app: Express, io: any = {}) {
     })
   );
   app.use('/index.html', (req, res) => {
-    res.sendFile(path.resolve(__dirname, '../../client/dist/index.html'));
+    res.sendFile(path.join(clientDistDir, 'index.html'));
   });
   app.use('/release/:fileName', (req, res) => {
-    res.sendFile(
-      path.resolve(
-        __dirname,
-        '../../client/dist/release/' + req.params.fileName
-      )
-    );
+    res.sendFile(path.join(clientDistDir, 'release', req.params.fileName));
   });
   app.use(ioSession);
   app.use(authSession);
@@ -68,7 +65,7 @@ export function configureApp(app: Express, io: any = {}) {
   initStaticQuizController(router);
 
   router.use('/', (req, res) => {
-    res.sendFile(path.resolve(__dirname, '../../client/dist/index.html'));
+    res.sendFile(path.join(clientDistDir, 'index.html'));
   });
 }
 

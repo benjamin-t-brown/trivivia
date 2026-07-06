@@ -1,5 +1,7 @@
+ARG NODE_IMAGE=node:24.18.0-bookworm-slim
+
 # Stage 1: Build
-FROM node:lts-bookworm-slim AS builder
+FROM ${NODE_IMAGE} AS builder
 WORKDIR /app
 RUN corepack enable
 COPY package.json yarn.lock .yarnrc.yml ./
@@ -9,13 +11,13 @@ COPY server/package.json ./server/
 COPY shared/package.json ./shared/
 COPY integration/package.json ./integration/
 
-COPY install.sh .
-RUN ./install.sh
+COPY scripts/install.sh scripts/install.sh
+RUN ./scripts/install.sh
 COPY . .
-RUN ./build.sh
+RUN ./scripts/build.sh
 
 # Stage 2: Run
-FROM node:lts-bookworm-slim
+FROM ${NODE_IMAGE}
 WORKDIR /app
 RUN corepack enable
 COPY --from=builder /app .

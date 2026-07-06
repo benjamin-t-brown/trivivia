@@ -1,7 +1,7 @@
 ## Requirements
 
 - **Node.js 20+**
-- **Yarn 4.17.0** — bundled in `.yarn/releases/`; `./install.sh` uses it automatically (no separate Yarn install needed)
+- **Yarn 4.17.0** — bundled in `.yarn/releases/`; `./scripts/install.sh` uses it automatically (no separate Yarn install needed)
 - **Docker**
 - aws credentials
 
@@ -34,14 +34,22 @@ docker run -d -p 3006:3006 --restart=on-failure --mount type=bind,source="$(pwd)
 ## Backup and restore db
 
 ```
-scp -i ~/.ssh/id_rsa admin@3.80.218.58:/home/admin/trivivia/db/prod.sqlite prod.bak.sqlite
-scp -i ~/.ssh/id_rsa ./prod.bak.sqlite admin@3.80.218.58:/home/admin/trivivia/db/prod.sqlite
+./scripts/backup-db.sh
+# or manually:
+scp -i ~/.ssh/id_rsa admin@54.235.23.2:/home/admin/trivivia/db/prod.sqlite prod.bak.sqlite
+scp -i ~/.ssh/id_rsa ./prod.bak.sqlite admin@54.235.23.2:/home/admin/trivivia/db/prod.sqlite
 ```
 
-Restore db from backup
+Use a backup for local development
 
 ```
-scp -i ~/.ssh/id_rsa ./prod.bak.sqlite admin@3.84.126.152:/home/admin/trivivia/db/prod.sqlite
+./scripts/use-backup-db.sh ./prod.bak.sqlite
+```
+
+Push db to server manually:
+
+```
+scp -i ~/.ssh/id_rsa ./prod.bak.sqlite admin@54.235.23.2:/home/admin/trivivia/db/prod.sqlite
 ```
 
 ## Nginx Restart

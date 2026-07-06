@@ -5,11 +5,13 @@ npm-debug.log
 .env
 .aws
 .vscode
-db/database.sqlite
+db/
+**/*.sqlite
 node_modules
 server/node_modules
 client/node_modules
 quizzes
 scratch
-integration
+integration/*
+!integration/package.json
 test-results

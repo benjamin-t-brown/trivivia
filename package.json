@@ -2,7 +2,7 @@
   "name": "trivivia",
   "version": "1.0.0",
   "description": "",
-  "main": "start.sh",
+  "main": "scripts/start.sh",
   "scripts": {
     "start": "yarn start:dev",
     "start:dev": "concurrently -n srv,client \"yarn start:server\" \"yarn start:client\"",

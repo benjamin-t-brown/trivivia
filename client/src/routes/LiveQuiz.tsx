@@ -636,7 +636,7 @@ const LiveQuiz = (props: { error?: boolean }) => {
                       color: getColors().TEXT_DESCRIPTION,
                     }}
                   >
-                    Please wait for the next round to start...
+                    Please wait for the next stage of the quiz...
                   </p>
                 )}
               </>

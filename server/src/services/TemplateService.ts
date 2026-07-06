@@ -555,8 +555,12 @@ export class TemplateService {
           .join(', ')}</span>`;
         htmlInputs += `<br /><input type="text" style="margin: 2px 0px" />`;
       } else {
+        const showInputLabels = numAnswers >= 2;
         for (let k = 0; k < numAnswers; k++) {
-          htmlInputs += `<br /><input type="text" style="margin: 2px 0px" />`;
+          const label = showInputLabels
+            ? `<span style="display:inline-block; min-width:1.5em">${k + 1}.</span> `
+            : '';
+          htmlInputs += `<br />${label}<input type="text" style="margin: 2px 0px" />`;
         }
       }
       questionHtml = replaceInTemplate(
